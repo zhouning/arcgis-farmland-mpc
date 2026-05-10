@@ -1,0 +1,65 @@
+# Data — never commit
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.sbn
+*.sbx
+*.qpj
+*.shp.xml
+*.gpkg
+*.gpkg-*
+*.gdb/
+*.tif
+*.tiff
+*.img
+*.asc
+*.nc
+*.npy
+*.npz
+*.pt
+*.ckpt
+*.onnx
+*.csv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# ArcGIS transient state
+*.pyt.xml
+*.PrepareDataTool.pyt.xml
+*.SampleTransitionsTool.pyt.xml
+*.TrainEnsembleTool.pyt.xml
+*.MPCPlanTool.pyt.xml
+*.CheckDependenciesTool.pyt.xml
+*.lock
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Local scratch / logs
+_scratch/
+scratch/
+logs/
+*.log
+
+# OS / envs
+*.bak
+*.tmp
