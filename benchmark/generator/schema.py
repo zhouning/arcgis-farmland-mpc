@@ -2,7 +2,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Literal
 import yaml
 
 TERRAIN_TYPES = ("hilly", "mixed", "plain")
@@ -19,9 +18,9 @@ class TerrainConfig:
         if self.type not in TERRAIN_TYPES:
             raise ValueError(f"terrain.type must be one of {TERRAIN_TYPES}, got {self.type!r}")
         if self.dem_amplitude_m < 0:
-            raise ValueError("dem_amplitude_m must be >= 0")
+            raise ValueError(f"dem_amplitude_m must be >= 0, got {self.dem_amplitude_m!r}")
         if self.dem_lengthscale_m <= 0:
-            raise ValueError("dem_lengthscale_m must be > 0")
+            raise ValueError(f"dem_lengthscale_m must be > 0, got {self.dem_lengthscale_m!r}")
 
 
 @dataclass
@@ -33,9 +32,9 @@ class ParcelsConfig:
 
     def __post_init__(self):
         if self.area_distribution not in AREA_DISTRIBUTIONS:
-            raise ValueError(f"parcels.area_distribution must be one of {AREA_DISTRIBUTIONS}")
+            raise ValueError(f"parcels.area_distribution must be one of {AREA_DISTRIBUTIONS}, got {self.area_distribution!r}")
         if self.parcels_per_block_mean <= 0:
-            raise ValueError("parcels_per_block_mean must be > 0")
+            raise ValueError(f"parcels_per_block_mean must be > 0, got {self.parcels_per_block_mean!r}")
 
 
 @dataclass

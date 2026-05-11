@@ -1,4 +1,3 @@
-from pathlib import Path
 import pytest
 from generator.schema import PresetConfig, load_preset
 
