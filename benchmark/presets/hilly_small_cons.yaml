@@ -1,0 +1,7 @@
+preset_id: hilly_small_cons
+n_blocks_target: 800
+terrain: {type: hilly, dem_amplitude_m: 150.0, dem_lengthscale_m: 900.0}
+parcels: {parcels_per_block_mean: 18, parcels_per_block_std: 5, area_distribution: lognormal, area_mean_m2: 1400.0}
+landuse: {farmland_frac: 0.55, forest_frac: 0.35, other_frac: 0.10}
+fragmentation: {grf_lengthscale: 700.0, patch_threshold: 0.30}
+adjacency: {median_degree_target: 4}

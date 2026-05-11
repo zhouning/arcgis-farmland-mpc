@@ -1,0 +1,7 @@
+preset_id: mixed_medium_frag
+n_blocks_target: 2600
+terrain: {type: mixed, dem_amplitude_m: 40.0, dem_lengthscale_m: 1000.0}
+parcels: {parcels_per_block_mean: 24, parcels_per_block_std: 8, area_distribution: lognormal, area_mean_m2: 1600.0}
+landuse: {farmland_frac: 0.65, forest_frac: 0.25, other_frac: 0.10}
+fragmentation: {grf_lengthscale: 400.0, patch_threshold: 0.45}
+adjacency: {median_degree_target: 4}
