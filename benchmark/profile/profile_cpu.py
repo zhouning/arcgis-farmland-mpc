@@ -7,7 +7,6 @@ from __future__ import annotations
 import json
 import sys
 import time
-import os
 from pathlib import Path
 
 BENCH_ROOT = Path(__file__).resolve().parents[1]
