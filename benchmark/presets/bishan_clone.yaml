@@ -2,19 +2,19 @@ preset_id: bishan_clone
 n_blocks_target: 2600
 terrain:
   type: hilly
-  dem_amplitude_m: 120.0
-  dem_lengthscale_m: 1200.0
+  dem_amplitude_m: 170.0
+  dem_lengthscale_m: 700.0
 parcels:
   parcels_per_block_mean: 20
   parcels_per_block_std: 6
   area_distribution: lognormal
   area_mean_m2: 1800.0
 landuse:
-  farmland_frac: 0.70
-  forest_frac: 0.22
+  farmland_frac: 0.48
+  forest_frac: 0.44
   other_frac: 0.08
 fragmentation:
-  grf_lengthscale: 600.0
-  patch_threshold: 0.30
+  grf_lengthscale: 3000.0
+  patch_threshold: 0.15
 adjacency:
   median_degree_target: 4
