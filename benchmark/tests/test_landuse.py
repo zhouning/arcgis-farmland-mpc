@@ -37,7 +37,6 @@ def test_landuse_codes_are_valid_strings(rng_seed):
     assert all(c in {FARMLAND_CODE, FOREST_CODE, OTHER_CODE} for c in codes)
 
 
-@pytest.mark.skip(reason="depends on Task 7 (adjacency); will be re-enabled then")
 def test_low_lengthscale_yields_more_patches(rng_seed):
     blocks, _ = tessellate_domain(n_blocks_target=400, seed=rng_seed)
     from generator.adjacency import build_block_adjacency
