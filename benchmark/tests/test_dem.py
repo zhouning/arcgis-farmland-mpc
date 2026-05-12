@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 from generator.dem import synthesize_dem, derive_slope_degrees, sample_block_slopes
 from generator.tessellation import tessellate_domain
 
