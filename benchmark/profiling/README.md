@@ -11,9 +11,9 @@ These are **evidence**, not estimates, for Plan B Task 4 (Decision Gate).
 
 ```bash
 # Local CPU (~30 min)
-python -m profile.profile_cpu
+python -m profiling.profile_cpu
 
-# Colab T4 (open profile/profile_gpu_mpc.py and profile/profile_gpu_ppo.py
+# Colab T4 (open profiling/profile_gpu_mpc.py and profiling/profile_gpu_ppo.py
 # in a Colab notebook; the headers explain Drive mounting + path patching).
 ```
 

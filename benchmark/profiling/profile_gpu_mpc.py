@@ -4,9 +4,9 @@ How to run on Colab:
 1. Mount Drive, clone arcgis-farmland-mpc into /content/repo
 2. Generate one plain_small_cons dataset locally and upload to /content/data
    (or generate inside Colab; ~30s for 800 blocks)
-3. !python /content/repo/benchmark/profile/profile_gpu_mpc.py /content/data
+3. !python /content/repo/benchmark/profiling/profile_gpu_mpc.py /content/data
 
-Outputs /content/repo/benchmark/profile/gpu_mpc_profile.json + side-channel
+Outputs /content/repo/benchmark/profiling/gpu_mpc_profile.json + side-channel
 nvidia-smi dmon log /content/gpu_dmon.log.
 """
 from __future__ import annotations

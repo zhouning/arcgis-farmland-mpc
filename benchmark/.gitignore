@@ -3,6 +3,7 @@ data_dev/
 __pycache__/
 .pytest_cache/
 results/*.partial.json
-profile/*.json
+profiling/*.json
+profiling/_tmp_cpu_profile/
 sweep_state.json
 .colab_drive_mount/

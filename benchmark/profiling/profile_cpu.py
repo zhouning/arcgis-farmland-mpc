@@ -1,7 +1,7 @@
 """CPU profile: time generator + Random + Greedy + GA on plain_small_cons.
 
-Writes profile/cpu_profile.json with per-stage wall seconds.
-Run from benchmark/ root: python -m profile.profile_cpu
+Writes profiling/cpu_profile.json with per-stage wall seconds.
+Run from benchmark/ root: python -m profiling.profile_cpu
 """
 from __future__ import annotations
 import json
@@ -25,7 +25,7 @@ def main():
     import baseline_ga
 
     results: dict = {}
-    out_root = BENCH_ROOT / "profile" / "_tmp_cpu_profile"
+    out_root = BENCH_ROOT / "profiling" / "_tmp_cpu_profile"
     out_root.mkdir(parents=True, exist_ok=True)
 
     # 1. Generator wall time on plain_small_cons (~800 blocks)
@@ -58,7 +58,7 @@ def main():
     results["ga_plain_small_50gen_s"] = time.time() - t0
     results["ga_plain_small_500gen_estimate_s"] = results["ga_plain_small_50gen_s"] * 10
 
-    out_path = BENCH_ROOT / "profile" / "cpu_profile.json"
+    out_path = BENCH_ROOT / "profiling" / "cpu_profile.json"
     out_path.write_text(json.dumps(results, indent=2))
     print(json.dumps(results, indent=2))
 
