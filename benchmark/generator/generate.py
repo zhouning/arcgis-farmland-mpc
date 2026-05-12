@@ -20,10 +20,10 @@ COUNTY_CODE = "999999"
 
 ANCHOR_TARGETS = {
     "bishan_clone": {
-        "init_slope_deg": 9.80,
-        "init_contiguity": 3.59,
-        "init_baimu_count": None,
-        "init_baimu_area_ha": None,
+        "init_slope_deg": 9.6157,
+        "init_contiguity": 3.5852,
+        "init_baimu_count": 109.0,
+        "init_baimu_area_ha": 46843.65,
     },
     "neijiang_clone": {
         "init_slope_deg": 10.55,
