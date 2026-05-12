@@ -63,3 +63,42 @@ def tessellate_domain(
     blocks = _finite_voronoi_polygons(points, bbox)
     domain = box(*bbox)
     return blocks, domain
+
+
+def subdivide_block_into_parcels(
+    block: Polygon,
+    n_parcels: int,
+    seed: int,
+) -> list[Polygon]:
+    """Voronoi subdivision of a single block into n_parcels.
+
+    Samples n_parcels seed points inside the block (rejection sampling on
+    its bounding box), runs Voronoi with the same reflection trick used at
+    the block level, and clips to the block boundary.
+    """
+    from shapely.geometry import Point
+    rng = np.random.default_rng(seed)
+    minx, miny, maxx, maxy = block.bounds
+    seeds: list[tuple[float, float]] = []
+    max_tries = n_parcels * 50
+    tries = 0
+    while len(seeds) < n_parcels and tries < max_tries:
+        x = rng.uniform(minx, maxx)
+        y = rng.uniform(miny, maxy)
+        if block.contains(Point(x, y)):
+            seeds.append((x, y))
+        tries += 1
+    if len(seeds) < 3:
+        return [block]
+    pts = np.array(seeds)
+    raw_polys = _finite_voronoi_polygons(pts, (minx, miny, maxx, maxy))
+    out: list[Polygon] = []
+    for poly in raw_polys:
+        clipped = poly.intersection(block)
+        if clipped.is_empty:
+            continue
+        if isinstance(clipped, MultiPolygon):
+            clipped = max(clipped.geoms, key=lambda g: g.area)
+        if isinstance(clipped, Polygon) and clipped.area > 0:
+            out.append(clipped)
+    return out
