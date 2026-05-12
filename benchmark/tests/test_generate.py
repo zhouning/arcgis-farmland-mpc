@@ -61,3 +61,19 @@ def test_geopackage_loadable_by_geopandas(small_preset, tmp_out_dir):
     gdf = gpd.read_file(tmp_out_dir / "DLTB_with_slope.gpkg")
     assert {"DLBM", "QSDWDM", "slope_mean"}.issubset(gdf.columns)
     assert len(gdf) > 0
+
+
+def test_anchor_preset_emits_calibration_report(tmp_out_dir):
+    from generator.schema import load_preset
+    from generator.generate import generate_dataset
+    preset_path = Path(__file__).resolve().parents[1] / "presets" / "neijiang_clone.yaml"
+    cfg = load_preset(preset_path)
+    cfg.n_blocks_target = 80
+    cfg.parcels.parcels_per_block_mean = 6
+    cfg.parcels.parcels_per_block_std = 2
+    generate_dataset(cfg, seed=0, out_dir=tmp_out_dir)
+    report_path = tmp_out_dir / "calibration_report.json"
+    assert report_path.exists()
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    assert "passed" in report
+    assert "deltas" in report

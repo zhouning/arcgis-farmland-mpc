@@ -1,6 +1,7 @@
 """End-to-end orchestrator: PresetConfig + seed -> synthetic dataset on disk."""
 from __future__ import annotations
 import json
+import sys
 import time
 from pathlib import Path
 import argparse
@@ -17,6 +18,21 @@ from .io import write_synthetic_dataset
 
 COUNTY_CODE = "999999"
 
+ANCHOR_TARGETS = {
+    "bishan_clone": {
+        "init_slope_deg": 9.80,
+        "init_contiguity": 3.59,
+        "init_baimu_count": None,
+        "init_baimu_area_ha": None,
+    },
+    "neijiang_clone": {
+        "init_slope_deg": 10.55,
+        "init_contiguity": 2.63,
+        "init_baimu_count": 384.0,
+        "init_baimu_area_ha": 74342.0,
+    },
+}
+
 
 def _assign_blocks_to_townships(
     n_blocks: int, target_blocks_per_township: int = 130
@@ -30,6 +46,39 @@ def _assign_blocks_to_townships(
             block_township_id[bi] = ti
     township_codes = [f"{COUNTY_CODE}{ti + 1:03d}" for ti in range(n_townships)]
     return block_township_id, township_codes
+
+
+def _maybe_run_calibration(cfg: PresetConfig, out_dir: Path) -> None:
+    """For anchor presets, build env, snapshot init stats, write calibration_report.json."""
+    if cfg.preset_id not in ANCHOR_TARGETS:
+        return
+    # Late imports: calibration depends on county_env (heavy)
+    from .calibration import (
+        AnchorTargets,
+        compute_init_stats,
+        verify_anchor_within_tolerance,
+    )
+    # synthetic_env_loader lives at benchmark root (sibling of generator/)
+    benchmark_root = Path(out_dir).resolve().parents[0]
+    # Walk upward until we find synthetic_env_loader.py; fall back to two levels up
+    for candidate in [Path(out_dir).resolve(), *Path(out_dir).resolve().parents]:
+        if (candidate / "synthetic_env_loader.py").exists():
+            benchmark_root = candidate
+            break
+    if str(benchmark_root) not in sys.path:
+        sys.path.insert(0, str(benchmark_root))
+    from synthetic_env_loader import make_synthetic_env
+
+    env = make_synthetic_env(out_dir, total_budget=20, swaps_per_step=2)
+    env.reset(seed=0)
+    actual = compute_init_stats(env)
+    target = AnchorTargets(name=cfg.preset_id, **ANCHOR_TARGETS[cfg.preset_id])
+    report = verify_anchor_within_tolerance(target, actual, tolerance=0.5)
+    with open(Path(out_dir) / "calibration_report.json", "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2)
+    if not report["passed"]:
+        print(f"WARNING: anchor calibration FAILED for {cfg.preset_id}")
+        print(json.dumps(report, indent=2))
 
 
 def generate_dataset(
@@ -118,6 +167,7 @@ def generate_dataset(
     }
     with open(out_dir / "manifest.json", "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2)
+    _maybe_run_calibration(cfg, out_dir)
     return manifest
 
 
