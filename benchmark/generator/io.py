@@ -77,10 +77,10 @@ def write_synthetic_dataset(
             str(local_idx): block_to_swap_local[bi]
             for local_idx, bi in enumerate(local_blocks)
         }
-        with open(tdir / "block_compositions.json", "w") as f:
+        with open(tdir / "block_compositions.json", "w", encoding="utf-8") as f:
             json.dump(compositions, f)
         features = [
             {"compactness": float(block_compactness[bi])} for bi in local_blocks
         ]
-        with open(tdir / "block_features.json", "w") as f:
+        with open(tdir / "block_features.json", "w", encoding="utf-8") as f:
             json.dump(features, f)

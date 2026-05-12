@@ -73,3 +73,12 @@ def test_only_swappable_parcels_in_compositions(tmp_out_dir):
     )
     # Township 2 block has 3 parcels: 0110, 0310, 0510. Only first two are swappable.
     assert len(comp["0"]) == 2
+
+
+def test_full_swappable_composition_values(tmp_out_dir):
+    """Township 1 block has 3 swappable parcels; composition must be [0, 1, 2]."""
+    write_synthetic_dataset(_toy_dataset(), tmp_out_dir)
+    comp = json.loads(
+        (tmp_out_dir / "township_999999001" / "block_compositions.json").read_text()
+    )
+    assert comp["0"] == [0, 1, 2]
