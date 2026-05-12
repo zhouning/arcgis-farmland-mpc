@@ -85,3 +85,22 @@ def test_ppo_runner_writes_valid_result(toy_dataset, tmp_path):
     )
     assert set(result.keys()) == RESULT_SCHEMA_KEYS
     assert result["method"] == "PPO-Centralized"
+
+
+def test_mpc_runner_writes_valid_result(toy_dataset, tmp_path):
+    from baselines.run_mpc import run_mpc
+    from eval.metrics import RESULT_SCHEMA_KEYS
+
+    result = run_mpc(
+        dataset_dir=toy_dataset,
+        preset_id="plain_small_cons",
+        seed=0,
+        out_path=tmp_path / "mpc.json",
+        total_budget=10, swaps_per_step=2,
+        n_models=2, epochs=1,
+        horizon=2, top_k=5,
+        n_states=20, n_actions=5,  # tiny pairwise dataset for smoke
+        device="cpu",
+    )
+    assert set(result.keys()) == RESULT_SCHEMA_KEYS
+    assert result["method"] == "Contrastive-MPC"
