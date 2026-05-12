@@ -2,3 +2,7 @@ data_dev/
 *.pyc
 __pycache__/
 .pytest_cache/
+results/*.partial.json
+profile/*.json
+sweep_state.json
+.colab_drive_mount/
