@@ -1,0 +1,8 @@
+{
+  "generator_plain_small_s": 81.61589026451111,
+  "generator_n_blocks": 800,
+  "random_plain_small_s": 0.42874693870544434,
+  "greedy_plain_small_s": 3.50819730758667,
+  "ga_plain_small_50gen_s": 5.271235704421997,
+  "ga_plain_small_500gen_estimate_s": 52.71235704421997
+}
