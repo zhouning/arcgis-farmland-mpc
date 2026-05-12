@@ -37,3 +37,18 @@ def test_random_runner_writes_valid_result(toy_dataset, tmp_path):
     on_disk = json.loads(result_path.read_text())
     assert on_disk["method"] == "Random-Block"
     assert on_disk["seed"] == 0
+
+
+def test_greedy_runner_writes_valid_result(toy_dataset, tmp_path):
+    from baselines.run_greedy import run_greedy
+    from eval.metrics import RESULT_SCHEMA_KEYS
+
+    result = run_greedy(
+        dataset_dir=toy_dataset,
+        preset_id="plain_small_cons",
+        seed=0,
+        out_path=tmp_path / "greedy.json",
+        total_budget=20, swaps_per_step=2,
+    )
+    assert set(result.keys()) == RESULT_SCHEMA_KEYS
+    assert result["method"] == "Greedy-Sequential"
