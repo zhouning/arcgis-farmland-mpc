@@ -1,4 +1,3 @@
-import pytest
 from generator.landuse import assign_landuse_per_block
 from generator.tessellation import tessellate_domain
 
