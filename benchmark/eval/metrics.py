@@ -37,8 +37,13 @@ def extract_run_result(
 
     final_slope = float(env.avg_farmland_slope)
     final_cont = float(env.contiguity)
-    final_baimu_count = int(env.baimu_count)
-    final_baimu_area = float(env.baimu_total_area)
+    # Parcel-level runners (Random/Greedy/GA) bypass env.step(), so env.baimu_*
+    # attributes remain at their initial values. Recompute the terminal state.
+    final_baimu_count, final_baimu_area_m2 = env._count_baimu_fang()
+    env.baimu_count = final_baimu_count
+    env.baimu_total_area = final_baimu_area_m2
+    final_baimu_count = int(final_baimu_count)
+    final_baimu_area = float(final_baimu_area_m2)
 
     slope_pct = (final_slope - init_slope) / init_slope * 100.0 if init_slope > 0 else 0.0
     cont_delta = final_cont - init_cont
