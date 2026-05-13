@@ -1,0 +1,30 @@
+{
+  "preset_id": "neijiang_clone",
+  "seed": 0,
+  "method": "GA",
+  "n_blocks": 3700,
+  "init_slope_deg": 12.388139691908998,
+  "final_slope_deg": 12.384781460024401,
+  "slope_pct": -0.027108443786685893,
+  "init_contiguity": 3.804941207557141,
+  "final_contiguity": 3.8203725723345223,
+  "cont_delta": 0.015431364777381162,
+  "cont_pct": 0.40556118728395096,
+  "init_baimu_count": 228,
+  "final_baimu_count": 225,
+  "baimu_count_delta": -3,
+  "init_baimu_area_ha": 89595.09432512993,
+  "final_baimu_area_ha": 89808.26597001583,
+  "baimu_area_delta_ha": 213.17164488589765,
+  "total_reward": 2.4035728217746053,
+  "wall_seconds": 100.17310571670532,
+  "exchange_pairs_used": 100,
+  "extra": {
+    "pop_size": 100,
+    "generations": 500,
+    "best_fitness": 2.4035728217746053,
+    "ga_elapsed_seconds": 100.16252160072327,
+    "ga_final_avg_slope": 12.384781460024401,
+    "ga_final_contiguity": 3.8203725723345223
+  }
+}
