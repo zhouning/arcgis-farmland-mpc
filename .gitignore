@@ -24,6 +24,9 @@
 *.csv
 !benchmark/sweep_manifest.csv
 
+# Build artifacts (regenerable)
+benchmark/decision_gate_bundle.zip
+
 # Python
 __pycache__/
 *.pyc

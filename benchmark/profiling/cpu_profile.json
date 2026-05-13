@@ -4,5 +4,12 @@
   "random_plain_small_s": 0.42874693870544434,
   "greedy_plain_small_s": 3.50819730758667,
   "ga_plain_small_50gen_s": 5.271235704421997,
-  "ga_plain_small_500gen_estimate_s": 52.71235704421997
+  "ga_plain_small_500gen_estimate_s": 52.71235704421997,
+  "mpc_cpu_s_per_step_plain_small": 3.4931949615478515,
+  "mpc_cpu_n_blocks": 800,
+  "mpc_cpu_warm_steps": 2,
+  "mpc_cpu_measure_steps": 5,
+  "ppo_cpu_steps_per_s_plain_small": 4.54583144554287,
+  "ppo_cpu_n_blocks": 800,
+  "ppo_cpu_total_timesteps": 500
 }

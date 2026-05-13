@@ -1,16 +1,25 @@
 """Colab T4 profile: time + GPU util for MPC inner loop (K=50 candidates).
 
 How to run on Colab:
-1. Mount Drive, clone arcgis-farmland-mpc into /content/repo
-2. Generate one plain_small_cons dataset locally and upload to /content/data
-   (or generate inside Colab; ~30s for 800 blocks)
-3. !python /content/repo/benchmark/profiling/profile_gpu_mpc.py /content/data
+1. Upload zip bundle (repo subset + D:/test sources), extract into /content/src
+2. Generate one plain_small_cons dataset inside Colab (~30s for 800 blocks)
+3. !python /content/src/benchmark/profiling/profile_gpu_mpc.py /content/data
 
-Outputs /content/repo/benchmark/profiling/gpu_mpc_profile.json + side-channel
+Outputs <benchmark>/profiling/gpu_mpc_profile.json + side-channel
 nvidia-smi dmon log /content/gpu_dmon.log.
+
+Source-location assumptions (match baselines/run_mpc.py, verified 2026-05-13):
+- mpc_planner.py sits at D:/test top level, surfaced on sys.path
+- contrastive_trainer.py sits at D:/test/paper9_contrastive, surfaced on sys.path
+- data_agent.transition_model lives at D:/adk/data_agent
+When bundled for Colab, extraction should set:
+    TEST_SRC_ROOT pointing at the copied D:/test tree
+    ADK_SRC_ROOT  pointing at the copied D:/adk tree
+so the sys.path inserts below resolve correctly.
 """
 from __future__ import annotations
 import json
+import os
 import sys
 import time
 import subprocess
@@ -24,31 +33,30 @@ def measure_mpc(dataset_dir: str, n_steps_warm: int = 10, n_steps_measure: int =
     """Run MPC inner loop on real env; report timings + GPU util."""
     BENCH_ROOT = Path(__file__).resolve().parents[1]
     sys.path.insert(0, str(BENCH_ROOT))
-    sys.path.insert(0, "/content/repo")
-    sys.path.insert(0, str(Path(dataset_dir).resolve().parent / "test_src"))
+
+    test_src = Path(os.environ.get("TEST_SRC_ROOT", "/content/src/test"))
+    adk_src = Path(os.environ.get("ADK_SRC_ROOT", "/content/src/adk"))
+    sys.path.insert(0, str(test_src))
+    sys.path.insert(0, str(test_src / "paper9_contrastive"))
+    sys.path.insert(0, str(adk_src))
 
     from synthetic_env_loader import make_synthetic_env
-    from paper9_contrastive.mpc_planner import mpc_select_action
+    from mpc_planner import mpc_select_action
     from data_agent.transition_model import TransitionModel, EnsembleTransitionModel
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     env = make_synthetic_env(dataset_dir, total_budget=100, swaps_per_step=5)
-    bf_dim = env._get_block_features().shape[-1]
-    gf_dim = env._get_global_features().shape[-1]
     n_blocks = env.n_blocks
 
-    models = []
-    for i in range(3):  # 3-member ensemble matching paper 9
+    ensemble = EnsembleTransitionModel(n_blocks, n_models=3)
+    for i in range(3):
         torch.manual_seed(i)
-        m = TransitionModel(n_blocks=n_blocks, block_feat_dim=bf_dim,
-                            global_feat_dim=gf_dim).to(device)
-        models.append(m)
-    ensemble = EnsembleTransitionModel(models)
+        m = TransitionModel(n_blocks).to(device)
+        ensemble.models[i] = m
 
     env.reset(seed=0)
     rng = np.random.default_rng(0)
 
-    # Warm-up so CUDA kernels JIT
     for _ in range(n_steps_warm):
         bf = env._get_block_features()
         gf = env._get_global_features()
@@ -59,11 +67,20 @@ def measure_mpc(dataset_dir: str, n_steps_warm: int = 10, n_steps_measure: int =
                                       greedy_sample=50, scoring="reward", rng=rng)
         env.step(action)
 
-    # Start nvidia-smi dmon in background
-    dmon_log = Path("/content/gpu_dmon.log")
-    dmon_proc = subprocess.Popen(
-        ["nvidia-smi", "dmon", "-s", "u", "-c", str(n_steps_measure + 5), "-o", "T"],
-        stdout=open(dmon_log, "w"))
+    dmon_log_path = os.environ.get("GPU_DMON_LOG", "/content/gpu_dmon.log")
+    dmon_proc = None
+    dmon_log_file = None
+    try:
+        dmon_log_file = open(dmon_log_path, "w")
+        dmon_proc = subprocess.Popen(
+            ["nvidia-smi", "dmon", "-s", "u", "-c", str(n_steps_measure + 5), "-o", "T"],
+            stdout=dmon_log_file,
+        )
+    except (FileNotFoundError, OSError):
+        if dmon_log_file is not None:
+            dmon_log_file.close()
+        dmon_log_file = None
+        dmon_proc = None
 
     t0 = time.time()
     for _ in range(n_steps_measure):
@@ -76,18 +93,24 @@ def measure_mpc(dataset_dir: str, n_steps_warm: int = 10, n_steps_measure: int =
                                       greedy_sample=50, scoring="reward", rng=rng)
         env.step(action)
     elapsed = time.time() - t0
-    dmon_proc.wait(timeout=30)
+    if dmon_proc is not None:
+        dmon_proc.wait(timeout=30)
+    if dmon_log_file is not None:
+        dmon_log_file.close()
 
-    # Parse nvidia-smi dmon output (cols: gpu sm mem enc dec)
     util = []
-    for line in dmon_log.read_text().splitlines():
-        if line.startswith("#") or not line.strip():
-            continue
-        toks = line.split()
+    if dmon_proc is not None:
         try:
-            util.append(int(toks[2]))  # sm column
-        except (IndexError, ValueError):
-            continue
+            for line in Path(dmon_log_path).read_text().splitlines():
+                if line.startswith("#") or not line.strip():
+                    continue
+                toks = line.split()
+                try:
+                    util.append(int(toks[2]))
+                except (IndexError, ValueError):
+                    continue
+        except FileNotFoundError:
+            pass
     mean_util = float(np.mean(util)) if util else float("nan")
 
     return {
