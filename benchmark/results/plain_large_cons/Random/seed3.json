@@ -1,0 +1,39 @@
+{
+  "preset_id": "plain_large_cons",
+  "seed": 3,
+  "method": "Random-Block",
+  "n_blocks": 4500,
+  "init_slope_deg": 0.5323198132547791,
+  "final_slope_deg": 0.5319523418775141,
+  "slope_pct": -0.06903206833842307,
+  "init_contiguity": 4.219914938396107,
+  "final_contiguity": 4.220949708422853,
+  "cont_delta": 0.0010347700267461235,
+  "cont_pct": 0.024521110956025688,
+  "init_baimu_count": 32,
+  "final_baimu_count": 32,
+  "baimu_count_delta": 0,
+  "init_baimu_area_ha": 163129.21155154821,
+  "final_baimu_area_ha": 163146.15311554642,
+  "baimu_area_delta_ha": 16.94156399819851,
+  "total_reward": 0.0,
+  "wall_seconds": 1.2793724536895752,
+  "exchange_pairs_used": 100,
+  "extra": {
+    "baseline_returned": {
+      "slope_change_pct": -0.0690320670416074,
+      "cont_change": 0.0010347700267461235,
+      "baimu_count_change": 0.0,
+      "baimu_area_change_ha": 16.94156399819851,
+      "completed_swaps": 41.0,
+      "elapsed": 0.0046651363372802734,
+      "initial_slope": 0.5323198132547791,
+      "final_slope": 0.5319523418775141,
+      "initial_cont": 4.219914938396107,
+      "final_cont": 4.220949708422853,
+      "initial_baimu_count": 32.0,
+      "final_baimu_count": 32.0,
+      "seed": 3.0
+    }
+  }
+}

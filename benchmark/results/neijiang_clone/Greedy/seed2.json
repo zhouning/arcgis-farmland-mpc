@@ -1,0 +1,38 @@
+{
+  "preset_id": "neijiang_clone",
+  "seed": 2,
+  "method": "Greedy-Sequential",
+  "n_blocks": 3700,
+  "init_slope_deg": 12.625367368443946,
+  "final_slope_deg": 12.621551053872665,
+  "slope_pct": -0.030227354657576696,
+  "init_contiguity": 3.7878795958087825,
+  "final_contiguity": 3.789106033540406,
+  "cont_delta": 0.0012264377316233421,
+  "cont_pct": 0.03237794912337175,
+  "init_baimu_count": 240,
+  "final_baimu_count": 238,
+  "baimu_count_delta": -2,
+  "init_baimu_area_ha": 88111.59016147557,
+  "final_baimu_area_ha": 88163.40499489021,
+  "baimu_area_delta_ha": 51.814833414638045,
+  "total_reward": 0.0,
+  "wall_seconds": 2.3459150791168213,
+  "exchange_pairs_used": 100,
+  "extra": {
+    "baseline_returned": {
+      "slope_change_pct": -0.03022735463363493,
+      "cont_change": 0.0012264377316233421,
+      "baimu_count_change": -2.0,
+      "baimu_area_change_ha": 51.814833414638045,
+      "completed_swaps": 24.0,
+      "elapsed": 1.91823148727417,
+      "initial_slope": 12.625367368443946,
+      "final_slope": 12.621551053872665,
+      "initial_cont": 3.7878795958087825,
+      "final_cont": 3.789106033540406,
+      "initial_baimu_count": 240.0,
+      "final_baimu_count": 238.0
+    }
+  }
+}
