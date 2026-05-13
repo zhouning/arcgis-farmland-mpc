@@ -22,6 +22,7 @@
 *.ckpt
 *.onnx
 *.csv
+!benchmark/sweep_manifest.csv
 
 # Python
 __pycache__/
