@@ -44,14 +44,19 @@ def measure_mpc(dataset_dir: str, n_steps_warm: int = 10, n_steps_measure: int =
     from mpc_planner import mpc_select_action
     from data_agent.transition_model import TransitionModel, EnsembleTransitionModel
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    # NOTE: mpc_planner does not move inputs to model device -- production
+    # baselines/run_mpc.py runs everything on CPU for this reason. We keep
+    # the ensemble on CPU regardless of cuda availability so this profile
+    # faithfully matches what Task 15 MPC sweep will actually run.
+    cuda_available = torch.cuda.is_available()
+    device = "cpu"
     env = make_synthetic_env(dataset_dir, total_budget=100, swaps_per_step=5)
     n_blocks = env.n_blocks
 
     ensemble = EnsembleTransitionModel(n_blocks, n_models=3)
     for i in range(3):
         torch.manual_seed(i)
-        m = TransitionModel(n_blocks).to(device)
+        m = TransitionModel(n_blocks)
         ensemble.models[i] = m
 
     env.reset(seed=0)
@@ -115,6 +120,8 @@ def measure_mpc(dataset_dir: str, n_steps_warm: int = 10, n_steps_measure: int =
 
     return {
         "device": device,
+        "cuda_available": cuda_available,
+        "note": "mpc_planner lacks device propagation; ensemble forced to CPU to match production run_mpc.py",
         "n_steps_measured": n_steps_measure,
         "wall_s": elapsed,
         "s_per_step": elapsed / n_steps_measure,
