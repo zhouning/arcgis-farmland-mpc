@@ -37,16 +37,16 @@ PAPER9_FILES = ["contrastive_trainer.py"]
 ADK_DATA_AGENT = ["transition_model.py"]
 EXCLUDE_PARTS = ("__pycache__", ".pytest_cache", "_tmp_cpu_profile")
 
-COLAB_REQUIREMENTS = """# Installed on top of Colab default image (torch + numpy included)
-sb3-contrib==2.3.2
-stable-baselines3==2.3.2
-gymnasium==0.29.1
-geopandas>=0.14
-libpysal>=4.8
-opensimplex>=0.4.5
-rasterio>=1.3
-pyyaml>=6.0
-shapely>=2.0
+COLAB_REQUIREMENTS = """# Installed on top of Colab default image (torch + numpy included).
+# No version pins: let pip resolve against whatever torch Colab ships that week.
+# sb3-contrib pulls stable-baselines3 + gymnasium as transitive deps.
+sb3-contrib
+geopandas
+libpysal
+opensimplex
+rasterio
+pyyaml
+shapely
 """
 
 README_COLAB = """# Decision Gate runbook
