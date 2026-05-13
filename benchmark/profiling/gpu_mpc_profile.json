@@ -1,0 +1,13 @@
+{
+  "device": "cpu",
+  "cuda_available": true,
+  "note": "mpc_planner lacks device propagation; ensemble forced to CPU to match production run_mpc.py",
+  "n_steps_measured": 50,
+  "wall_s": 303.85883831977844,
+  "s_per_step": 6.077176766395569,
+  "gpu_sm_util_mean_pct": 0.0,
+  "ensemble_members": 3,
+  "horizon": 5,
+  "top_k": 50,
+  "n_blocks": 800
+}

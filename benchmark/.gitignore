@@ -4,6 +4,9 @@ __pycache__/
 .pytest_cache/
 results/*.partial.json
 profiling/*.json
+!profiling/cpu_profile.json
+!profiling/gpu_mpc_profile.json
+!profiling/gpu_ppo_profile.json
 profiling/_tmp_cpu_profile/
 sweep_state.json
 .colab_drive_mount/

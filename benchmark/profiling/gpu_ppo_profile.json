@@ -1,0 +1,8 @@
+{
+  "device": "cuda",
+  "total_timesteps": 25000,
+  "wall_s": 2865.3012828826904,
+  "steps_per_s": 8.725085961937056,
+  "gpu_sm_util_mean_pct": 1.0916666666666666,
+  "policy": "ParcelScoringPolicy"
+}
