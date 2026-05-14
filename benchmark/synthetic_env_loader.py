@@ -5,10 +5,11 @@ directory must contain DLTB_with_slope.gpkg + township_<code>/ dirs.
 """
 from __future__ import annotations
 import json
+import os
 import sys
 from pathlib import Path
 
-D_TEST_ROOT = Path("D:/test")
+D_TEST_ROOT = Path(os.environ.get("TEST_SRC_ROOT", "D:/test"))
 if str(D_TEST_ROOT) not in sys.path:
     sys.path.insert(0, str(D_TEST_ROOT))
 
