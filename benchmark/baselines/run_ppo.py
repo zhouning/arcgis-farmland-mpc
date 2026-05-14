@@ -9,9 +9,11 @@ Simplex check. Paper 4 production uses 500k; 100k is the compromise that
 clears the entropy-collapse failure mode without paying the 41-day cost of
 a full-length run on every benchmark cell.
 
-Uses `ParcelScoringPolicy` (the Paper 1-4 scorer-based policy) -- not the
-generic `MaskableActorCriticPolicy`. Mirrors `train_county.train_county`
-construction so the resulting baseline is comparable to Paper 4 numbers.
+Uses `StableParcelScoringPolicy` (a benchmark-only subclass of the Paper 1-4
+production `ParcelScoringPolicy`) that clamps raw logits to [-50, 50] before
+softmax. Without the clamp, training on synthetic 2600+ block envs produces
+NaN logits within the first 1000 gradient steps. See stable_policy.py for
+why we don't ship this fix back to D:/test/parcel_scoring_policy.py.
 """
 from __future__ import annotations
 import time
@@ -39,7 +41,7 @@ def run_ppo(
     from sb3_contrib import MaskablePPO
     from stable_baselines3.common.monitor import Monitor
     from county_env import K_BLOCK, K_GLOBAL_COUNTY
-    from parcel_scoring_policy import ParcelScoringPolicy
+    from .stable_policy import StableParcelScoringPolicy
     from eval.metrics import extract_run_result
 
     env = build_env(dataset_dir, total_budget=total_budget,
@@ -47,7 +49,7 @@ def run_ppo(
     monitored_env = Monitor(env)
 
     model = MaskablePPO(
-        ParcelScoringPolicy,
+        StableParcelScoringPolicy,
         monitored_env,
         learning_rate=learning_rate,
         n_steps=n_steps, batch_size=batch_size, n_epochs=10,
@@ -94,7 +96,7 @@ def run_ppo(
             "device": device,
             "n_steps": n_steps,
             "batch_size": batch_size,
-            "policy": "ParcelScoringPolicy",
+            "policy": "StableParcelScoringPolicy",
             "learning_rate": learning_rate,
             "ent_coef": ent_coef,
         },
