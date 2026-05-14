@@ -36,8 +36,6 @@ def run_ppo(
     learning_rate: float = 1e-3,
     ent_coef: float = 0.005,
 ) -> dict:
-    import sys
-    sys.path.insert(0, "D:/test")
     from sb3_contrib import MaskablePPO
     from stable_baselines3.common.monitor import Monitor
     from county_env import K_BLOCK, K_GLOBAL_COUNTY

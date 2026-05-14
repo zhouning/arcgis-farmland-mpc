@@ -31,8 +31,6 @@ def _generate_data(env, n_states: int, n_actions: int, seed: int):
     slot holds a real valid action -- no -1 sentinel.
     """
     import numpy as np
-    import sys
-    sys.path.insert(0, "D:/test/paper9_contrastive")
     from generate_pairwise_data import snapshot, restore
 
     n_blocks = env.n_blocks
@@ -117,10 +115,6 @@ def run_mpc(
     n_actions: int = N_ACTIONS_DEFAULT,
     device: str = "cpu",
 ) -> dict:
-    import sys
-    sys.path.insert(0, "D:/adk")
-    sys.path.insert(0, "D:/test")
-    sys.path.insert(0, "D:/test/paper9_contrastive")
     import numpy as np
     import torch
     from data_agent.transition_model import TransitionModel, EnsembleTransitionModel

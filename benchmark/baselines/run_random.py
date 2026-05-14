@@ -14,8 +14,6 @@ def run_random(
     total_budget: int = 100,
     swaps_per_step: int = 5,
 ) -> dict:
-    import sys
-    sys.path.insert(0, "D:/test")
     import baselines_county
     from eval.metrics import extract_run_result
 

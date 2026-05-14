@@ -31,8 +31,6 @@ def run_ga_baseline(
     pop_size: int = 100,
     generations: int = 500,
 ) -> dict:
-    import sys
-    sys.path.insert(0, "D:/test")
     import baseline_ga
     from eval.metrics import extract_run_result
 

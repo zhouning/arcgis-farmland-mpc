@@ -17,11 +17,8 @@ mode at 500k timesteps.
 """
 from __future__ import annotations
 
-import sys
-
 import torch as th
 
-sys.path.insert(0, "D:/test")
 from parcel_scoring_policy import ParcelScoringPolicy
 
 

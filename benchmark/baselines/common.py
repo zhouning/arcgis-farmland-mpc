@@ -1,15 +1,23 @@
 """Shared helpers: env build, init snapshot, result write."""
 from __future__ import annotations
 import json
+import os
 import sys
 from pathlib import Path
 
 BENCH_ROOT = Path(__file__).resolve().parents[1]
 if str(BENCH_ROOT) not in sys.path:
     sys.path.insert(0, str(BENCH_ROOT))
-D_TEST = Path("D:/test")
+
+D_TEST = Path(os.environ.get("TEST_SRC_ROOT", "D:/test"))
 if str(D_TEST) not in sys.path:
     sys.path.insert(0, str(D_TEST))
+if str(D_TEST / "paper9_contrastive") not in sys.path:
+    sys.path.insert(0, str(D_TEST / "paper9_contrastive"))
+
+D_ADK = Path(os.environ.get("ADK_SRC_ROOT", "D:/adk"))
+if str(D_ADK) not in sys.path:
+    sys.path.insert(0, str(D_ADK))
 
 
 def build_env(dataset_dir, total_budget=100, swaps_per_step=5):
