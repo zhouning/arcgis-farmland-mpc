@@ -1,7 +1,13 @@
 """Run the centralized PPO baseline on a synthetic dataset.
 
-Production: total_timesteps=25_000, device='cuda' (per Decision Gate result).
+Production: total_timesteps=100_000, device='cuda' (per Decision Gate result).
 Smoke: total_timesteps=500, device='cpu'.
+
+Bumped from 25k to 100k after the first Task 15 attempt: at 25k, 32/35 cells
+collapsed to a uniform action distribution and crashed in MaskableCategorical
+Simplex check. Paper 4 production uses 500k; 100k is the compromise that
+clears the entropy-collapse failure mode without paying the 41-day cost of
+a full-length run on every benchmark cell.
 
 Uses `ParcelScoringPolicy` (the Paper 1-4 scorer-based policy) -- not the
 generic `MaskableActorCriticPolicy`. Mirrors `train_county.train_county`
@@ -21,7 +27,7 @@ def run_ppo(
     out_path,
     total_budget: int = 100,
     swaps_per_step: int = 5,
-    total_timesteps: int = 25_000,
+    total_timesteps: int = 100_000,
     device: str = "auto",
     n_steps: int = 256,
     batch_size: int = 128,
