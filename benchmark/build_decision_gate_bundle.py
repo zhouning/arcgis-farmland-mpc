@@ -1,16 +1,10 @@
-"""Build decision_gate_bundle.zip for Colab Task 4 Decision Gate.
+"""Build Colab bundles for benchmark tasks.
 
-Run: python build_decision_gate_bundle.py
-Output: ./decision_gate_bundle.zip
+Usage:
+    python build_decision_gate_bundle.py           # Decision Gate bundle (60 KB)
+    python build_decision_gate_bundle.py --ppo     # PPO sweep bundle (same sources + notebook)
 
-Layout inside zip:
-    src/benchmark/...                         (code subset)
-    src/test/{county_env,mpc_planner,parcel_scoring_policy}.py
-    src/test/paper9_contrastive/contrastive_trainer.py
-    src/adk/data_agent/transition_model.py
-    decision_gate.ipynb                        (driver notebook)
-    requirements_colab.txt                     (extra pip deps)
-    README_COLAB.md                            (runbook)
+Output: ./decision_gate_bundle.zip or ./ppo_sweep_bundle.zip
 """
 
 from __future__ import annotations
@@ -21,7 +15,6 @@ from pathlib import Path
 BENCH = Path(__file__).resolve().parent
 TEST_ROOT = Path("D:/test")
 ADK_ROOT = Path("D:/adk")
-OUT_ZIP = BENCH / "decision_gate_bundle.zip"
 
 BENCHMARK_INCLUDE = [
     "baselines",
@@ -29,8 +22,10 @@ BENCHMARK_INCLUDE = [
     "generator",
     "presets",
     "profiling",
+    "sweep",
     "synthetic_env_loader.py",
     "requirements.txt",
+    "sweep_manifest.csv",
 ]
 TEST_FILES = ["county_env.py", "mpc_planner.py", "parcel_scoring_policy.py"]
 PAPER9_FILES = ["contrastive_trainer.py"]
@@ -84,14 +79,23 @@ def _add_tree(zf: zipfile.ZipFile, src_root: Path, rel_items: list[str], prefix:
 
 
 def main() -> None:
-    if OUT_ZIP.exists():
-        OUT_ZIP.unlink()
-    notebook_path = BENCH / "profiling" / "decision_gate.ipynb"
+    import sys
+    ppo_mode = "--ppo" in sys.argv
+
+    if ppo_mode:
+        out_zip = BENCH / "ppo_sweep_bundle.zip"
+        notebook_path = BENCH / "sweep" / "ppo_sweep_colab.ipynb"
+    else:
+        out_zip = BENCH / "decision_gate_bundle.zip"
+        notebook_path = BENCH / "profiling" / "decision_gate.ipynb"
+
+    if out_zip.exists():
+        out_zip.unlink()
     if not notebook_path.is_file():
         raise FileNotFoundError(f"notebook not found: {notebook_path}")
 
     total = 0
-    with zipfile.ZipFile(OUT_ZIP, "w", zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(out_zip, "w", zipfile.ZIP_DEFLATED) as zf:
         total += _add_tree(zf, BENCH, BENCHMARK_INCLUDE, "src/benchmark")
         total += _add_tree(zf, TEST_ROOT, TEST_FILES, "src/test")
         zf.writestr("src/test/paper9_contrastive/__init__.py", "")
@@ -104,12 +108,13 @@ def main() -> None:
             zf, ADK_ROOT / "data_agent", ADK_DATA_AGENT, "src/adk/data_agent",
         )
         zf.writestr("requirements_colab.txt", COLAB_REQUIREMENTS)
-        zf.write(notebook_path, "decision_gate.ipynb")
-        zf.writestr("README_COLAB.md", README_COLAB)
+        zf.write(notebook_path, notebook_path.name)
+        if not ppo_mode:
+            zf.writestr("README_COLAB.md", README_COLAB)
 
-    size_mb = OUT_ZIP.stat().st_size / (1024 * 1024)
-    print(f"Wrote {OUT_ZIP}")
-    print(f"  files: {total + 4}")
+    size_mb = out_zip.stat().st_size / (1024 * 1024)
+    print(f"Wrote {out_zip}")
+    print(f"  files: {total + 3}")
     print(f"  size : {size_mb:.2f} MB")
 
 

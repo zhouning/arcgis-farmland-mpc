@@ -63,6 +63,7 @@ def run_sweep(
     limit_time_s: float | None = None,
     only_method: str | None = None,
     only_preset: str | None = None,
+    shard: tuple[int, int] | None = None,
 ) -> None:
     manifest_csv = Path(manifest_csv)
     state_path = Path(state_path)
@@ -74,12 +75,18 @@ def run_sweep(
     t0 = time.time()
     completed = 0
 
-    for cell in state["cells"]:
+    filtered_cells = state["cells"]
+    if only_method:
+        filtered_cells = [c for c in filtered_cells if c["method"] == only_method]
+    if only_preset:
+        filtered_cells = [c for c in filtered_cells if c["preset_id"] == only_preset]
+    if shard is not None:
+        n, k = shard
+        filtered_cells = [c for i, c in enumerate(filtered_cells) if i % k == n]
+        print(f"[sweep] shard {n}/{k}: {len(filtered_cells)} cells")
+
+    for cell in filtered_cells:
         if cell["status"] == "done":
-            continue
-        if only_method and cell["method"] != only_method:
-            continue
-        if only_preset and cell["preset_id"] != only_preset:
             continue
         # Budget check: stop only after at least one cell completes this session
         # (otherwise limit_time_s=0 would let the sweep make zero progress).
@@ -125,12 +132,22 @@ def main():
                    help="exit cleanly after this many wall-seconds")
     p.add_argument("--only-method", default=None)
     p.add_argument("--only-preset", default=None)
+    p.add_argument("--shard", default=None,
+                   help="N/K: this session takes cells where index%%K==N. "
+                        "Apply AFTER --only-method/--only-preset filtering.")
     args = p.parse_args()
+    shard = None
+    if args.shard:
+        n_str, k_str = args.shard.split("/")
+        shard = (int(n_str), int(k_str))
+        if not (0 <= shard[0] < shard[1]):
+            raise ValueError(f"--shard {args.shard} out of range")
     run_sweep(
         manifest_csv=args.manifest, state_path=args.state,
         data_root=args.data_root, results_root=args.results_root,
         resume=args.resume, limit_time_s=args.limit_time,
         only_method=args.only_method, only_preset=args.only_preset,
+        shard=shard,
     )
 
 
