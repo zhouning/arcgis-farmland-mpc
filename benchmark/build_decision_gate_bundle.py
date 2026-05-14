@@ -80,14 +80,18 @@ def _add_tree(zf: zipfile.ZipFile, src_root: Path, rel_items: list[str], prefix:
 
 def main() -> None:
     import sys
-    ppo_mode = "--ppo" in sys.argv
-
-    if ppo_mode:
+    if "--ppo" in sys.argv:
         out_zip = BENCH / "ppo_sweep_bundle.zip"
         notebook_path = BENCH / "sweep" / "ppo_sweep_colab.ipynb"
+        mode = "ppo"
+    elif "--mpc" in sys.argv:
+        out_zip = BENCH / "mpc_sweep_bundle.zip"
+        notebook_path = BENCH / "sweep" / "mpc_sweep_colab.ipynb"
+        mode = "mpc"
     else:
         out_zip = BENCH / "decision_gate_bundle.zip"
         notebook_path = BENCH / "profiling" / "decision_gate.ipynb"
+        mode = "decision"
 
     if out_zip.exists():
         out_zip.unlink()
@@ -109,7 +113,7 @@ def main() -> None:
         )
         zf.writestr("requirements_colab.txt", COLAB_REQUIREMENTS)
         zf.write(notebook_path, notebook_path.name)
-        if not ppo_mode:
+        if mode == "decision":
             zf.writestr("README_COLAB.md", README_COLAB)
 
     size_mb = out_zip.stat().st_size / (1024 * 1024)

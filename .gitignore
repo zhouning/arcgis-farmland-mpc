@@ -27,6 +27,7 @@
 # Build artifacts (regenerable)
 benchmark/decision_gate_bundle.zip
 benchmark/ppo_sweep_bundle.zip
+benchmark/mpc_sweep_bundle.zip
 
 # Python
 __pycache__/
