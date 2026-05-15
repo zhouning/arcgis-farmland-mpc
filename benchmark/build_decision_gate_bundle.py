@@ -28,7 +28,7 @@ BENCHMARK_INCLUDE = [
     "sweep_manifest.csv",
 ]
 TEST_FILES = ["county_env.py", "mpc_planner.py", "parcel_scoring_policy.py"]
-PAPER9_FILES = ["contrastive_trainer.py"]
+PAPER9_FILES = ["contrastive_trainer.py", "generate_pairwise_data.py"]
 ADK_DATA_AGENT = ["transition_model.py"]
 EXCLUDE_PARTS = ("__pycache__", ".pytest_cache", "_tmp_cpu_profile")
 
