@@ -2,6 +2,8 @@
 from __future__ import annotations
 import argparse
 import csv
+import sys
+import threading
 import time
 import traceback
 from pathlib import Path
@@ -12,6 +14,41 @@ from .manifest import (
 
 
 METHOD_DISPATCH = {"Random", "Greedy", "GA", "PPO", "MPC"}
+
+
+class Heartbeat:
+    """Print a [hb] line every `interval_s` so Colab UI sees activity.
+
+    Colab disconnects browser->kernel after ~3-8h of silent output, even on
+    Pro+. MPC's _generate_data and PPO's learn() are otherwise silent for
+    1-3h per cell. Heartbeat keeps the cell visibly alive.
+    """
+
+    def __init__(self, interval_s: float = 60.0):
+        self.interval_s = interval_s
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+        self._cell_id: str = ""
+        self._cell_t0: float = 0.0
+
+    def start(self, cell_id: str) -> None:
+        self._cell_id = cell_id
+        self._cell_t0 = time.time()
+        self._stop.clear()
+        self._thread = threading.Thread(target=self._loop, daemon=True)
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=2.0)
+            self._thread = None
+
+    def _loop(self) -> None:
+        while not self._stop.wait(self.interval_s):
+            elapsed = int(time.time() - self._cell_t0)
+            print(f"[hb] {self._cell_id} alive +{elapsed}s "
+                  f"(local {time.strftime('%H:%M:%S')})", flush=True)
 
 
 def _load_or_create_state(manifest_csv: Path, state_path: Path) -> dict:
@@ -106,18 +143,23 @@ def run_sweep(
         mark_running(state, cell_id)
         save_state(state_path, state["cells"])
         cell_t0 = time.time()
+        hb = Heartbeat(interval_s=60.0)
+        hb.start(cell_id)
         try:
+            print(f"[sweep] START {cell_id}", flush=True)
             runner(dataset_dir=dataset_dir,
                    preset_id=preset, seed=seed,
                    out_path=out_path,
                    **method_kwargs.get(method, {}))
             mark_done(state, cell_id, result_path=str(out_path))
-            print(f"[sweep] OK   {cell_id} in {time.time() - cell_t0:.1f}s")
+            print(f"[sweep] OK   {cell_id} in {time.time() - cell_t0:.1f}s", flush=True)
             completed += 1
         except Exception as e:  # noqa: BLE001
             mark_failed(state, cell_id, error=f"{type(e).__name__}: {e}")
             traceback.print_exc()
-            print(f"[sweep] FAIL {cell_id}")
+            print(f"[sweep] FAIL {cell_id}", flush=True)
+        finally:
+            hb.stop()
         save_state(state_path, state["cells"])
 
 
