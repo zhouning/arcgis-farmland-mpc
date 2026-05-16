@@ -166,18 +166,24 @@ def _generate_data(env, n_states: int, n_actions: int, seed: int,
             if ckpt_dir is not None and state_count % CKPT_EVERY == 0:
                 tmp = ckpt_dir / f"state_{state_count}.tmp.npz"
                 final = ckpt_dir / f"state_{state_count}.npz"
-                np.savez(str(tmp.with_suffix("")),  # np.savez auto-appends .npz
-                         state_count=state_count,
-                         out_bf=out_bf, out_gf=out_gf,
-                         out_actions=out_actions, out_rewards=out_rewards,
-                         tr_bf=np.array(tr_bf, dtype=object),
-                         tr_gf=np.array(tr_gf, dtype=object),
-                         tr_act=np.array(tr_act),
-                         tr_rew=np.array(tr_rew),
-                         tr_bf_next=np.array(tr_bf_next, dtype=object),
-                         tr_gf_next=np.array(tr_gf_next, dtype=object),
-                         episode=episode,
-                         rng_state=np.array(rng.bit_generator.state, dtype=object))
+                # Save SLICED + COMPRESSED so a 50/1000 partial doesn't drag
+                # 95% zeros to disk. tr_* lists are already correct-length.
+                np.savez_compressed(
+                    str(tmp.with_suffix("")),  # auto-appends .npz
+                    state_count=state_count,
+                    out_bf=out_bf[:state_count],
+                    out_gf=out_gf[:state_count],
+                    out_actions=out_actions[:state_count],
+                    out_rewards=out_rewards[:state_count],
+                    tr_bf=np.array(tr_bf, dtype=object),
+                    tr_gf=np.array(tr_gf, dtype=object),
+                    tr_act=np.array(tr_act),
+                    tr_rew=np.array(tr_rew),
+                    tr_bf_next=np.array(tr_bf_next, dtype=object),
+                    tr_gf_next=np.array(tr_gf_next, dtype=object),
+                    episode=episode,
+                    rng_state=np.array(rng.bit_generator.state, dtype=object),
+                )
                 if final.exists():
                     final.unlink()
                 tmp.rename(final)
@@ -190,7 +196,8 @@ def _generate_data(env, n_states: int, n_actions: int, seed: int,
                                 old.unlink()
                         except (ValueError, IndexError):
                             pass
-                print(f"[mpc] ckpt state_count={state_count}/{n_states}", flush=True)
+                print(f"[mpc] ckpt state_count={state_count}/{n_states} "
+                      f"({final.stat().st_size//1024} KB)", flush=True)
 
             if term or trunc:
                 break
@@ -210,8 +217,8 @@ def _generate_data(env, n_states: int, n_actions: int, seed: int,
     }
 
     if ckpt_dir is not None:
-        np.savez(ckpt_dir / "pairwise.npz", **pairwise_data)
-        np.savez(ckpt_dir / "train.npz", **train_data)
+        np.savez_compressed(str(ckpt_dir / "pairwise"), **pairwise_data)
+        np.savez_compressed(str(ckpt_dir / "train"), **train_data)
         for old in ckpt_dir.glob("state_*.npz"):
             old.unlink()
         print(f"[mpc] final pairwise+train written, partial ckpts cleaned", flush=True)
