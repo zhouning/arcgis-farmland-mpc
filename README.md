@@ -1,21 +1,41 @@
 # ArcGIS Farmland MPC
 
-An ArcGIS Pro Python Toolbox for farmland-consolidation planning via a
-contrastive world-model + Model Predictive Control (MPC). Wraps the
-research pipeline of a contrastive learning paper into a four-tool
-workflow usable from the ArcGIS Pro UI.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zhouning/arcgis-farmland-mpc/blob/main/notebooks/farmland_mpc_colab_demo.ipynb)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 
-## TL;DR
+An ArcGIS Pro Python Toolbox **and** a pure-Python CLI for farmland-consolidation
+planning via a contrastive world-model + Model Predictive Control (MPC). The
+same algorithm backs both interfaces; pick whichever fits your workflow.
+
+## Two ways to deploy
+
+### Option A — Pure Python (recommended for reviewers, reproducibility, headless servers)
+
+```bash
+git clone https://github.com/zhouning/arcgis-farmland-mpc.git
+cd arcgis-farmland-mpc
+conda env create -f environment.yml
+conda activate farmland-mpc
+farmland-mpc --help
+```
+
+No ArcGIS license required. Works on Windows / macOS / Linux.
+Try the [Colab demo](notebooks/farmland_mpc_colab_demo.ipynb) — runs end-to-end in your browser, no install.
+
+### Option B — ArcGIS Pro toolbox (GUI for planners)
 
 ```
 1. Copy this repository to the target machine.
-2. In the ArcGIS Python Command Prompt:
-     conda install -n arcgispro-py3-clone-<yours> \
-         -c conda-forge gymnasium libpysal
+2. In the ArcGIS Python Command Prompt, install the four extras:
+     pip install torch --index-url https://download.pytorch.org/whl/cpu
+     pip install onnx onnxruntime gymnasium
 3. In ArcGIS Pro: Add Toolbox -> LandUseOptimization_P9.pyt
 4. Double-click "5. Check Dependencies" until every line is [OK].
 5. Run Tool 1 -> 2 -> 3 -> 4 in order.
 ```
+
+Requires ArcGIS Pro 3.7 + Spatial Analyst + Image Analyst extensions.
 
 Tools 1-3 are a one-time setup per region; Tool 4 is the planning loop
 you re-run for different parameters.

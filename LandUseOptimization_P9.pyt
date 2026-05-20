@@ -29,6 +29,11 @@ import os
 import sys
 import traceback
 
+# Resolve Intel OpenMP duplicate-runtime conflict between mkl and PyTorch's
+# bundled libiomp5md.dll. Must be set BEFORE any module that imports torch
+# (CheckDependenciesTool and Tools 2-4). Idempotent / safe to leave in place.
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
 
 TOOLBOX_DIR = os.path.dirname(os.path.abspath(__file__))
 CORE_DIR = os.path.join(TOOLBOX_DIR, "core")
