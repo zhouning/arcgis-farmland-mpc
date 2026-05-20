@@ -117,10 +117,10 @@ All checks passed. Toolbox is ready.
 ```text
 [Cell 1] Cloning repo + pip install -e .  → 完成
 [Cell 2] Generating synthetic fixture     → 4 polygons + DEM created
-[Cell 3] Phase A: prepare                  → slope_mean populated
+[Cell 3] Phase A+B+C: prepare               → slope + blocks + env sanity
 [Cell 4] Phase B: sample                   → transitions.npz, pairwise.npz
-[Cell 5] Phase C: train (epochs=3, fast)   → 3 ONNX members exported
-[Cell 6] Phase D: plan (1 episode)        → mpc_summary.json
+[Cell 5] Phase C: train (epochs=3, fast)   → 2 ONNX members exported
+[Cell 6] Phase D: plan (1 episode)         → mpc_summary.json + optimized.shp
 [Cell 7] Visualization                     → before/after map
 ```
 

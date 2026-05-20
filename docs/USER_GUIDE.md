@@ -181,14 +181,14 @@ farmland-mpc prepare \
     --dem  path/to/DEM.tif \
     --out  prepared_dir/ \
     --crs  EPSG:32648
-```
 
-> CLI 当前不暴露 block 三个超参数（用 Paper 3 默认值）。如需调整，通过 Python API：
-> ```python
-> from farmland_mpc.prepare import run
-> run(dltb_path=..., dem_path=..., prepared_dir=..., proj_crs=...,
->     block_min_parcels=5, block_min_area_ha=1.0, block_max_parcels=50)
-> ```
+# Phase A only (skip block definition):
+farmland-mpc prepare --dltb ... --dem ... --out ... --skip-blocks
+
+# Adjust block parameters for small test data:
+farmland-mpc prepare --dltb ... --dem ... --out ... \
+    --min-parcels 2 --min-area-ha 0.0 --min-parcels-per-township 10
+```
 
 ---
 
