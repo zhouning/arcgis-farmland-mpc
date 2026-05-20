@@ -76,6 +76,7 @@ def _train_one_member(member_idx, transitions, pairwise, n_blocks, k_global,
 
 def _export_onnx(model, n_blocks, k_global, onnx_path, say):
     """torch.onnx.export with batch dynamic, n_blocks static."""
+    import io
     model.eval()
     B = 2
     dummy = (
@@ -83,20 +84,27 @@ def _export_onnx(model, n_blocks, k_global, onnx_path, say):
         torch.randn(B, k_global),
         torch.randint(0, n_blocks, (B,), dtype=torch.long),
     )
-    torch.onnx.export(
-        model, dummy, str(onnx_path),
-        input_names=["block_features", "global_features", "action"],
-        output_names=["next_block", "next_global", "reward"],
-        dynamic_axes={
-            "block_features":  {0: "batch"},
-            "global_features": {0: "batch"},
-            "action":          {0: "batch"},
-            "next_block":      {0: "batch"},
-            "next_global":     {0: "batch"},
-            "reward":          {0: "batch"},
-        },
-        opset_version=17,
-    )
+    # PyTorch 2.10+ prints emoji (✅) during export which crashes on GBK consoles.
+    # Redirect stdout to suppress.
+    _orig_stdout = sys.stdout
+    sys.stdout = io.StringIO()
+    try:
+        torch.onnx.export(
+            model, dummy, str(onnx_path),
+            input_names=["block_features", "global_features", "action"],
+            output_names=["next_block", "next_global", "reward"],
+            dynamic_axes={
+                "block_features":  {0: "batch"},
+                "global_features": {0: "batch"},
+                "action":          {0: "batch"},
+                "next_block":      {0: "batch"},
+                "next_global":     {0: "batch"},
+                "reward":          {0: "batch"},
+            },
+            opset_version=17,
+        )
+    finally:
+        sys.stdout = _orig_stdout
 
     # Parity check
     with torch.no_grad():

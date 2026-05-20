@@ -54,9 +54,19 @@ def prepare(
     dlbm_field: str = typer.Option("DLBM", "--dlbm-field"),
     qsdwdm_field: str = typer.Option("QSDWDM", "--qsdwdm-field"),
     bsm_field: str = typer.Option("BSM", "--bsm-field"),
+    skip_blocks: bool = typer.Option(False, "--skip-blocks",
+        help="Only run Phase A (slope). Skip block definition + sanity check."),
+    min_parcels: int = typer.Option(3, "--min-parcels",
+        help="Block min parcels (Paper 3 default 3)"),
+    min_area_ha: float = typer.Option(0.5, "--min-area-ha",
+        help="Block min area in hectares (Paper 3 default 0.5)"),
+    max_parcels: int = typer.Option(30, "--max-parcels",
+        help="Block max parcels before subdivision (Paper 3 default 30)"),
+    min_parcels_per_township: int = typer.Option(50, "--min-parcels-per-township",
+        help="Drop townships with fewer parcels (border artifacts). Lower for small test data."),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
-    """Phase A: build DLTB_with_slope.shp from a DLTB polygon file and a DEM raster."""
+    """Phase A+B+C: build full prepared_dir from a DLTB polygon file and a DEM raster."""
     _setup_logging(verbose)
     from farmland_mpc.prepare import run
 
@@ -68,8 +78,16 @@ def prepare(
         dlbm_field=dlbm_field,
         qsdwdm_field=qsdwdm_field,
         bsm_field=bsm_field,
+        run_phase_bc=not skip_blocks,
+        min_parcels=min_parcels,
+        min_area_ha=min_area_ha,
+        max_parcels=max_parcels,
+        min_parcels_per_township=min_parcels_per_township,
     )
-    typer.echo(f"Phase A done -> {out_path}")
+    if skip_blocks:
+        typer.echo(f"Phase A done -> {out_path}")
+    else:
+        typer.echo(f"Phase A+B+C done -> {out_path}")
 
 
 @app.command()

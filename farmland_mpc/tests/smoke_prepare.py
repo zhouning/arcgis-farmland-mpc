@@ -129,6 +129,7 @@ def main() -> int:
         dem_path=dem_path,
         prepared_dir=prepared_dir,
         proj_crs=CRS_FOR_PREPARE,
+        run_phase_bc=False,  # 4-polygon fixture is too small for block formation
     )
 
     # Assertion 1: output shapefile exists
@@ -166,6 +167,7 @@ def main() -> int:
     out_shp_2 = run(
         dltb_path=dltb_path, dem_path=dem_path, prepared_dir=prepared_dir,
         proj_crs=CRS_FOR_PREPARE,
+        run_phase_bc=False,
     )
     assert out_shp_2 == out_shp
     log.info("re-run produced identical path: %s", out_shp_2)

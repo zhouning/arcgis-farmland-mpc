@@ -11,8 +11,18 @@ through this open-source path.
 Output layout under ``prepared_dir`` (identical to toolbox v1.2):
 
     dem_slope_analysis/output/DLTB_with_slope.shp     ('slope_mean' field)
+    results_real/blocks/township_<code>/
+        block_compositions.json
+        block_features.json
+        parcel_block_mapping.csv
     townships.json                                    (code -> label)
     prepare_data_summary.json                         (provenance)
+
+Phases (all pure Python):
+    A. DEM -> Horn 3x3 slope -> per-parcel zonal mean
+    B. Extract townships from DLTB.QSDWDM[:9] (+ optional XZQ / reference layer
+       label injection), then run block_definition.define_blocks per township
+    C. Optional sanity check via blocks_env.make_env
 
 CRS handling: ``proj_crs`` accepts ``"EPSG:nnnn"``, a raw WKT string, or
 a PROJ-string. The internal pipeline goes through ``pyproj.CRS.from_user_input``
@@ -53,8 +63,18 @@ def run(
     qsdwdm_field: str = "QSDWDM",
     bsm_field: str = "BSM",
     dem_resampling: str = "bilinear",
+    run_phase_bc: bool = True,
+    min_parcels: int = 3,
+    min_area_ha: float = 0.5,
+    max_parcels: int = 30,
+    min_parcels_per_township: int = 50,
+    xzq_path: Optional[str | Path] = None,
+    xzq_code_field: str = "XZQDM",
+    xzq_name_field: str = "XZQMC",
+    reference_layer: Optional[str | Path] = None,
+    reference_name_field: str = "乡",
 ) -> Path:
-    """End-to-end Phase A: DEM -> per-parcel slope_mean -> DLTB_with_slope.shp.
+    """End-to-end Phase A+B+C: full prepared_dir matching the ArcGIS toolbox layout.
 
     Parameters
     ----------
@@ -74,8 +94,28 @@ def run(
         Land Survey schema.
     dem_resampling : str
         Resampling method when the DEM has to be reprojected to ``proj_crs``.
-        ``"bilinear"`` is recommended for elevation rasters; ``"nearest"``
-        for categorical rasters (not applicable here).
+    run_phase_bc : bool
+        When True (default) also run Phase B (block definition) and Phase C
+        (sanity make_env). Set False for quick Phase-A-only smoke tests on
+        synthetic fixtures too small to form blocks.
+    min_parcels, min_area_ha, max_parcels : int, float, int
+        Block filtering parameters forwarded to ``block_definition.define_blocks``.
+        Paper 3 defaults: 3, 0.5, 30.
+    min_parcels_per_township : int
+        Filter applied during township extraction: prefixes with fewer parcels
+        are dropped (assumed border artifacts). Toolbox default 50; lower to
+        ~3 for small synthetic fixtures.
+    xzq_path : str | Path | None
+        Optional XZQ administrative-boundary file used to inject Chinese
+        township labels. When None or label fields missing, labels fall back
+        to the 9-digit code itself.
+    xzq_code_field, xzq_name_field : str
+        Columns in the XZQ file (defaults match Third-Survey ``XZQDM`` / ``XZQMC``).
+    reference_layer : str | Path | None
+        Optional national/regional township polygon layer (e.g. ``xiangzhen.shp``).
+        Used as a fallback label source when XZQ lookup fails.
+    reference_name_field : str
+        Column in ``reference_layer`` holding the township Chinese name.
 
     Returns
     -------
@@ -161,10 +201,66 @@ def run(
         "n_parcels_unmatched": n_unmatched,
         "elapsed_seconds": round(elapsed, 2),
     }
+    logger.info("  Phase A done in %.1fs", elapsed)
+
+    # =========================================================================
+    # Phase B + C (optional, default on)
+    # =========================================================================
+    if run_phase_bc:
+        # Phase C1: townships.json (must come before Phase B; block_definition
+        # iterates TOWNSHIPS keys).
+        logger.info("Phase B/C: extracting townships from %s ...", qsdwdm_field)
+        townships, township_meta = _extract_townships(
+            dltb_export,
+            qsdwdm_field=qsdwdm_field,
+            xzq_path=xzq_path,
+            xzq_code_field=xzq_code_field,
+            xzq_name_field=xzq_name_field,
+            reference_layer=reference_layer,
+            reference_name_field=reference_name_field,
+            proj_crs=proj_crs,
+            min_parcels_per_township=min_parcels_per_township,
+        )
+        townships_path = prepared_dir / "townships.json"
+        with townships_path.open("w", encoding="utf-8") as fh:
+            json.dump(townships, fh, ensure_ascii=False, indent=2)
+        logger.info("  %d townships -> %s (labels from: %s)",
+                    len(townships), townships_path, township_meta["label_source"])
+        summary["townships"] = {
+            "n_townships": len(townships),
+            "codes": list(townships.keys()),
+            "label_source": township_meta["label_source"],
+            "file": str(townships_path),
+        }
+
+        # Phase B: blocks per township
+        t_b = time.time()
+        logger.info("Phase B: defining blocks (Paper 3 hybrid) ...")
+        blocks_info = _phase_b_blocks(
+            prepared_dir=prepared_dir,
+            townships=townships,
+            proj_crs=proj_crs,
+            min_parcels=min_parcels,
+            min_area_ha=min_area_ha,
+            max_parcels=max_parcels,
+        )
+        summary["phase_b"] = {
+            "elapsed_seconds": round(time.time() - t_b, 1),
+            **blocks_info,
+        }
+        logger.info("  Phase B done in %.1fs: %d blocks across %d townships",
+                    summary["phase_b"]["elapsed_seconds"],
+                    blocks_info["total_blocks"],
+                    blocks_info["n_townships_processed"])
+
+        # Phase C2: sanity make_env
+        logger.info("Phase C: sanity make_env(prepared_dir) ...")
+        summary["phase_c_sanity"] = _phase_c_sanity(prepared_dir, proj_crs)
+
     summary_path = prepared_dir / "prepare_data_summary.json"
     with summary_path.open("w", encoding="utf-8") as fh:
         json.dump(summary, fh, indent=2, ensure_ascii=False)
-    logger.info("  Phase A done in %.1fs", elapsed)
+    summary["total_elapsed_seconds"] = round(time.time() - t0, 2)
     return shp_out
 
 
@@ -414,3 +510,266 @@ def _trim_to_shapefile_schema(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     if not rename_map:
         return gdf
     return gdf.rename(columns=rename_map)
+
+
+# =============================================================================
+# Phase B + C helpers (pure Python — no arcpy)
+# =============================================================================
+def _extract_townships(
+    dltb: gpd.GeoDataFrame,
+    *,
+    qsdwdm_field: str,
+    xzq_path: Optional[str | Path],
+    xzq_code_field: str,
+    xzq_name_field: str,
+    reference_layer: Optional[str | Path],
+    reference_name_field: str,
+    proj_crs: str,
+    min_parcels_per_township: int,
+) -> tuple[dict, dict]:
+    """Build {9-digit-code: label} dict from DLTB.QSDWDM.
+
+    Primary source: unique 9-digit prefixes of dltb[qsdwdm_field].
+    Optional: xzq_path supplies Chinese labels via xzq_name_field looked up
+    by xzq_code_field prefix. If xzq_path is None or lookup misses, falls
+    back to reference_layer (spatial join). Last resort: label = code.
+
+    Returns
+    -------
+    (townships, meta)
+        townships : dict mapping 9-digit code to label string
+        meta      : dict with key 'label_source' in {'code','xzq','reference'}
+    """
+    from collections import Counter
+
+    counts: Counter = Counter()
+    for raw in dltb[qsdwdm_field].astype(str):
+        s = raw.strip()
+        if len(s) >= 9:
+            counts[s[:9]] += 1
+
+    codes = sorted(
+        prefix for prefix, n in counts.items() if n >= min_parcels_per_township
+    )
+    dropped = [(p, n) for p, n in counts.items() if n < min_parcels_per_township]
+    if dropped:
+        logger.warning(
+            "  Dropped %d townships with <%d parcels (first 5: %s)",
+            len(dropped), min_parcels_per_township, dropped[:5],
+        )
+    if not codes:
+        raise RuntimeError(
+            f"No townships with >= {min_parcels_per_township} parcels in DLTB."
+            f"{qsdwdm_field}. Found prefixes: {sorted(counts)}. Lower "
+            "min_parcels_per_township for small synthetic fixtures."
+        )
+
+    label_map = {c: c for c in codes}
+    label_source = "code"
+
+    # Optional XZQ injection
+    if xzq_path is not None:
+        try:
+            xzq = gpd.read_file(str(xzq_path))
+            if xzq_code_field not in xzq.columns:
+                logger.warning(
+                    "  XZQ missing code field '%s'; available: %s",
+                    xzq_code_field, list(xzq.columns),
+                )
+            else:
+                hits = 0
+                name_col = xzq_name_field if xzq_name_field in xzq.columns else None
+                for _, row in xzq.iterrows():
+                    raw = row.get(xzq_code_field)
+                    if raw is None:
+                        continue
+                    code = str(raw).strip()
+                    if len(code) < 9:
+                        continue
+                    prefix = code[:9]
+                    if prefix not in label_map:
+                        continue
+                    label = row.get(name_col) if name_col else None
+                    if label:
+                        s = str(label).strip()
+                        if label_map[prefix] == prefix or len(s) < len(label_map[prefix]):
+                            label_map[prefix] = s
+                            hits += 1
+                if hits:
+                    label_source = "xzq"
+                    logger.info("  XZQ resolved %d / %d township labels", hits, len(label_map))
+        except Exception as e:
+            logger.warning("  XZQ label injection failed: %s", e)
+
+    # Optional reference-layer spatial-join
+    if reference_layer is not None and label_source == "code":
+        try:
+            label_map = _labels_from_reference_layer(
+                dltb=dltb,
+                qsdwdm_field=qsdwdm_field,
+                reference_layer=reference_layer,
+                reference_name_field=reference_name_field,
+                proj_crs=proj_crs,
+                existing_label_map=label_map,
+            )
+            label_source = "reference"
+        except Exception as e:
+            logger.warning("  Reference-layer label injection failed: %s", e)
+
+    return dict(sorted(label_map.items())), {"label_source": label_source}
+
+
+def _labels_from_reference_layer(
+    *,
+    dltb: gpd.GeoDataFrame,
+    qsdwdm_field: str,
+    reference_layer: str | Path,
+    reference_name_field: str,
+    proj_crs: str,
+    existing_label_map: dict,
+) -> dict:
+    """Spatial-join DLTB centroids into a reference polygon layer.
+
+    For each 9-digit QSDWDM prefix, samples up to MAX_SAMPLE_PER_PREFIX parcels,
+    takes their centroids, joins into reference_layer, and assigns the dominant
+    reference_name_field value as the label.
+    """
+    MAX_SAMPLE_PER_PREFIX = 5
+
+    ref = gpd.read_file(str(reference_layer))
+    if reference_name_field not in ref.columns:
+        raise RuntimeError(
+            f"Reference layer missing '{reference_name_field}'; "
+            f"available: {list(ref.columns)}"
+        )
+    ref = ref[[reference_name_field, "geometry"]].rename(
+        columns={reference_name_field: "_ref_name"}
+    )
+
+    dltb_local = dltb[[qsdwdm_field, "geometry"]].copy()
+    dltb_local["_prefix9"] = dltb_local[qsdwdm_field].astype(str).str[:9]
+    dltb_local = dltb_local[dltb_local["_prefix9"].isin(existing_label_map)]
+
+    sampled = (
+        dltb_local.groupby("_prefix9", group_keys=False)
+        .apply(lambda g: g.sample(min(len(g), MAX_SAMPLE_PER_PREFIX), random_state=0))
+    )
+    sampled = sampled.to_crs(proj_crs)
+    sampled.geometry = sampled.geometry.centroid
+    sampled = sampled.to_crs(ref.crs)
+
+    joined = gpd.sjoin(
+        sampled[["_prefix9", "geometry"]],
+        ref[["_ref_name", "geometry"]],
+        how="left", predicate="within",
+    )
+
+    def _dominant(s):
+        s = s.dropna()
+        return s.mode().iloc[0] if len(s) else None
+
+    dom = joined.groupby("_prefix9")["_ref_name"].apply(_dominant).to_dict()
+    out = dict(existing_label_map)
+    for prefix, name in dom.items():
+        if name:
+            out[prefix] = str(name)
+    return out
+
+
+def _phase_b_blocks(
+    *,
+    prepared_dir: Path,
+    townships: dict,
+    proj_crs: str,
+    min_parcels: int,
+    min_area_ha: float,
+    max_parcels: int,
+) -> dict:
+    """Run block_definition.define_blocks + save_results per township."""
+    try:
+        from farmland_mpc import block_definition as bd  # type: ignore[import-not-found]
+    except ImportError:
+        import block_definition as bd  # type: ignore[import-not-found]
+
+    shp_path = prepared_dir / "dem_slope_analysis" / "output" / "DLTB_with_slope.shp"
+    blocks_root = prepared_dir / "results_real" / "blocks"
+    blocks_root.mkdir(parents=True, exist_ok=True)
+
+    # Monkey-patch module constants
+    bd.DLTB_PATH = str(shp_path)
+    bd.OUTPUT_DIR = str(blocks_root)
+    bd.PROJ_CRS = proj_crs
+    bd.TOWNSHIPS = dict(townships)
+
+    info = {
+        "n_townships_processed": 0,
+        "n_townships_skipped": 0,
+        "total_blocks": 0,
+        "per_township": {},
+    }
+
+    for code, label in sorted(townships.items()):
+        logger.info("  [Phase B] Township %s (%s) ...", code, label)
+        try:
+            gdf_sw, block_features, valid_blocks = bd.define_blocks(
+                code,
+                min_parcels=min_parcels,
+                min_area_ha=min_area_ha,
+                max_parcels=max_parcels,
+            )
+        except Exception as e:
+            logger.warning("  [Phase B] Township %s FAILED: %s", code, e)
+            info["n_townships_skipped"] += 1
+            info["per_township"][code] = {"status": "failed", "error": str(e)}
+            continue
+
+        if len(valid_blocks) == 0:
+            logger.warning("  [Phase B] Township %s -> 0 blocks, skipping save", code)
+            info["n_townships_skipped"] += 1
+            info["per_township"][code] = {"status": "empty", "n_blocks": 0}
+            continue
+
+        bd.save_results(code, gdf_sw, block_features, valid_blocks)
+        info["n_townships_processed"] += 1
+        info["total_blocks"] += len(valid_blocks)
+        info["per_township"][code] = {
+            "status": "ok",
+            "n_blocks": len(valid_blocks),
+            "n_parcels_assigned": int((gdf_sw["block_id"] >= 0).sum()),
+        }
+
+    if info["total_blocks"] == 0:
+        raise RuntimeError(
+            "Phase B produced 0 blocks across all townships. Check that DLBM "
+            "values include both farmland (011/012/013) and forest (031/032/033) "
+            "codes, and that min_parcels / min_area_ha are not too restrictive."
+        )
+    return info
+
+
+def _phase_c_sanity(prepared_dir: Path, proj_crs: str) -> dict:
+    """Verify blocks_env.make_env(prepared_dir) returns a usable env."""
+    try:
+        from farmland_mpc.blocks_env import make_env  # type: ignore[import-not-found]
+    except ImportError:
+        from blocks_env import make_env  # type: ignore[import-not-found]
+
+    try:
+        env = make_env(prepared_dir=str(prepared_dir), proj_crs=proj_crs)
+    except Exception as e:
+        logger.warning("  [Phase C] make_env FAILED: %s", e)
+        return {"status": "failed", "error": str(e)}
+
+    out = {
+        "status": "ok",
+        "n_blocks": int(env.n_blocks),
+        "n_parcels": int(env.n_parcels),
+        "initial_slope": float(getattr(env, "avg_farmland_slope", float("nan"))),
+        "initial_contiguity": float(getattr(env, "contiguity", float("nan"))),
+        "baimu_count": int(getattr(env, "baimu_count", 0)),
+    }
+    logger.info(
+        "  [Phase C] OK n_blocks=%d n_parcels=%d slope=%.4f baimu=%d",
+        out["n_blocks"], out["n_parcels"], out["initial_slope"], out["baimu_count"],
+    )
+    return out
