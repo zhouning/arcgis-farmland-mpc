@@ -8,6 +8,14 @@ An ArcGIS Pro Python Toolbox **and** a pure-Python CLI for farmland-consolidatio
 planning via a contrastive world-model + Model Predictive Control (MPC). The
 same algorithm backs both interfaces; pick whichever fits your workflow.
 
+## 📚 Documentation
+
+| Document | Audience | Length |
+|----------|----------|--------|
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | First-time deployers | Full install guide for all 3 paths |
+| [docs/QUICKSTART.md](docs/QUICKSTART.md) | Post-deployment | 5-minute end-to-end verification |
+| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Operators | Full pipeline + parameters + troubleshooting |
+
 ## Two ways to deploy
 
 ### Option A — Pure Python (recommended for reviewers, reproducibility, headless servers)
