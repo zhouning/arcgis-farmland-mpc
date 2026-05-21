@@ -72,12 +72,27 @@ def _load_final_data(ckpt_dir: Path):
 
 
 def _latest_partial(ckpt_dir: Path):
-    """Return path of the highest-numbered state_<N>.npz, or None."""
+    """Return path of the highest-numbered state_<N>.npz, or None.
+
+    Skips orphan ``state_<N>.tmp.npz`` files left behind when np.savez_compressed
+    was killed mid-write (e.g. Colab 24h cap). Without this filter, the int()
+    parse below crashed on ``state_550.tmp``.
+    """
     if not ckpt_dir.is_dir():
         return None
-    snapshots = sorted(ckpt_dir.glob("state_*.npz"),
-                       key=lambda p: int(p.stem.split("_")[1]))
-    return snapshots[-1] if snapshots else None
+    candidates = []
+    for p in ckpt_dir.glob("state_*.npz"):
+        # p.stem strips one .npz; for state_550.tmp.npz that leaves "state_550.tmp"
+        stem = p.stem
+        # require pure-int suffix; reject .tmp / partial writes
+        parts = stem.split("_", 1)
+        if len(parts) != 2 or not parts[1].isdigit():
+            continue
+        candidates.append((int(parts[1]), p))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda t: t[0])
+    return candidates[-1][1]
 
 
 def _generate_data(env, n_states: int, n_actions: int, seed: int,
