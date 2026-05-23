@@ -96,11 +96,12 @@ def render_table(metric_key: str, prec: int, caption: str, label: str,
         r"\begin{table}[htbp]" "\n" r"\centering" "\n" r"\small" "\n"
         f"\\caption{{{caption}}}\n"
         f"\\label{{{label}}}\n"
+        r"\resizebox{\textwidth}{!}{%" "\n"
         r"\begin{tabular}{lccccc}" "\n" r"\toprule" "\n"
         r"Preset ($n_{\text{blocks}}$) & Random & Greedy & GA & PPO & MPC \\" "\n"
         r"\midrule" "\n"
     )
-    footer = "\n" r"\bottomrule" "\n" r"\end{tabular}" "\n" r"\end{table}"
+    footer = "\n" r"\bottomrule" "\n" r"\end{tabular}%" "\n" "}\n" r"\end{table}"
     return header + "\n".join(rows) + footer
 
 
