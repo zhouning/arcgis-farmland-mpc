@@ -1,0 +1,33 @@
+{
+  "preset_id": "hilly_small_cons",
+  "seed": 3,
+  "method": "PPO-Centralized",
+  "n_blocks": 800,
+  "init_slope_deg": 6.936170109681127,
+  "final_slope_deg": 6.920288872694137,
+  "slope_pct": -0.22896262254041502,
+  "init_contiguity": 3.7444507683551507,
+  "final_contiguity": 3.752988047808765,
+  "cont_delta": 0.008537279453614488,
+  "cont_pct": 0.22799817540570566,
+  "init_baimu_count": 36,
+  "final_baimu_count": 39,
+  "baimu_count_delta": 3,
+  "init_baimu_area_ha": 20062.098653924804,
+  "final_baimu_area_ha": 20200.418085277466,
+  "baimu_area_delta_ha": 138.31943135266005,
+  "total_reward": 49.122439178058904,
+  "wall_seconds": 5699.206662893295,
+  "exchange_pairs_used": 46,
+  "extra": {
+    "total_timesteps": 100000,
+    "train_wall_seconds": 5698.095283508301,
+    "eval_wall_seconds": 1.1113793849945068,
+    "device": "auto",
+    "n_steps": 256,
+    "batch_size": 128,
+    "policy": "StableParcelScoringPolicy",
+    "learning_rate": 0.001,
+    "ent_coef": 0.005
+  }
+}
