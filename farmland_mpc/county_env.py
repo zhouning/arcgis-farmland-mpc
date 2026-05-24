@@ -176,6 +176,24 @@ class CountyLevelEnv(gym.Env):
         # Extract arrays
         self.initial_types = gdf_swap['type_code'].values.astype(np.int8)
         self.slopes = gdf_swap['slope_mean'].values.astype(np.float64)
+        # Defense in depth: prepared dirs from older Tool 1 runs may carry
+        # NaN slopes (DEM coverage gaps). Fill with median so slope_min/max
+        # and downstream features stay finite. Trainer will fail with NaN
+        # loss otherwise.
+        slope_nan = np.isnan(self.slopes)
+        n_nan = int(slope_nan.sum())
+        if n_nan:
+            finite = self.slopes[~slope_nan]
+            if finite.size == 0:
+                raise RuntimeError(
+                    f"All {len(self.slopes)} parcel slopes are NaN in {DLTB_PATH}. "
+                    "DEM probably did not cover the AOI; re-run Tool 1 with a "
+                    "larger DEM extent."
+                )
+            fill = float(np.median(finite))
+            self.slopes = np.where(slope_nan, fill, self.slopes)
+            print(f"  WARN: {n_nan}/{len(self.slopes)} parcels had NaN slope_mean; "
+                  f"filled with median={fill:.3f} deg")
         self.areas = gdf_proj.geometry.area.values.astype(np.float64)
 
         # Slope normalization params

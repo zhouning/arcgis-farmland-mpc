@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "farmland-mpc"
-version = "0.1.0"
+version = "0.2.1"
 description = "County-scale farmland consolidation via contrastive world-model + MPC. Pure-Python, no proprietary GIS dependencies."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -71,6 +71,26 @@ def _restore(env, snap):
             setattr(env, attr, val)
 
 
+def _assert_finite(arrays: dict, label: str) -> None:
+    """Fail loudly if any sampled array carries NaN/Inf.
+
+    NaN slopes (DEM gaps) propagate silently through env.step into rewards
+    and features, leading to NaN losses two stages downstream. We catch
+    here so the failure points at Tool 1, not Tool 3.
+    """
+    for k, arr in arrays.items():
+        if not np.issubdtype(arr.dtype, np.floating):
+            continue
+        if not np.all(np.isfinite(arr)):
+            n_bad = int((~np.isfinite(arr)).sum())
+            raise RuntimeError(
+                f"[Tool 2] {label}.{k} has {n_bad}/{arr.size} non-finite values "
+                f"(NaN or Inf). Re-run Tool 1 with a DEM that fully covers the "
+                f"AOI, or upgrade farmland_mpc>=0.2.1 which fills DEM gaps "
+                f"with the slope median."
+            )
+
+
 def _import_make_env():
     """Resolve ``make_env`` from whichever package layout is available.
 
@@ -297,6 +317,7 @@ def run(prepared_dir: str | Path,
         t_tr = time.time()
         trans = _collect_transitions(env, n_transition_episodes,
                                      seed_offset=seed, say=_say)
+        _assert_finite(trans, "transitions")
         transitions_path = out_dir / "transitions.npz"
         np.savez_compressed(transitions_path, **trans)
         summary["transitions"] = {
@@ -313,6 +334,7 @@ def run(prepared_dir: str | Path,
         pw = _collect_pairwise(env, n_pairwise_states, n_pairwise_actions,
                                seed=seed + 10000,
                                max_outer_episodes=max_outer, say=_say)
+        _assert_finite(pw, "pairwise")
         pairwise_path = out_dir / "pairwise.npz"
         np.savez_compressed(pairwise_path, **pw)
 

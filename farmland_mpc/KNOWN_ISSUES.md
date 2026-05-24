@@ -1,5 +1,39 @@
 # farmland_mpc — known issues
 
+## Tool 3 NaN at epoch 1 / ONNX parity AssertionError (FIXED in 0.2.1)
+
+**Symptom** (Colab, Tool 3 contrastive trainer):
+
+```
+Epoch  1/30  mse=nan  rank_val=0.00000  val=nan  cos=nan  rank_acc=0.500
+Early stopping at epoch 8 (best=-1)
+    onnx parity max diff = nan
+AssertionError: ONNX parity check failed: nan
+```
+
+**Root cause**: `_zonal_mean` returns NaN for parcels with no valid DEM cells (DEM tile coverage gaps, polygons that don't intersect any cell centre, ocean tiles silently skipped at 404). The NaN propagates:
+
+1. `prepare.py` writes NaN into `slope_mean` column of `DLTB_with_slope.shp`.
+2. `county_env.py` sets `slope_min/max/range = nan`, so `inv_sr = 1/nan = nan` poisons every block-feature column 0-6 and global-feature columns 1, 4.
+3. Tool 2 saves NaN-laden npz; Tool 3's first forward pass hits NaN.
+4. The ONNX parity assertion correctly catches it but points at the wrong file.
+
+**Fix** (defense in depth across three layers):
+
+- **Layer 1 (`prepare.py`)**: NaN slopes filled with `np.nanmedian` before the shapefile is written, with a warning that lists how many parcels were affected.
+- **Layer 2 (`county_env.py`)**: NaN survivors filled at env-load time, so already-prepared `run_*/prepared/` directories from older Tool 1 runs work without re-running phase A.
+- **Layer 3 (`sample.py`)**: `_assert_finite` raises with a clear "re-run Tool 1" message before any NaN reaches Tool 3.
+
+If you hit this on `farmland_mpc < 0.2.1`, upgrade with:
+
+```bash
+pip install --upgrade git+https://github.com/zhouning/arcgis-farmland-mpc.git@main
+```
+
+Then re-run Tool 1 (cell 16 in the Colab notebook) so the median fill takes effect, OR delete `prepared/dem_slope_analysis/output/DLTB_with_slope.shp` to force regeneration.
+
+---
+
 ## Smoke test on ArcGIS Pro-managed envs: fiona init crashes on Chinese Windows
 
 **Symptom** (encountered 2026-05-20 on `arcgispro-py3-clone-new2`, Python 3.13 + esri-channel rasterio 1.4.3 + fiona):

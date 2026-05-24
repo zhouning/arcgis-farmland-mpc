@@ -164,9 +164,22 @@ def run(
     slope_means = _zonal_mean(dltb, slope_path)
     n_unmatched = int(np.isnan(slope_means).sum())
     if n_unmatched:
+        # Fill with median so downstream slope_min/max/range stay finite.
+        # Dropping would break the gdf_swap row ordering that BSM and the
+        # env rely on; zero would bias the reward toward "flat".
+        n_total = len(slope_means)
+        finite_mask = ~np.isnan(slope_means)
+        if finite_mask.sum() == 0:
+            raise RuntimeError(
+                "All parcel slopes are NaN. The DEM does not cover the AOI. "
+                "Check that the DEM tiles span the shapefile bounding box."
+            )
+        fill_value = float(np.nanmedian(slope_means))
+        slope_means = np.where(finite_mask, slope_means, fill_value)
         logger.warning(
-            "  %d parcels have no slope_mean (outside DEM coverage or tiny polygons)",
-            n_unmatched,
+            "  %d / %d parcels (%.1f%%) had no slope_mean (outside DEM coverage "
+            "or tiny polygons); filled with median=%.3f deg",
+            n_unmatched, n_total, 100.0 * n_unmatched / n_total, fill_value,
         )
     dltb["slope_mean"] = slope_means
 
