@@ -59,6 +59,7 @@ _scratch/
 scratch/
 logs/
 *.log
+issues_drafts/
 
 # OS / envs
 *.bak

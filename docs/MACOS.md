@@ -8,18 +8,21 @@
 
 ## 0. 测试状态声明（必读）
 
-**这份文档是基于 Windows 上充分验证的 pure-Python 路径，外推到 macOS 写出的部署指引；不是从 macOS 实测中得到的。** 请按下面表格理解可信度：
+**这份文档已在 macOS Apple Silicon 上端到端实测过一次**，跑的是 Bishan 53k parcels 真数据，Tool 1 → 4 全部跑通，最终 slope = -2.0392% ± 0.0010%（与 §6.4 写的"Bishan 真值 -2.0%"匹配）。
 
 | 阶段 | 验证状态 |
 |---|---|
 | Linux / Windows 上的 pure-Python 端到端管道 | **已充分验证**（Bishan 53k 真数据 run_1 + Colab notebook 端到端 + 五层 verification 全通） |
-| `environment.yml` 在 macOS arm64 / x86_64 上能解析 | **未实测**——conda-forge 对每个声明的包都有 macOS wheel，理论上能过 |
-| Smoke / 真数据在 macOS 上端到端跑通 | **未实测** |
-| 本文 §8 性能表的 macOS 列 | **未实测**——是估算，不是 benchmark |
+| `environment.yml` 在 macOS arm64 上解析 | **已验证**（Apple Silicon, conda 26.x, Python 3.11, conda-forge）|
+| Smoke + 真数据在 macOS 上端到端跑通 | **已验证**（Bishan 53k → optimized.shp，§9 性能表为本次实测）|
 
-**因此：第一次在 macOS 上跑，强烈建议走"渐进验证"——先 §4 的 4-polygon smoke (`smoke_prepare`)，再 §4 的 36-parcel 端到端 smoke (`smoke_end_to_end`)，再用真数据的一个乡镇做子集，最后才是整县。** 任何一步报错请立即停下并反馈（GitHub Issues），比硬撞下去高效得多。
+**已知 macOS 兼容性 caveat**：
 
-如果你跑通了或踩到坑，欢迎在 Issues 反馈实测结果，本文档下次更新会把 §0 这段警告替换为 "macOS 实测验证报告"。
+- `environment.yml` 必须含 `onnxscript`（PyTorch 2.5+ 的 dynamo ONNX 导出会要它）。本仓库已修复。
+- DEM 自动下载请用 `scripts/fetch_dem.py`（见 §5.2.1），CLI 的 `farmland-mpc prepare` 只接 `--dem path/to/file.tif`。
+- 如果 `OMP: Error #15: Initializing libomp.dylib, but found libomp.dylib already initialized`：`export KMP_DUPLICATE_LIB_OK=TRUE`（详见 §8）。
+
+**对 macOS 第一次跑的人仍然建议走"渐进验证"**：先 §4 的 4-polygon smoke (`smoke_prepare`)，再 36-parcel 端到端 smoke (`smoke_end_to_end`)，再用真数据的一个乡镇做子集，最后才是整县。任何一步报错请立即停下并反馈（GitHub Issues），比硬撞下去高效得多。
 
 ---
 
@@ -144,7 +147,7 @@ python -m farmland_mpc.tests.smoke_end_to_end
 | 文件 | 说明 | 来源 |
 |---|---|---|
 | `your_dltb.shp` | DLTB 三调 polygon（含 BSM/DLBM/DLMC/QSDWDM 字段） | 本地自然资源局 |
-| `your_dem.tif` | 覆盖该 DLTB 范围的 DEM 栅格 | Copernicus GLO-30 公开下载 |
+| `your_dem.tif` | 覆盖该 DLTB 范围的 DEM 栅格 | Copernicus GLO-30（用 `scripts/fetch_dem.py` 自动下载，见 §5.2.1） |
 
 可选第三份：`your_xzq.shp` 行政区面（提供乡镇中文名）；没有则脚本用 QSDWDM 前 9 位反查。
 
@@ -158,6 +161,23 @@ python -m farmland_mpc.tests.smoke_end_to_end
 # 西部 (新疆西)：EPSG:32644
 # 见 user guide 完整 zone 表
 ```
+
+### 5.2.1 用 `scripts/fetch_dem.py` 自动抓 DEM
+
+仓库自带 `scripts/fetch_dem.py`，从 AWS 上的 Copernicus GLO-30 公开镜像
+按 DLTB 边界自动抓 1°×1° 瓦片，拼接、裁剪、重投影到目标 UTM CRS：
+
+```bash
+python scripts/fetch_dem.py \
+  --dltb path/to/your_dltb.shp \
+  --work-dir $HOME/farmland_mpc_runs/$REGION \
+  --proj-crs EPSG:32648
+```
+
+完成后 `<work-dir>/dem.tif` 即可作为 §5.3 Tool 1 的 `--dem` 输入。
+1°×1° 瓦片每块 50–150 MB；中等县（如重庆璧山）通常只需 1 块，下载约 50 MB
++ 重投影后 ~10 MB。脚本是 colab full notebook 第 4 节的本地版，纯 Python
+（rasterio + urllib），无需 Earthdata 账号。
 
 ### 5.3 四件套依次跑
 
@@ -191,14 +211,15 @@ farmland-mpc train \
   --lambda-rank 5.0 \
   --n-members 3
 
-# Tool 4：MPC planning（≈ 7 min / episode）
+# Tool 4：MPC planning（≈ 5 min / episode）
+# Note: input DLTB is auto-discovered from prepared-dir; gamma is fixed at 0.99.
 farmland-mpc plan \
   --prepared-dir $PREPARED \
   --ensemble-dir $PREPARED/tool3 \
   --out-dir $HOME/farmland_mpc_runs/$REGION/mpc_output \
-  --input-dltb path/to/your_dltb.shp \
-  --output-fc $HOME/farmland_mpc_runs/$REGION/mpc_output/optimized.shp \
-  --horizon 5 --top-k 50 --gamma 0.99 \
+  --output-shp $HOME/farmland_mpc_runs/$REGION/mpc_output/optimized.shp \
+  --crs EPSG:32648 \
+  --horizon 5 --top-k 50 \
   --continuation greedy \
   --n-episodes 5
 ```
@@ -254,18 +275,18 @@ print('swaps:', s['shapefile_output']['n_farm_to_forest'], '+', s['shapefile_out
 
 ---
 
-## 9. 性能预期（Windows 实测；macOS 待补）
+## 9. 性能预期（Windows + macOS Apple Silicon 实测）
 
-> **下表只有 Windows 列是实测；macOS 列是占位待你回填。** 我没在 macOS 上跑过这条管道，下面的 macOS 估算仅依据 PyTorch 在 Apple Silicon 上的一般表现，**不是基准数据**，可能差得多也可能差得少。
-
-| 阶段 | Windows 11（i7-13700K，实测） | macOS（待你实测后回填本表） |
+| 阶段 | Windows 11（i7-13700K，实测） | macOS Apple Silicon（实测，Bishan 53k） |
 |---|---|---|
-| Tool 1 prepare (53k parcels) | ~3 min | ? |
-| Tool 2 sample (60 ep) | ~12 min | ? |
-| Tool 3 train (3 × 30 epochs) | ~45 min | ? |
-| Tool 4 MPC (1 ep × 100 step) | ~24 min | ? |
+| Tool 1 prepare (53k parcels) | ~3 min | **~33 s** |
+| Tool 2 sample (60 ep + 1k pairwise) | ~12 min | **~19 min** |
+| Tool 3 train (3 × 30 epochs) | ~45 min | **~37 min** |
+| Tool 4 MPC (5 ep × 100 step) | ~120 min（24 min × 5） | **~26 min** |
 
-如果你愿意把 `time` 命令的输出贴给我（或开 GitHub Issue），下次更新会把这表替换成真实数字。
+> Tool 1 在 Apple Silicon 上比 Windows 快约 5×（rasterio + numpy CPU 路径
+> 极适配 ARM）；Tool 2 慢一些（单核 Python 循环）；Tool 3 / 4 基本持平。
+> 整县 53k parcels 端到端约 1.5 hr。
 
 ---
 

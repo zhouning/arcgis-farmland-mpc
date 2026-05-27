@@ -20,6 +20,7 @@ dependencies:
   - pytorch
   - onnx
   - onnxruntime
+  - onnxscript
   - gymnasium
   - pip
   - pip:
