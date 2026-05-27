@@ -6,7 +6,24 @@
 
 ---
 
-## 0. 需要什么硬件 / 系统
+## 0. 测试状态声明（必读）
+
+**这份文档是基于 Windows 上充分验证的 pure-Python 路径，外推到 macOS 写出的部署指引；不是从 macOS 实测中得到的。** 请按下面表格理解可信度：
+
+| 阶段 | 验证状态 |
+|---|---|
+| Linux / Windows 上的 pure-Python 端到端管道 | **已充分验证**（Bishan 53k 真数据 run_1 + Colab notebook 端到端 + 五层 verification 全通） |
+| `environment.yml` 在 macOS arm64 / x86_64 上能解析 | **未实测**——conda-forge 对每个声明的包都有 macOS wheel，理论上能过 |
+| Smoke / 真数据在 macOS 上端到端跑通 | **未实测** |
+| 本文 §8 性能表的 macOS 列 | **未实测**——是估算，不是 benchmark |
+
+**因此：第一次在 macOS 上跑，强烈建议走"渐进验证"——先 §4 的 4-polygon smoke (`smoke_prepare`)，再 §4 的 36-parcel 端到端 smoke (`smoke_end_to_end`)，再用真数据的一个乡镇做子集，最后才是整县。** 任何一步报错请立即停下并反馈（GitHub Issues），比硬撞下去高效得多。
+
+如果你跑通了或踩到坑，欢迎在 Issues 反馈实测结果，本文档下次更新会把 §0 这段警告替换为 "macOS 实测验证报告"。
+
+---
+
+## 1. 需要什么硬件 / 系统
 
 - **macOS**：13+（Ventura）或 14+（Sonoma）。**Apple Silicon（M1/M2/M3）和 Intel 都可以**，conda-forge 的 wheel 在 arm64/x86_64 上都齐。
 - **磁盘**：≥ 15 GB 空闲（conda env 约 5 GB + prepared_dir 约 8 GB / county）
@@ -16,7 +33,7 @@
 
 ---
 
-## 1. 装 Miniconda
+## 2. 装 Miniconda
 
 ### Apple Silicon (M1/M2/M3)
 ```bash
@@ -40,7 +57,7 @@ exec $SHELL
 
 ---
 
-## 2. 拉代码
+## 3. 拉代码
 
 ```bash
 mkdir -p ~/code && cd ~/code
@@ -52,7 +69,7 @@ cd arcgis-farmland-mpc
 
 ---
 
-## 3. 建 conda 环境
+## 4. 建 conda 环境
 
 仓库里 `environment.yml` 在 macOS 上**直接可用**（conda-forge 全平台覆盖）：
 
@@ -96,7 +113,7 @@ farmland-mpc version
 
 ---
 
-## 4. Smoke 验证（2 分钟）— 必须先过这一关
+## 5. Smoke 验证（2 分钟）— 必须先过这一关
 
 合成 4-polygon DLTB + DEM，跑 Phase A：
 
@@ -118,7 +135,7 @@ python -m farmland_mpc.tests.smoke_end_to_end
 
 ---
 
-## 5. 跑你自己的真实数据（完整流程）
+## 6. 跑你自己的真实数据（完整流程）
 
 ### 5.1 数据准备
 
@@ -207,7 +224,7 @@ print('swaps:', s['shapefile_output']['n_farm_to_forest'], '+', s['shapefile_out
 
 ---
 
-## 6. 复现 Paper 9 五层 verification（macOS 上同样能跑）
+## 7. 复现 Paper 9 五层 verification（macOS 上同样能跑）
 
 如果你拿到了 Bishan / 内江的 prepared_dir + ONNX ensemble（私有）：
 
@@ -222,7 +239,7 @@ print('swaps:', s['shapefile_output']['n_farm_to_forest'], '+', s['shapefile_out
 
 ---
 
-## 7. 常见 macOS 坑
+## 8. 常见 macOS 坑
 
 | 症状 | 原因 | 修复 |
 |---|---|---|
@@ -237,20 +254,22 @@ print('swaps:', s['shapefile_output']['n_farm_to_forest'], '+', s['shapefile_out
 
 ---
 
-## 8. 性能基准（Mac vs Windows 实测对比）
+## 9. 性能预期（Windows 实测；macOS 待补）
 
-| 阶段 | Windows 11 (i7-13700K, 16C/24T) | M3 Max 14-core | 差距 |
-|---|---|---|---|
-| Tool 1 prepare (53k parcels) | ~3 min | ~3.5 min | M3 略慢 |
-| Tool 2 sample (60 ep × 100 step) | ~12 min | ~10 min | M3 略快 |
-| Tool 3 train (3 members × 30 epochs) | ~45 min | ~25 min | **M3 显著快**（PyTorch arm64 优化） |
-| Tool 4 MPC (1 ep × 100 step) | ~24 min | ~28 min | M3 略慢（onnxruntime CPU 调度） |
+> **下表只有 Windows 列是实测；macOS 列是占位待你回填。** 我没在 macOS 上跑过这条管道，下面的 macOS 估算仅依据 PyTorch 在 Apple Silicon 上的一般表现，**不是基准数据**，可能差得多也可能差得少。
 
-整体上 macOS Apple Silicon 跑这条管道**没有瓶颈**，性能与高端 x86 相当。
+| 阶段 | Windows 11（i7-13700K，实测） | macOS（待你实测后回填本表） |
+|---|---|---|
+| Tool 1 prepare (53k parcels) | ~3 min | ? |
+| Tool 2 sample (60 ep) | ~12 min | ? |
+| Tool 3 train (3 × 30 epochs) | ~45 min | ? |
+| Tool 4 MPC (1 ep × 100 step) | ~24 min | ? |
+
+如果你愿意把 `time` 命令的输出贴给我（或开 GitHub Issue），下次更新会把这表替换成真实数字。
 
 ---
 
-## 9. 提交评审/复现给 reviewer 的最小 demo
+## 10. 提交评审/复现给 reviewer 的最小 demo
 
 如果只想给 reviewer 一个 "能 reproduce" 的最小证明：
 
@@ -266,7 +285,7 @@ python -m farmland_mpc.tests.smoke_end_to_end
 
 ---
 
-## 10. 还有问题？
+## 11. 还有问题？
 
 - 仓库 README：https://github.com/zhouning/arcgis-farmland-mpc#readme
 - DEPLOYMENT.md / USER_GUIDE.md 在 `docs/` 下
