@@ -1,0 +1,40 @@
+# Build context exclusions — keep only what the runtime image needs.
+.git
+.gitignore
+.github
+.venv
+venv
+env
+.idea
+.vscode
+.DS_Store
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+*.egg-info
+build/
+dist/
+
+# Local-only artefacts (per-machine, not for image)
+issues_drafts/
+runs/
+farmland_mpc_runs/
+**/*.shp
+**/*.shx
+**/*.dbf
+**/*.prj
+**/*.cpg
+**/*.sbn
+**/*.sbx
+**/*.shp.xml
+**/*.tif
+**/*.tiff
+**/*.npz
+**/*.onnx
+**/*.log
+
+# Notebooks: keep only the docker-bundled one. Colab + smoke fixtures are reproducible.
+notebooks/

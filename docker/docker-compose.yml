@@ -1,0 +1,56 @@
+# Three services for three personas. All share the same image; only entrypoint
+# arg + port changes. Mount your data dir as /work; that's where DLTB goes in
+# and optimized.shp comes out.
+#
+# Build first:
+#   docker compose build
+#
+# Pick one service per session:
+#   docker compose up jupyter      # http://localhost:8888  (画像 A)
+#   docker compose up webui        # http://localhost:8000  (画像 A 简化版)
+#   docker compose run --rm batch  # CLI mode               (画像 B/C)
+
+services:
+  jupyter:
+    build: { context: .., dockerfile: docker/Dockerfile }
+    image: farmland-mpc:dev
+    container_name: farmland-mpc-jupyter
+    command: ["jupyter"]
+    ports: ["8888:8888"]
+    volumes:
+      - ../runs:/work
+    environment:
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-}        # blank → unauthenticated; set in .env for prod
+      HEALTHCHECK_PORT: "8888"
+    deploy:
+      resources:
+        limits: { cpus: "8.0", memory: 16G }
+        reservations: { cpus: "2.0", memory: 4G }
+    restart: unless-stopped
+
+  webui:
+    image: farmland-mpc:dev
+    build: { context: .., dockerfile: docker/Dockerfile }
+    container_name: farmland-mpc-webui
+    command: ["webui"]
+    ports: ["8000:8000"]
+    volumes:
+      - ../runs:/work
+    environment:
+      HEALTHCHECK_PORT: "8000"
+    deploy:
+      resources:
+        limits: { cpus: "8.0", memory: 16G }
+        reservations: { cpus: "2.0", memory: 4G }
+    restart: unless-stopped
+
+  # On-demand CLI runner. Doesn't `up` — use `docker compose run --rm batch ARGS`.
+  batch:
+    image: farmland-mpc:dev
+    build: { context: .., dockerfile: docker/Dockerfile }
+    profiles: ["never-up"]                       # excluded from `compose up`
+    volumes:
+      - ../runs:/work
+    deploy:
+      resources:
+        limits: { cpus: "8.0", memory: 16G }

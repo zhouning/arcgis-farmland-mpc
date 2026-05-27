@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>farmland-mpc</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header>
+    <h1>farmland-mpc</h1>
+    <p class="sub">基于对比世界模型 + MPC 的县级耕地连片优化</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>1. 上传 DLTB shapefile</h2>
+      <form id="run-form" enctype="multipart/form-data">
+        <label>shapefile（多文件：.shp + .dbf + .shx + .prj 必选；.cpg 可选）
+          <input type="file" name="dltb" multiple required
+                 accept=".shp,.shx,.dbf,.prj,.cpg,.sbn,.sbx">
+        </label>
+
+        <label>目标投影 CRS
+          <select name="crs">
+            <option value="EPSG:32648">EPSG:32648 (UTM 48N — 重庆/川渝)</option>
+            <option value="EPSG:32649">EPSG:32649 (UTM 49N — 鄂湘赣)</option>
+            <option value="EPSG:32650">EPSG:32650 (UTM 50N — 江浙沪)</option>
+            <option value="EPSG:32651">EPSG:32651 (UTM 51N — 苏鲁辽东)</option>
+            <option value="EPSG:32647">EPSG:32647 (UTM 47N — 滇西/藏东)</option>
+            <option value="EPSG:32646">EPSG:32646 (UTM 46N — 滇西南)</option>
+            <option value="EPSG:32645">EPSG:32645 (UTM 45N — 藏)</option>
+            <option value="EPSG:32644">EPSG:32644 (UTM 44N — 新疆西)</option>
+          </select>
+        </label>
+
+        <fieldset>
+          <legend>MPC 参数（默认即可）</legend>
+          <label>horizon <input type="number" name="horizon" value="5" min="1" max="20"></label>
+          <label>top-k   <input type="number" name="top_k"   value="50" min="5" max="200"></label>
+          <label>n_episodes <input type="number" name="n_episodes" value="5" min="1" max="20"></label>
+        </fieldset>
+
+        <button type="submit">开始运行</button>
+      </form>
+    </section>
+
+    <section id="status-card" class="card hidden">
+      <h2>2. 运行状态 <span id="job-id"></span></h2>
+      <div class="bar"><div id="bar-fill"></div></div>
+      <p>阶段：<span id="phase">queued</span>　·　已用时：<span id="elapsed">0s</span></p>
+      <pre id="log"></pre>
+      <a id="download" class="btn hidden" href="#">下载 optimized.zip</a>
+      <p id="error" class="error hidden"></p>
+    </section>
+
+    <details class="card">
+      <summary>这跑的是什么？</summary>
+      <p>四件套：</p>
+      <ol>
+        <li><strong>fetch_dem</strong> — 按 DLTB 范围从 AWS Copernicus GLO-30 拉 30m DEM 并重投影</li>
+        <li><strong>prepare</strong> — 计算坡度，按乡镇切 block</li>
+        <li><strong>sample</strong> — 60 轮 transitions + 1000 状态 pairwise（约 19 min）</li>
+        <li><strong>train</strong> — 3-member contrastive ensemble，30 epochs（约 37 min）</li>
+        <li><strong>plan</strong> — MPC 规划 N 个 episode（每 ep 约 5 min）</li>
+      </ol>
+      <p>整县 53k parcels 端到端 ~1.5 hr。所有数据停留在本机，不出网（除拉 DEM）。</p>
+    </details>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
