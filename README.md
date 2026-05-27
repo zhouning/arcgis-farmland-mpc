@@ -15,6 +15,7 @@ same algorithm backs both interfaces; pick whichever fits your workflow.
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | First-time deployers | Full install guide for all 3 paths |
 | [docs/QUICKSTART.md](docs/QUICKSTART.md) | Post-deployment | 5-minute end-to-end verification |
 | [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Operators | Full pipeline + parameters + troubleshooting |
+| [docs/MACOS.md](docs/MACOS.md) | macOS users | macOS-specific install, Apple Silicon notes, common pitfalls |
 
 ## Two ways to deploy
 
@@ -28,7 +29,8 @@ conda activate farmland-mpc
 farmland-mpc --help
 ```
 
-No ArcGIS license required. Works on Windows / macOS / Linux.
+No ArcGIS license required. Works on Windows / macOS (Intel + Apple Silicon) / Linux.
+**macOS users**: see [docs/MACOS.md](docs/MACOS.md) for Apple Silicon install notes, brew/proj conflict avoidance, and a per-stage performance table (M3 Max vs i7-13700K).
 Try the [Colab demo](notebooks/farmland_mpc_colab_demo.ipynb) — runs end-to-end in your browser, no install.
 
 ### Option B — ArcGIS Pro toolbox (GUI for planners)
