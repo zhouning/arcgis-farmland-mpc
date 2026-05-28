@@ -16,6 +16,9 @@ same algorithm backs both interfaces; pick whichever fits your workflow.
 | [docs/QUICKSTART.md](docs/QUICKSTART.md) | Post-deployment | 5-minute end-to-end verification |
 | [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Operators | Full pipeline + parameters + troubleshooting |
 | [docs/MACOS.md](docs/MACOS.md) | macOS users | macOS-specific install, Apple Silicon notes, common pitfalls |
+| [docs/DOCKER.md](docs/DOCKER.md) | OS-agnostic users | CLI / JupyterLab / FastAPI form-UI containers |
+| [verification/README.md](verification/README.md) | Reviewers / auditors | 4-layer headline-result verification stack |
+| [benchmark/README.md](benchmark/README.md) | Benchmarkers | Synthetic landscape generator (7 calibrated presets) |
 
 ## Two ways to deploy
 
