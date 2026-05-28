@@ -1,0 +1,7 @@
+preset_id: plain_small_cons
+n_blocks_target: 800
+terrain: {type: plain, dem_amplitude_m: 5.0, dem_lengthscale_m: 800.0}
+parcels: {parcels_per_block_mean: 25, parcels_per_block_std: 6, area_distribution: lognormal, area_mean_m2: 2500.0}
+landuse: {farmland_frac: 0.80, forest_frac: 0.12, other_frac: 0.08}
+fragmentation: {grf_lengthscale: 1000.0, patch_threshold: 0.30}
+adjacency: {median_degree_target: 4}
