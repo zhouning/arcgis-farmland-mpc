@@ -194,6 +194,16 @@ docker run --rm farmland-mpc:latest smoke
 
 看到 `END-TO-END SMOKE PASSED ✓` 即说明 conda env、ONNX 导出、四件套链路都正常。
 
+如果想用接近真实规模的数据跑一遍而不暴露真 DLTB：
+
+```bash
+mkdir -p ~/synth-run && cd ~/synth-run
+docker run --rm -v "$PWD:/work" farmland-mpc:latest \
+    python /repo/scripts/make_synthetic_dltb.py \
+        --grid 35 --townships 4 --out /work/synth5k
+# 之后用 webui / jupyter / CLI 任意方式跑 ~/synth-run/synth5k/dltb.shp
+```
+
 ---
 
 ## 6. 常见问题

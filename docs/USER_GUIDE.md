@@ -91,6 +91,30 @@ farmland-mpc prepare \
 
 参阅 [DEPLOYMENT.md 投影 CRS 区域对照表](DEPLOYMENT.md#投影-crs-区域对照表)。**选错 CRS 是最常见的部署陷阱**。
 
+### 2.5 没有真实数据？用合成数据试用
+
+仓库自带 `scripts/make_synthetic_dltb.py`，按你想要的规模生成一份完整 DLTB shapefile + 配套 DEM。schema 跟三调 DLTB 完全一致（BSM / DLBM / QSDWDM / TBMJ / 等），可直接喂给 `farmland-mpc prepare`。
+
+```bash
+# 生成 ~5000 parcels（4 乡镇 × 35×35 网格），约 0.3 秒
+python scripts/make_synthetic_dltb.py --grid 35 --townships 4 --out /tmp/synth5k
+
+# 然后照常走四件套
+farmland-mpc prepare --dltb /tmp/synth5k/dltb.shp --dem /tmp/synth5k/dem.tif \
+    --out /tmp/synth5k/prepared --crs EPSG:32648
+```
+
+合成 DEM 是"倾斜平面 + 几个高斯山丘"，slope 范围 0–8°；地类按 slope 概率分布，注入 25% 噪声让 MPC 有可优化空间。在 5k parcels 上 Tool 2 reported reward std 中位 ~0.83，跟 Bishan 真数据（~0.64）量级一致。可调参数：
+
+| 参数 | 默认 | 含义 |
+|---|---|---|
+| `--grid` | 70 | 每乡镇网格边长（parcels）；总 parcels = grid² × townships |
+| `--townships` | 4 | 横向乡镇数 |
+| `--seed` | 42 | 随机种子（地类分布、山丘位置） |
+| `--crs` | EPSG:32648 | 输出 CRS |
+
+`--grid 70 --townships 4` 出 ~20k parcels，跟一个真实乡镇规模相当；`--grid 100 --townships 6` 出 ~60k，跟 Bishan 一个量级。
+
 ---
 
 ## 3. 输出物清单
