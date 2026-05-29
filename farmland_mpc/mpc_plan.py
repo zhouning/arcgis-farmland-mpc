@@ -165,6 +165,7 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
         farm_dlbm="011", forest_dlbm="031",
         slope_weight=None, cont_weight=None,
         baimu_weight=None, baimu_bonus=None,
+        baimu_area_penalty=None,
         messages=None):
     """MPC planning loop (v0.3).
 
@@ -190,6 +191,17 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
         Override env.baimu_weight (default 1500.0).
     baimu_bonus : float or None
         Override env.baimu_bonus (default 5.0).
+    baimu_area_penalty : float or None
+        Override env.baimu_area_penalty (default 2000.0; an asymmetric penalty
+        the env applies whenever baimu_fang area decreases between steps,
+        NOT documented in the Paper 9 v7 reward equation Eq.1). Note: this
+        runtime override only affects the env.step() reward used by
+        episode_return reporting; it has NO effect on stage-1/stage-2
+        candidate ranking because those use the ONNX ensemble's reward head,
+        which was frozen at training time under whatever value of
+        baimu_area_penalty was in effect when Tool 2 sampled and Tool 3
+        trained. To actually steer planning by a different penalty, re-run
+        Tools 2 and 3 with the desired value.
 
     See v0.2 docstring for the rest.
     """
@@ -256,6 +268,7 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
             ("cont_weight", cont_weight),
             ("baimu_weight", baimu_weight),
             ("baimu_bonus", baimu_bonus),
+            ("baimu_area_penalty", baimu_area_penalty),
         ):
             if val is not None:
                 env_kwargs[name] = float(val)

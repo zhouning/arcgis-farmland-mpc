@@ -177,6 +177,8 @@ def plan(
         help="Where to write the optimised DLTB shapefile (with OPT_DLBM, CHG_FLAG, ORIG_DLBM)."),
     farm_dlbm: str = typer.Option("011", "--farm-dlbm"),
     forest_dlbm: str = typer.Option("031", "--forest-dlbm"),
+    baimu_area_penalty: Optional[float] = typer.Option(None, "--baimu-area-penalty",
+        help="Override env baimu_area_penalty (default 2000.0; paper Eq.1 implies 0)."),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
     """Phase D: MPC planning. Writes per-step traces and (optionally) an optimised DLTB shapefile."""
@@ -201,6 +203,7 @@ def plan(
         input_dltb_fc=str(prepared_dir / "dem_slope_analysis" / "output" / "DLTB_with_slope.shp"),
         farm_dlbm=farm_dlbm,
         forest_dlbm=forest_dlbm,
+        baimu_area_penalty=baimu_area_penalty,
     )
     typer.echo(f"Phase D done -> see {out_dir}")
 
