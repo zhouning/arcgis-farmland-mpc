@@ -21,8 +21,11 @@ checkpoints/
 ├── bishan/
 │   ├── contrastive_5seed/       # 5 seeds × 3 members = 15 .pt
 │   │   └── ensemble_seed{0..4}_lam5.0_member{0..2}.pt
-│   └── shipped_onnx/            # 1 ensemble × 3 members = 3 .onnx
-│       └── ensemble_lam5.0_member{0..2}.onnx
+│   ├── shipped_onnx/            # 1 ensemble × 3 members = 3 .onnx
+│   │   └── ensemble_lam5.0_member{0..2}.onnx
+│   └── lambda_ablation/         # λ-sweep diagnostic (§3 ranking failure)
+│       ├── ensemble_lam{0.0,1.0,5.0}_member{0..2}.pt   # 9 .pt
+│       └── discriminative_results.json
 └── neijiang/
     ├── baseline/                # from-scratch, 5 × 3 = 15 .pt
     │   └── ensemble_seed{0..4}_lam5.0_member{0..2}.pt
@@ -36,6 +39,7 @@ checkpoints/
 |---|---|---|
 | `bishan/contrastive_5seed/` | §5 Table 4 | slope **−1.289 ± 0.079 %**, baimu area **−312 ± 34 ha** |
 | `bishan/shipped_onnx/` | §7 toolchain | slope **−1.544 ± 0.041 %** (1 ensemble × 5 episodes) |
+| `bishan/lambda_ablation/` | §3 Table 1 (ranking-failure diagnostic) | pairwise ranking accuracy: λ=0.0 → **51.6 %** (essentially random); λ=1.0 → 73.2 %; λ=5.0 → **85.5 %**. The same 0.0 → 5.0 sweep is what motivates the contrastive intervention reported in later sections. Numerical breakdown in `discriminative_results.json`. |
 | `neijiang/baseline/` | §5 cross-region | slope **−0.501 ± 0.024 %**, baimu area **+267 ± 38 ha** |
 | `neijiang/partial_transfer/` | §5 (transfer caveat) | slope **−0.493 ± 0.017 %**, baimu area **+62 ± 80 ha** |
 
@@ -100,10 +104,18 @@ already, but worth checking on Windows runners).
 
 | Set | Trained on | Commit / mtime |
 |---|---|---|
-| Bishan contrastive 5-seed | research-side `paper9_contrastive/contrastive_trainer.py` | 2026-05-06 (pre-`f8ad31c` package release) |
+| Bishan contrastive 5-seed | research-side `paper9_contrastive/contrastive_trainer.py` | 2026-05-06 06:02–07:24 (5 sequential seeds, pre-`f8ad31c` package release) |
 | Bishan shipped ONNX | exported from `bishan/contrastive_5seed/` seed 0 | 2026-05-10 |
+| Bishan λ-ablation (lam0/1/5) | same trainer, single run per λ value (NOT one of the 5 seeds above) | 2026-05-06 00:32–01:24 |
 | Neijiang baseline | research-side `train_5seed_neijiang.py` from scratch | 2026-05-08 |
 | Neijiang partial-transfer | same script, mode=partial, backbone=Bishan seed-matched | 2026-05-08 |
+
+Note: `bishan/lambda_ablation/ensemble_lam5.0_member*.pt` and
+`bishan/contrastive_5seed/ensemble_seed0_lam5.0_member*.pt` are NOT the
+same checkpoints (different mtimes, different SHA-256). The ablation set
+is the dedicated single-run reference for the §3 Table 1 pairwise-accuracy
+numbers; the 5-seed set is the multi-seed evaluation that produces §5
+Table 4. Use whichever matches the paper section you're reproducing.
 
 All trained with `baimu_area_penalty=2000` (research env default; see Eq.1
 in the v7 draft after `dca73a8`, and the §sec:methods-trueenv discussion
