@@ -24,7 +24,7 @@ services:
       HEALTHCHECK_PORT: "8888"
     deploy:
       resources:
-        limits: { cpus: "8.0", memory: 16G }
+        limits: { cpus: "8.0", memory: 32G }
         reservations: { cpus: "2.0", memory: 4G }
     restart: unless-stopped
 
@@ -40,7 +40,7 @@ services:
       HEALTHCHECK_PORT: "8000"
     deploy:
       resources:
-        limits: { cpus: "8.0", memory: 16G }
+        limits: { cpus: "8.0", memory: 32G }
         reservations: { cpus: "2.0", memory: 4G }
     restart: unless-stopped
 
@@ -53,4 +53,4 @@ services:
       - ../runs:/work
     deploy:
       resources:
-        limits: { cpus: "8.0", memory: 16G }
+        limits: { cpus: "8.0", memory: 32G }
