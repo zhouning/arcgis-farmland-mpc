@@ -45,7 +45,7 @@ import rasterio
 from rasterio.warp import calculate_default_transform, reproject, Resampling
 from rasterio.features import rasterize
 from rasterio import windows
-from pyproj import CRS
+from pyproj import CRS, Geod
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +63,9 @@ def run(
     qsdwdm_field: str = "QSDWDM",
     bsm_field: str = "BSM",
     dem_resampling: str = "bilinear",
+    slope_method: str = "auto",
+    slope_field: str = "slope_mean",
+    treat_zero_as_nodata: bool = True,
     run_phase_bc: bool = True,
     min_parcels: int = 3,
     min_area_ha: float = 0.5,
@@ -94,6 +97,41 @@ def run(
         Land Survey schema.
     dem_resampling : str
         Resampling method when the DEM has to be reprojected to ``proj_crs``.
+        Only relevant when ``slope_method`` actually triggers a DEM reprojection.
+    slope_method : str
+        How to derive per-parcel slope. One of:
+
+          - ``"auto"`` (default): inspect the DEM CRS. If geographic
+            (lat/lon, e.g. EPSG:4326), use ``"gradient_geographic"``;
+            otherwise use ``"horn_projected"``.
+          - ``"gradient_geographic"``: keep the DEM in its native geographic
+            CRS, compute true east-west and north-south pixel sizes in
+            metres at the study-area centre via ``pyproj.Geod`` (WGS84
+            ellipsoid), then ``np.gradient(dem, dy_m, dx_m)`` for slope.
+            This is what the research-side pipeline used to produce the
+            paper's Table 1 numbers — it preserves the fact that 1 arc-second
+            cells are non-square at non-equatorial latitudes.
+          - ``"horn_projected"``: legacy path. Reproject the DEM to
+            ``proj_crs`` (typically UTM at 30 m × 30 m), then run Horn 3x3
+            slope. This squashes non-square cells into squares and
+            systematically under-estimates slope by ~1.25° at mid-latitudes
+            in our test counties (see commit 56455bb investigation).
+            Retained for backward compatibility with old prepared/ runs.
+          - ``"from_field"``: skip DEM-derived slope entirely and read a
+            pre-existing column ``slope_field`` from the input vector. Use
+            this when feeding a ``DLTB_with_slope.gpkg`` produced by an
+            external pipeline (e.g. ArcGIS Slope tool, the research-side
+            ``prepare/dem_slope/*.py`` scripts) directly into the package.
+    slope_field : str
+        Source column for ``slope_method="from_field"``. Default
+        ``"slope_mean"``, matching the schema produced by the research-side
+        ``prepare/dem_slope/*_dem_slope_zonal.py`` scripts.
+    treat_zero_as_nodata : bool
+        When True (default), DEM cells with elevation ``<= 0`` are treated
+        as nodata in addition to any explicit nodata flag in the raster
+        metadata. Defends against rasters whose nodata is recorded as
+        ``None`` in the file header but whose actual nodata fill is zero
+        (a common pitfall for sea-level / clipped-region tiles).
     run_phase_bc : bool
         When True (default) also run Phase B (block definition) and Phase C
         (sanity make_env). Set False for quick Phase-A-only smoke tests on
@@ -151,17 +189,51 @@ def run(
         dltb = dltb.to_crs(target_crs)
     logger.info("  DLTB rows: %d", len(dltb))
 
-    # Reproject DEM to target CRS in a temp .tif
-    dem_proj_path = out_dir / "_dem_reproj.tif"
-    _reproject_dem(dem_path, dem_proj_path, target_crs, resampling=dem_resampling)
+    # ---- Phase A: per-parcel slope --------------------------------------
+    # Resolve "auto" against the DEM's native CRS (or skip DEM entirely
+    # when slope_method == "from_field").
+    resolved_slope_method = _resolve_slope_method(slope_method, dem_path)
+    logger.info("  slope_method = %s (requested=%s)",
+                resolved_slope_method, slope_method)
 
-    # Compute slope (degrees) via Horn 3x3
-    slope_path = out_dir / "_slope_deg.tif"
-    _compute_slope_horn(dem_proj_path, slope_path)
+    if resolved_slope_method == "from_field":
+        # Read pre-computed slope from the DLTB attribute table; skip DEM.
+        if slope_field not in dltb.columns:
+            raise ValueError(
+                f"slope_method='from_field' but column {slope_field!r} "
+                f"missing from DLTB. Available columns: "
+                f"{list(dltb.columns)}"
+            )
+        slope_means = dltb[slope_field].astype(float).to_numpy()
+        # No raster intermediates produced in this mode.
+    elif resolved_slope_method == "gradient_geographic":
+        # Compute slope in the DEM's native geographic CRS using true
+        # lat/lon-derived metres per pixel. Matches the research-side
+        # prepare/dem_slope/*.py algorithm and the paper's Table 1 numbers.
+        slope_path = out_dir / "_slope_deg.tif"
+        _compute_slope_gradient_geographic(
+            dem_path, slope_path,
+            treat_zero_as_nodata=treat_zero_as_nodata,
+        )
+        # Zonal mean is done in the DEM's native CRS; project DLTB there.
+        slope_means = _zonal_mean_in_raster_crs(dltb, slope_path)
+    elif resolved_slope_method == "horn_projected":
+        # Legacy path: reproject DEM to proj_crs, then Horn 3x3.
+        # Kept for backward compatibility; under-estimates slope by
+        # ~1.25° at mid-latitudes vs the geographic gradient method.
+        dem_proj_path = out_dir / "_dem_reproj.tif"
+        _reproject_dem(dem_path, dem_proj_path, target_crs,
+                       resampling=dem_resampling)
+        slope_path = out_dir / "_slope_deg.tif"
+        _compute_slope_horn(dem_proj_path, slope_path,
+                            treat_zero_as_nodata=treat_zero_as_nodata)
+        slope_means = _zonal_mean(dltb, slope_path)
+    else:
+        raise ValueError(
+            f"Unknown slope_method={resolved_slope_method!r}. "
+            "Expected one of: auto, gradient_geographic, horn_projected, from_field."
+        )
 
-    # Per-polygon zonal mean
-    logger.info("  Running zonal mean on %d parcels ...", len(dltb))
-    slope_means = _zonal_mean(dltb, slope_path)
     n_unmatched = int(np.isnan(slope_means).sum())
     if n_unmatched:
         # Fill with median so downstream slope_min/max/range stay finite.
@@ -206,9 +278,12 @@ def run(
     elapsed = time.time() - t0
     summary = {
         "phase_a_backend": "open_source_rasterio_geopandas",
+        "slope_method": resolved_slope_method,
+        "slope_method_requested": slope_method,
         "dltb_input": str(dltb_path),
         "dem_input": str(dem_path),
         "proj_crs": target_crs_label,
+        "treat_zero_as_nodata": bool(treat_zero_as_nodata),
         "n_parcels": int(len(dltb_export)),
         "n_parcels_with_slope": int((~np.isnan(slope_means)).sum()),
         "n_parcels_unmatched": n_unmatched,
@@ -375,7 +450,11 @@ def _reproject_dem(
             dst.write(data)
 
 
-def _compute_slope_horn(dem_path: str | Path, slope_out_path: str | Path) -> None:
+def _compute_slope_horn(
+    dem_path: str | Path,
+    slope_out_path: str | Path,
+    treat_zero_as_nodata: bool = True,
+) -> None:
     """Compute slope (degrees) using Horn's 3x3 algorithm.
 
     Equivalent to ``arcpy.sa.Slope(dem, "DEGREE")``.
@@ -394,6 +473,12 @@ def _compute_slope_horn(dem_path: str | Path, slope_out_path: str | Path) -> Non
         # Mark NoData as NaN so Horn ignores them via padding logic
         if nodata is not None:
             z = np.where(z == nodata, np.nan, z)
+        if treat_zero_as_nodata:
+            # Common pitfall: rasters with nodata=None but actual fill = 0
+            # (sea-level, clipped-region tiles). Horn would otherwise treat
+            # 0 as a real elevation and compute spurious "cliffs" at the
+            # boundary, biasing the zonal mean toward 0.
+            z = np.where(z <= 0, np.nan, z)
 
         # Horn's slope algorithm: each cell's slope is computed from a 3x3
         # window with weights [[1,2,1],[0,0,0],[-1,-2,-1]] for dz/dy and
@@ -437,6 +522,122 @@ def _horn_slope_deg(z: np.ndarray, dx: float, dy: float) -> np.ndarray:
         | np.isnan(g) | np.isnan(h) | np.isnan(i)
     )
     return np.where(nan_mask, np.nan, slope_deg)
+
+
+def _resolve_slope_method(method: str, dem_path: str | Path) -> str:
+    """Map ``slope_method='auto'`` to a concrete strategy by inspecting the DEM.
+
+    Returns one of: ``"gradient_geographic"`` / ``"horn_projected"`` /
+    ``"from_field"``. Raises ``ValueError`` for unknown ``method``.
+    """
+    if method == "from_field":
+        return "from_field"
+    if method in ("gradient_geographic", "horn_projected"):
+        return method
+    if method != "auto":
+        raise ValueError(
+            f"Unknown slope_method={method!r}. Expected one of: "
+            "auto, gradient_geographic, horn_projected, from_field."
+        )
+    # auto: pick based on DEM CRS
+    with rasterio.open(dem_path) as src:
+        crs = src.crs
+        if crs is None:
+            logger.warning("  DEM has no CRS; defaulting to horn_projected.")
+            return "horn_projected"
+        if crs.is_geographic:
+            return "gradient_geographic"
+        return "horn_projected"
+
+
+def _compute_slope_gradient_geographic(
+    dem_path: str | Path,
+    slope_out_path: str | Path,
+    treat_zero_as_nodata: bool = True,
+) -> None:
+    """Compute slope (degrees) on a geographic-CRS DEM using true metre-scale gradients.
+
+    Pixel size in degrees is converted to metres via ``pyproj.Geod`` at the
+    DEM's centre latitude, separately for east-west (varies with cos(lat))
+    and north-south (~constant ~30.9 m for 1 arc-second). ``np.gradient``
+    is then a numerically equivalent shortcut for the central-difference
+    formulation used by the research-side ``prepare/dem_slope/*.py``
+    scripts (which produced the paper's Table 1 numbers). Outputs the
+    slope as a float32 raster in the SAME geographic CRS as the input DEM.
+    """
+    with rasterio.open(dem_path) as src:
+        if src.count != 1:
+            raise ValueError(f"DEM must be single-band; got {src.count} bands")
+        if src.crs is None or not src.crs.is_geographic:
+            raise ValueError(
+                "gradient_geographic requires a DEM in a geographic CRS "
+                f"(lat/lon); got {src.crs}."
+            )
+        z = src.read(1).astype(np.float64)
+        nodata = src.nodata
+        nan_mask = np.zeros_like(z, dtype=bool)
+        if nodata is not None:
+            nan_mask |= (z == nodata)
+        if treat_zero_as_nodata:
+            nan_mask |= (z <= 0)
+        if nan_mask.any():
+            z = np.where(nan_mask, np.nan, z)
+
+        # Compute true metres-per-pixel at the DEM centre latitude.
+        ps = abs(src.transform.a)  # pixel size in degrees (square in degree-space)
+        ps_y = abs(src.transform.e)
+        origin_lon = src.transform.c
+        origin_lat = src.transform.f
+        n_rows, n_cols = z.shape
+        lat_center = origin_lat - n_rows / 2 * ps_y
+        geod = Geod(ellps="WGS84")
+        _, _, dy_m = geod.inv(
+            origin_lon, lat_center - ps_y / 2,
+            origin_lon, lat_center + ps_y / 2,
+        )
+        _, _, dx_m = geod.inv(
+            origin_lon - ps / 2, lat_center,
+            origin_lon + ps / 2, lat_center,
+        )
+        logger.info(
+            "  gradient_geographic: lat_center=%.4f, pixel real size %.2f m E-W x %.2f m N-S",
+            lat_center, dx_m, dy_m,
+        )
+
+        # np.gradient(z, dy_m, dx_m) returns (dz/dy, dz/dx) when called
+        # with two scalar spacings on a 2D array; this matches the
+        # research-side implementation in prepare/dem_slope/*.py.
+        dz_dy, dz_dx = np.gradient(z, dy_m, dx_m)
+        slope_rad = np.arctan(np.sqrt(dz_dx ** 2 + dz_dy ** 2))
+        slope_deg = np.degrees(slope_rad).astype(np.float32)
+
+        profile = src.profile.copy()
+        profile.update({"dtype": "float32", "nodata": -9999.0, "count": 1})
+        slope_arr = np.where(np.isnan(slope_deg), -9999.0, slope_deg).astype("float32")
+        with rasterio.open(slope_out_path, "w", **profile) as dst:
+            dst.write(slope_arr, 1)
+    logger.info("  Slope raster (degrees, geographic) -> %s", slope_out_path)
+
+
+def _zonal_mean_in_raster_crs(
+    polygons: gpd.GeoDataFrame,
+    raster_path: str | Path,
+) -> np.ndarray:
+    """Per-polygon zonal mean, where polygons may need reprojection to the raster CRS.
+
+    Wraps :func:`_zonal_mean` with an automatic CRS check: if the input
+    polygons aren't already in the raster's CRS, they're reprojected
+    to it before rasterization. Used for the ``gradient_geographic``
+    path where the DEM stays in EPSG:4326 but the DLTB has been
+    reprojected to the analysis CRS (e.g. UTM) earlier in ``run()``.
+    """
+    with rasterio.open(raster_path) as src:
+        raster_crs = src.crs
+    if raster_crs is None:
+        raise ValueError(f"Raster has no CRS: {raster_path}")
+    if not _crs_equals(polygons.crs, raster_crs):
+        polygons = polygons.to_crs(raster_crs)
+    return _zonal_mean(polygons, raster_path)
 
 
 def _zonal_mean(

@@ -64,6 +64,16 @@ def prepare(
         help="Block max parcels before subdivision (Paper 3 default 30)"),
     min_parcels_per_township: int = typer.Option(50, "--min-parcels-per-township",
         help="Drop townships with fewer parcels (border artifacts). Lower for small test data."),
+    slope_method: str = typer.Option("auto", "--slope-method",
+        help="auto | gradient_geographic | horn_projected | from_field. "
+             "'auto' picks gradient_geographic for geographic DEMs (e.g. EPSG:4326 Copernicus tiles), "
+             "horn_projected otherwise. 'from_field' reads slope from the DLTB attribute table "
+             "(use --slope-field to pick the column)."),
+    slope_field: str = typer.Option("slope_mean", "--slope-field",
+        help="Column name for --slope-method=from_field. Default 'slope_mean'."),
+    treat_zero_as_nodata: bool = typer.Option(True, "--treat-zero-as-nodata/--no-treat-zero-as-nodata",
+        help="Treat DEM elevation <=0 as nodata (defends against rasters whose nodata is "
+             "stored as 0 with no nodata flag). Default True."),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
     """Phase A+B+C: build full prepared_dir from a DLTB polygon file and a DEM raster."""
@@ -78,6 +88,9 @@ def prepare(
         dlbm_field=dlbm_field,
         qsdwdm_field=qsdwdm_field,
         bsm_field=bsm_field,
+        slope_method=slope_method,
+        slope_field=slope_field,
+        treat_zero_as_nodata=treat_zero_as_nodata,
         run_phase_bc=not skip_blocks,
         min_parcels=min_parcels,
         min_area_ha=min_area_ha,
