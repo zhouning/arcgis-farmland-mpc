@@ -136,6 +136,7 @@ def run(prepared_dir: str,
         val_split: float = 0.1,
         seed_base: int = 0,
         torch_threads: int = 0,
+        out_subdir: str = "tool3",
         messages=None):
     """Train ensemble + export ONNX. See module docstring for output layout.
 
@@ -170,7 +171,7 @@ def run(prepared_dir: str,
         print(msg, flush=True)
 
     prepared_dir = Path(prepared_dir)
-    out_dir = prepared_dir / "tool3"
+    out_dir = prepared_dir / out_subdir
     out_dir.mkdir(parents=True, exist_ok=True)
 
     log_path = out_dir / "train.log"

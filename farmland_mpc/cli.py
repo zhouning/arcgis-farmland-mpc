@@ -148,6 +148,9 @@ def train(
     batch_size: int = typer.Option(256, "--batch-size"),
     seed_base: int = typer.Option(0, "--seed-base"),
     torch_threads: int = typer.Option(0, "--torch-threads"),
+    out_subdir: str = typer.Option("tool3", "--out-subdir",
+        help="Output subdir under prepared_dir (default 'tool3'). Use distinct values "
+             "to train multiple independent ensembles in parallel on the same prepared/."),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
     """Phase C: train the contrastive transition-model ensemble + export ONNX."""
@@ -164,6 +167,7 @@ def train(
         batch_size=batch_size,
         seed_base=seed_base,
         torch_threads=torch_threads,
+        out_subdir=out_subdir,
     )
     typer.echo(f"Phase C done -> {n_members} members trained")
 
