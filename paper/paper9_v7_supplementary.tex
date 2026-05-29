@@ -46,7 +46,7 @@ The Centralised PPO and Multi-Agent Reinforcement Learning (MARL) baselines repo
 
 \paragraph{Environment.} Both baselines act on the same Bishan County county-level environment (\texttt{CountyLevelEnv}) used by the contrastive MPC pipeline: 13 townships, $2{,}600$ spatial blocks aggregating $52{,}515$ cadastral parcels. The observation is the concatenation of $2{,}600$ blocks $\times$ 17 block-level features plus 12 global features. The action space is a categorical choice over the $2{,}600$ blocks, with the same MaskablePPO-style action mask described in main-text Methods.
 
-\paragraph{Reward.} Identical to the main-text reward (Equation~1): $w_S = 4{,}000$, $w_C = 500$, $w_B = 1{,}500$, $b_B = 5$. No method-specific re-tuning was performed, so cross-method comparisons reflect the learning procedure rather than reward engineering.
+\paragraph{Reward.} Identical to the main-text reward (Equation~1): $w_S = 4{,}000$, $w_C = 500$, $w_A = 1{,}500$, $b_B = 5$, $p_A = 2{,}000$. No method-specific re-tuning was performed, so cross-method comparisons reflect the learning procedure rather than reward engineering.
 
 \paragraph{Centralised PPO.} A single MaskablePPO agent with our \texttt{ParcelScoringPolicy} architecture (block-wise scoring MLP $[64, 32] \to 1$, global-feature value network). Training: 5 random seeds, $1.5 \times 10^6$ environment steps each, $\gamma = 0.995$, $\lambda = 0.95$, learning rate $1\times 10^{-3}$ linear-decayed, entropy coefficient $0.01$, clip range $0.2$, batch size $4{,}096$, mini-batch size $256$, 10 epochs per update. Wall-time: 8--12 GPU-hours per seed on a single A100. Cross-seed slope improvement: $-0.79\% \pm 0.36\%$, with $2/5$ seeds collapsing into degenerate trajectories.
 

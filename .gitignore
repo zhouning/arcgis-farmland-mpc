@@ -64,3 +64,13 @@ issues_drafts/
 # OS / envs
 *.bak
 *.tmp
+
+# LaTeX build artifacts (PDFs are tracked; these intermediates are not)
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.synctex.gz
