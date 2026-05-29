@@ -1,0 +1,198 @@
+{
+  "511011002": {
+    "label": "N02-Neijiang-002",
+    "n_swappable": 160,
+    "n_blocks": 5,
+    "n_baimu_ge_6_67ha": 1,
+    "total_area_ha": 36.08687391316129
+  },
+  "511011003": {
+    "label": "N03-Neijiang-003",
+    "n_swappable": 736,
+    "n_blocks": 41,
+    "n_baimu_ge_6_67ha": 31,
+    "total_area_ha": 1012.5455871262025
+  },
+  "511011100": {
+    "label": "N04-Township-100",
+    "n_swappable": 2549,
+    "n_blocks": 127,
+    "n_baimu_ge_6_67ha": 112,
+    "total_area_ha": 3440.0865189692186
+  },
+  "511011101": {
+    "label": "N05-Township-101",
+    "n_swappable": 3561,
+    "n_blocks": 176,
+    "n_baimu_ge_6_67ha": 163,
+    "total_area_ha": 5026.444951065462
+  },
+  "511011102": {
+    "label": "N06-Township-102",
+    "n_swappable": 3979,
+    "n_blocks": 184,
+    "n_baimu_ge_6_67ha": 175,
+    "total_area_ha": 5000.705909006101
+  },
+  "511011103": {
+    "label": "N07-Township-103",
+    "n_swappable": 4823,
+    "n_blocks": 230,
+    "n_baimu_ge_6_67ha": 220,
+    "total_area_ha": 5426.8472279100315
+  },
+  "511011104": {
+    "label": "N08-Township-104",
+    "n_swappable": 6083,
+    "n_blocks": 291,
+    "n_baimu_ge_6_67ha": 267,
+    "total_area_ha": 7113.426230828022
+  },
+  "511011105": {
+    "label": "N09-Township-105",
+    "n_swappable": 1378,
+    "n_blocks": 75,
+    "n_baimu_ge_6_67ha": 57,
+    "total_area_ha": 1427.8162099777262
+  },
+  "511011106": {
+    "label": "N10-Township-106",
+    "n_swappable": 2066,
+    "n_blocks": 104,
+    "n_baimu_ge_6_67ha": 88,
+    "total_area_ha": 2643.5745372096435
+  },
+  "511011107": {
+    "label": "N11-Township-107",
+    "n_swappable": 3578,
+    "n_blocks": 169,
+    "n_baimu_ge_6_67ha": 154,
+    "total_area_ha": 4358.975298013636
+  },
+  "511011108": {
+    "label": "N12-Township-108",
+    "n_swappable": 1784,
+    "n_blocks": 88,
+    "n_baimu_ge_6_67ha": 78,
+    "total_area_ha": 2840.29865789292
+  },
+  "511011109": {
+    "label": "N13-Township-109",
+    "n_swappable": 3027,
+    "n_blocks": 142,
+    "n_baimu_ge_6_67ha": 131,
+    "total_area_ha": 3968.5847333955167
+  },
+  "511011110": {
+    "label": "N14-Township-110",
+    "n_swappable": 639,
+    "n_blocks": 38,
+    "n_baimu_ge_6_67ha": 25,
+    "total_area_ha": 805.9665660532747
+  },
+  "511011111": {
+    "label": "N15-Township-111",
+    "n_swappable": 2778,
+    "n_blocks": 132,
+    "n_baimu_ge_6_67ha": 125,
+    "total_area_ha": 3444.8907484068127
+  },
+  "511011200": {
+    "label": "N16-Township-200",
+    "n_swappable": 3456,
+    "n_blocks": 171,
+    "n_baimu_ge_6_67ha": 155,
+    "total_area_ha": 3586.598169184681
+  },
+  "511011201": {
+    "label": "N17-Township-201",
+    "n_swappable": 2495,
+    "n_blocks": 120,
+    "n_baimu_ge_6_67ha": 118,
+    "total_area_ha": 3660.372529125354
+  },
+  "511011202": {
+    "label": "N18-Township-202",
+    "n_swappable": 2312,
+    "n_blocks": 116,
+    "n_baimu_ge_6_67ha": 101,
+    "total_area_ha": 3101.321362741863
+  },
+  "511011203": {
+    "label": "N19-Township-203",
+    "n_swappable": 1980,
+    "n_blocks": 99,
+    "n_baimu_ge_6_67ha": 84,
+    "total_area_ha": 2413.5196263675834
+  },
+  "511011204": {
+    "label": "N20-Township-204",
+    "n_swappable": 2004,
+    "n_blocks": 101,
+    "n_baimu_ge_6_67ha": 91,
+    "total_area_ha": 3220.575313160517
+  },
+  "511011205": {
+    "label": "N21-Township-205",
+    "n_swappable": 3256,
+    "n_blocks": 156,
+    "n_baimu_ge_6_67ha": 144,
+    "total_area_ha": 4576.018623008355
+  },
+  "511011206": {
+    "label": "N22-Township-206",
+    "n_swappable": 3009,
+    "n_blocks": 143,
+    "n_baimu_ge_6_67ha": 133,
+    "total_area_ha": 3620.42994388858
+  },
+  "511011207": {
+    "label": "N23-Township-207",
+    "n_swappable": 3750,
+    "n_blocks": 181,
+    "n_baimu_ge_6_67ha": 169,
+    "total_area_ha": 4178.204153498913
+  },
+  "511011208": {
+    "label": "N24-Township-208",
+    "n_swappable": 3273,
+    "n_blocks": 157,
+    "n_baimu_ge_6_67ha": 132,
+    "total_area_ha": 4078.0050682704355
+  },
+  "511011209": {
+    "label": "N25-Township-209",
+    "n_swappable": 4448,
+    "n_blocks": 213,
+    "n_baimu_ge_6_67ha": 204,
+    "total_area_ha": 5274.2968389801945
+  },
+  "511011210": {
+    "label": "N26-Township-210",
+    "n_swappable": 1583,
+    "n_blocks": 76,
+    "n_baimu_ge_6_67ha": 72,
+    "total_area_ha": 1957.811327315455
+  },
+  "511011211": {
+    "label": "N27-Township-211",
+    "n_swappable": 2566,
+    "n_blocks": 123,
+    "n_baimu_ge_6_67ha": 107,
+    "total_area_ha": 2967.383201590114
+  },
+  "511011212": {
+    "label": "N28-Township-212",
+    "n_swappable": 3058,
+    "n_blocks": 144,
+    "n_baimu_ge_6_67ha": 138,
+    "total_area_ha": 3847.570368175493
+  },
+  "511011213": {
+    "label": "N29-Township-213",
+    "n_swappable": 1621,
+    "n_blocks": 81,
+    "n_baimu_ge_6_67ha": 69,
+    "total_area_ha": 1775.728301128318
+  }
+}

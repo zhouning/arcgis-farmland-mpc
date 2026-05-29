@@ -1,0 +1,67 @@
+[
+  {
+    "block_id": 0,
+    "n_parcels": 26,
+    "n_farmland": 15,
+    "n_forest": 11,
+    "total_area_m2": 278038.08923216834,
+    "total_area_ha": 27.803808923216835,
+    "farm_area_ha": 25.549119769942774,
+    "forest_area_ha": 2.2546891532740574,
+    "avg_farm_slope": 10.406169210130697,
+    "avg_forest_slope": 11.051155406971336,
+    "compactness": 0.025973691512545662
+  },
+  {
+    "block_id": 1,
+    "n_parcels": 7,
+    "n_farmland": 7,
+    "n_forest": 0,
+    "total_area_m2": 21182.93609635228,
+    "total_area_ha": 2.118293609635228,
+    "farm_area_ha": 2.118293609635228,
+    "forest_area_ha": 0.0,
+    "avg_farm_slope": 9.319928183797783,
+    "avg_forest_slope": 0.0,
+    "compactness": 0.20132243266944502
+  },
+  {
+    "block_id": 2,
+    "n_parcels": 15,
+    "n_farmland": 11,
+    "n_forest": 4,
+    "total_area_m2": 10378.487680174181,
+    "total_area_ha": 1.0378487680174182,
+    "farm_area_ha": 0.8404223952666751,
+    "forest_area_ha": 0.19742637275074293,
+    "avg_farm_slope": 7.343724943599267,
+    "avg_forest_slope": 6.202552110924967,
+    "compactness": 0.06467789868930998
+  },
+  {
+    "block_id": 3,
+    "n_parcels": 4,
+    "n_farmland": 3,
+    "n_forest": 1,
+    "total_area_m2": 5532.338378773543,
+    "total_area_ha": 0.5532338378773543,
+    "farm_area_ha": 0.4902299758277978,
+    "forest_area_ha": 0.06300386204955648,
+    "avg_farm_slope": 9.473010459056376,
+    "avg_forest_slope": 8.255800247192383,
+    "compactness": 0.259221055426955
+  },
+  {
+    "block_id": 4,
+    "n_parcels": 12,
+    "n_farmland": 6,
+    "n_forest": 6,
+    "total_area_m2": 45736.88774414456,
+    "total_area_ha": 4.573688774414456,
+    "farm_area_ha": 3.102147564424504,
+    "forest_area_ha": 1.4715412099899516,
+    "avg_farm_slope": 13.832143275497192,
+    "avg_forest_slope": 11.705231707511027,
+    "compactness": 0.2433944073146395
+  }
+]
