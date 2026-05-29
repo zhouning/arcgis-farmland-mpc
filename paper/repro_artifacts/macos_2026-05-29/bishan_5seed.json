@@ -1,0 +1,145 @@
+{
+  "region": "Bishan",
+  "mode": "baseline",
+  "lambda_rank": 5.0,
+  "n_seeds": 5,
+  "eval_episodes_per_seed": 1,
+  "per_seed": {
+    "0": {
+      "slopes": [
+        -1.7530763329854409
+      ],
+      "rewards": [
+        71.78351430451328
+      ],
+      "times": [
+        449.19815278053284
+      ],
+      "cont_deltas": [
+        0.012494941319304065
+      ],
+      "cont_pcts": [
+        1.2494941319304065
+      ],
+      "baimu_count_deltas": [
+        5
+      ],
+      "baimu_area_deltas_ha": [
+        -483.9414482830465
+      ]
+    },
+    "1": {
+      "slopes": [
+        -1.7637706074996136
+      ],
+      "rewards": [
+        58.668191981037864
+      ],
+      "times": [
+        457.8316218852997
+      ],
+      "cont_deltas": [
+        0.013911371914204551
+      ],
+      "cont_pcts": [
+        1.391137191420455
+      ],
+      "baimu_count_deltas": [
+        4
+      ],
+      "baimu_area_deltas_ha": [
+        -529.3170436065137
+      ]
+    },
+    "2": {
+      "slopes": [
+        -1.7264241206200053
+      ],
+      "rewards": [
+        56.26879628859941
+      ],
+      "times": [
+        447.0468039512634
+      ],
+      "cont_deltas": [
+        0.015327802509105481
+      ],
+      "cont_pcts": [
+        1.5327802509105481
+      ],
+      "baimu_count_deltas": [
+        3
+      ],
+      "baimu_area_deltas_ha": [
+        -479.19933949618337
+      ]
+    },
+    "3": {
+      "slopes": [
+        -1.6964686436332912
+      ],
+      "rewards": [
+        69.47249872754696
+      ],
+      "times": [
+        447.0903351306915
+      ],
+      "cont_deltas": [
+        0.016187778227438443
+      ],
+      "cont_pcts": [
+        1.6187778227438443
+      ],
+      "baimu_count_deltas": [
+        4
+      ],
+      "baimu_area_deltas_ha": [
+        -419.2964350007534
+      ]
+    },
+    "4": {
+      "slopes": [
+        -1.7522919013985243
+      ],
+      "rewards": [
+        57.150295773645325
+      ],
+      "times": [
+        433.6698567867279
+      ],
+      "cont_deltas": [
+        0.014164305949008416
+      ],
+      "cont_pcts": [
+        1.4164305949008416
+      ],
+      "baimu_count_deltas": [
+        1
+      ],
+      "baimu_area_deltas_ha": [
+        -481.4535315577924
+      ]
+    }
+  },
+  "cross_seed": {
+    "slope_pct_mean": -1.7384063212273753,
+    "slope_pct_std": 0.0243051744826152,
+    "cont_pct_mean": 1.4417239983812191,
+    "cont_pct_std": 0.12632529493329536,
+    "cont_raw_delta_mean": 0.014417239983812192,
+    "cont_raw_delta_std": 0.001263252949332954,
+    "baimu_count_delta_mean": 3.4,
+    "baimu_count_delta_std": 1.3564659966250538,
+    "baimu_area_delta_ha_mean": -478.64155958885783,
+    "baimu_area_delta_ha_std": 35.00330160928028,
+    "reward_mean": 62.668659415068575,
+    "reward_std": 6.584635662706363
+  },
+  "mpc_config": {
+    "horizon": 5,
+    "top_k": 50,
+    "continuation": "greedy",
+    "scoring": "reward"
+  },
+  "package": "farmland_mpc (open-source)"
+}

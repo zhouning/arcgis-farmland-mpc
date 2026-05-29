@@ -1,0 +1,145 @@
+{
+  "region": "Neijiang Dongxing",
+  "mode": "baseline",
+  "lambda_rank": 5.0,
+  "n_seeds": 5,
+  "eval_episodes_per_seed": 1,
+  "per_seed": {
+    "0": {
+      "slopes": [
+        -0.5828185880124691
+      ],
+      "rewards": [
+        102.54073757961494
+      ],
+      "times": [
+        699.6428008079529
+      ],
+      "cont_deltas": [
+        0.0359032667162289
+      ],
+      "cont_pcts": [
+        3.59032667162289
+      ],
+      "baimu_count_deltas": [
+        3
+      ],
+      "baimu_area_deltas_ha": [
+        71.9177399864912
+      ]
+    },
+    "1": {
+      "slopes": [
+        -0.5658573195534822
+      ],
+      "rewards": [
+        102.48285815778645
+      ],
+      "times": [
+        701.7469689846039
+      ],
+      "cont_deltas": [
+        0.037084007521756224
+      ],
+      "cont_pcts": [
+        3.7084007521756224
+      ],
+      "baimu_count_deltas": [
+        1
+      ],
+      "baimu_area_deltas_ha": [
+        -23.599949129891396
+      ]
+    },
+    "2": {
+      "slopes": [
+        -0.544279950877356
+      ],
+      "rewards": [
+        100.47916392538727
+      ],
+      "times": [
+        706.90114402771
+      ],
+      "cont_deltas": [
+        0.039664144837538995
+      ],
+      "cont_pcts": [
+        3.9664144837538995
+      ],
+      "baimu_count_deltas": [
+        -2
+      ],
+      "baimu_area_deltas_ha": [
+        223.70238025159836
+      ]
+    },
+    "3": {
+      "slopes": [
+        -0.5639637263148625
+      ],
+      "rewards": [
+        77.81015612162274
+      ],
+      "times": [
+        503.3280658721924
+      ],
+      "cont_deltas": [
+        0.037040276380810866
+      ],
+      "cont_pcts": [
+        3.7040276380810866
+      ],
+      "baimu_count_deltas": [
+        -2
+      ],
+      "baimu_area_deltas_ha": [
+        14.28268601088524
+      ]
+    },
+    "4": {
+      "slopes": [
+        -0.6137471189199337
+      ],
+      "rewards": [
+        98.16268470618834
+      ],
+      "times": [
+        449.0340187549591
+      ],
+      "cont_deltas": [
+        0.03288581799099166
+      ],
+      "cont_pcts": [
+        3.288581799099166
+      ],
+      "baimu_count_deltas": [
+        2
+      ],
+      "baimu_area_deltas_ha": [
+        -135.43899764078856
+      ]
+    }
+  },
+  "cross_seed": {
+    "slope_pct_mean": -0.5741333407356206,
+    "slope_pct_std": 0.02327154233135224,
+    "cont_pct_mean": 3.651550268946533,
+    "cont_pct_std": 0.21937172308823719,
+    "cont_raw_delta_mean": 0.03651550268946533,
+    "cont_raw_delta_std": 0.002193717230882372,
+    "baimu_count_delta_mean": 0.4,
+    "baimu_count_delta_std": 2.0591260281974,
+    "baimu_area_delta_ha_mean": 30.17277189565897,
+    "baimu_area_delta_ha_std": 118.12502718409714,
+    "reward_mean": 96.29512009811995,
+    "reward_std": 9.3806583302709
+  },
+  "mpc_config": {
+    "horizon": 5,
+    "top_k": 50,
+    "continuation": "greedy",
+    "scoring": "reward"
+  },
+  "package": "farmland_mpc (open-source)"
+}
