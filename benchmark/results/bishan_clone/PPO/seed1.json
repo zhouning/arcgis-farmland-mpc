@@ -1,0 +1,33 @@
+{
+  "preset_id": "bishan_clone",
+  "seed": 1,
+  "method": "PPO-Centralized",
+  "n_blocks": 2600,
+  "init_slope_deg": 9.320454056626165,
+  "final_slope_deg": 9.311297510020514,
+  "slope_pct": -0.09824142203824096,
+  "init_contiguity": 3.7867224720601986,
+  "final_contiguity": 3.788859699897591,
+  "cont_delta": 0.0021372278373923415,
+  "cont_pct": 0.05644004406231439,
+  "init_baimu_count": 121,
+  "final_baimu_count": 133,
+  "baimu_count_delta": 12,
+  "init_baimu_area_ha": 53039.923098865846,
+  "final_baimu_area_ha": 53146.47863067425,
+  "baimu_area_delta_ha": 106.55553180840612,
+  "total_reward": 75.34068938620207,
+  "wall_seconds": 16652.487281560898,
+  "exchange_pairs_used": 42,
+  "extra": {
+    "total_timesteps": 100000,
+    "train_wall_seconds": 16649.210865736008,
+    "eval_wall_seconds": 3.2764158248901367,
+    "device": "auto",
+    "n_steps": 256,
+    "batch_size": 128,
+    "policy": "StableParcelScoringPolicy",
+    "learning_rate": 0.001,
+    "ent_coef": 0.005
+  }
+}

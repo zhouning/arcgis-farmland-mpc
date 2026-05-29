@@ -1,0 +1,30 @@
+{
+  "preset_id": "hilly_small_cons",
+  "seed": 4,
+  "method": "GA",
+  "n_blocks": 800,
+  "init_slope_deg": 7.292332722216259,
+  "final_slope_deg": 7.27138572735758,
+  "slope_pct": -0.2872468338541911,
+  "init_contiguity": 3.7076091719001023,
+  "final_contiguity": 3.7806338542427342,
+  "cont_delta": 0.07302468234263193,
+  "cont_pct": 1.9695895322280899,
+  "init_baimu_count": 48,
+  "final_baimu_count": 46,
+  "baimu_count_delta": -2,
+  "init_baimu_area_ha": 18655.796926178642,
+  "final_baimu_area_ha": 18937.0723009781,
+  "baimu_area_delta_ha": 281.2753747994572,
+  "total_reward": 13.06251097036355,
+  "wall_seconds": 27.382476568222046,
+  "exchange_pairs_used": 100,
+  "extra": {
+    "pop_size": 100,
+    "generations": 500,
+    "best_fitness": 13.06251097036355,
+    "ga_elapsed_seconds": 27.37984538078308,
+    "ga_final_avg_slope": 7.27138572735758,
+    "ga_final_contiguity": 3.7806338542427342
+  }
+}

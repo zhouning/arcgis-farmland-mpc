@@ -1,0 +1,38 @@
+{
+  "preset_id": "bishan_clone",
+  "seed": 0,
+  "method": "Greedy-Sequential",
+  "n_blocks": 2600,
+  "init_slope_deg": 9.492293146090708,
+  "final_slope_deg": 9.48654326065095,
+  "slope_pct": -0.060574250618512314,
+  "init_contiguity": 3.8072881734853565,
+  "final_contiguity": 3.809166107757657,
+  "cont_delta": 0.001877934272300319,
+  "cont_pct": 0.0493247209508889,
+  "init_baimu_count": 117,
+  "final_baimu_count": 117,
+  "baimu_count_delta": 0,
+  "init_baimu_area_ha": 56010.73837391765,
+  "final_baimu_area_ha": 56027.72004613077,
+  "baimu_area_delta_ha": 16.98167221312523,
+  "total_reward": 0.0,
+  "wall_seconds": 1.150801420211792,
+  "exchange_pairs_used": 100,
+  "extra": {
+    "baseline_returned": {
+      "slope_change_pct": -0.060574250554698165,
+      "cont_change": 0.001877934272300319,
+      "baimu_count_change": 0.0,
+      "baimu_area_change_ha": 16.98167221312523,
+      "completed_swaps": 25.0,
+      "elapsed": 0.950045108795166,
+      "initial_slope": 9.492293146090708,
+      "final_slope": 9.48654326065095,
+      "initial_cont": 3.8072881734853565,
+      "final_cont": 3.809166107757657,
+      "initial_baimu_count": 117.0,
+      "final_baimu_count": 117.0
+    }
+  }
+}

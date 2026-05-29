@@ -1,0 +1,33 @@
+{
+  "preset_id": "mixed_medium_frag",
+  "seed": 1,
+  "method": "PPO-Centralized",
+  "n_blocks": 2600,
+  "init_slope_deg": 1.6696914334322095,
+  "final_slope_deg": 1.6640438316245232,
+  "slope_pct": -0.33824224611832177,
+  "init_contiguity": 3.9457065956646313,
+  "final_contiguity": 3.948427054090817,
+  "cont_delta": 0.0027204584261855125,
+  "cont_pct": 0.0689473064793997,
+  "init_baimu_count": 87,
+  "final_baimu_count": 89,
+  "baimu_count_delta": 2,
+  "init_baimu_area_ha": 71898.74073003091,
+  "final_baimu_area_ha": 71991.315470151,
+  "baimu_area_delta_ha": 92.57474012008906,
+  "total_reward": 45.675919591178726,
+  "wall_seconds": 27422.237728834152,
+  "exchange_pairs_used": 51,
+  "extra": {
+    "total_timesteps": 100000,
+    "train_wall_seconds": 27416.756635427475,
+    "eval_wall_seconds": 5.481093406677246,
+    "device": "auto",
+    "n_steps": 256,
+    "batch_size": 128,
+    "policy": "StableParcelScoringPolicy",
+    "learning_rate": 0.001,
+    "ent_coef": 0.005
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "preset_id": "plain_medium_frag",
+  "seed": 4,
+  "method": "GA",
+  "n_blocks": 2600,
+  "init_slope_deg": 0.7195073903257728,
+  "final_slope_deg": 0.7148673087313012,
+  "slope_pct": -0.6448970027077418,
+  "init_contiguity": 4.093084886128365,
+  "final_contiguity": 4.094202898550725,
+  "cont_delta": 0.0011180124223599819,
+  "cont_pct": 0.027314664873369865,
+  "init_baimu_count": 49,
+  "final_baimu_count": 46,
+  "baimu_count_delta": -3,
+  "init_baimu_area_ha": 78713.35135426883,
+  "final_baimu_area_ha": 78721.35763468526,
+  "baimu_area_delta_ha": 8.006280416440964,
+  "total_reward": 6.149181118827545,
+  "wall_seconds": 72.95178890228271,
+  "exchange_pairs_used": 100,
+  "extra": {
+    "pop_size": 100,
+    "generations": 500,
+    "best_fitness": 6.149181118827545,
+    "ga_elapsed_seconds": 72.93573546409607,
+    "ga_final_avg_slope": 0.7148673087313012,
+    "ga_final_contiguity": 4.094202898550725
+  }
+}
