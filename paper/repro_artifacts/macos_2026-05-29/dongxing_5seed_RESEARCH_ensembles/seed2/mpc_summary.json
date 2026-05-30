@@ -1,0 +1,45 @@
+{
+  "config": {
+    "horizon": 5,
+    "top_k": 50,
+    "gamma": 0.99,
+    "continuation": "greedy",
+    "scoring": "reward",
+    "n_episodes": 1,
+    "threads": 0,
+    "max_steps": 100,
+    "n_blocks": 3711,
+    "n_parcels": 76377,
+    "prepared_dir": "/Users/zhouning/arcgis-farmland-mpc/runs/dongxing/prepared",
+    "proj_crs": null,
+    "reward_overrides": {}
+  },
+  "ensemble": {
+    "n_members": 3,
+    "paths": [
+      "ensemble_member0.onnx",
+      "ensemble_member1.onnx",
+      "ensemble_member2.onnx"
+    ]
+  },
+  "results": [
+    {
+      "episode": 0,
+      "seed": 2,
+      "slope_change_pct": -0.41673571114585917,
+      "cont_change": 0.03948922027375712,
+      "baimu_count_change": -20,
+      "baimu_area_change_ha": 502.51610348786113,
+      "total_reward": 62.88455122106378,
+      "steps_run": 100,
+      "mean_step_time_s": 4.590051975250244,
+      "total_time_s": 460.84636211395264
+    }
+  ],
+  "aggregate": {
+    "slope_pct_mean": -0.41673571114585917,
+    "slope_pct_std": 0.0,
+    "cont_mean": 0.03948922027375712,
+    "baimu_ha_mean": 502.51610348786113
+  }
+}

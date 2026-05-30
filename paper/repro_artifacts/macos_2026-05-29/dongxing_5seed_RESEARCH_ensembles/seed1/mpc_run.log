@@ -1,0 +1,25 @@
+2026-05-30 13:57:18,408 INFO [MPC] horizon=5 top_k=50 gamma=0.99 continuation=greedy scoring=reward episodes=1 threads=0
+2026-05-30 13:57:18,408 INFO [MPC] ensemble_dir = /Users/zhouning/arcgis-farmland-mpc/runs/dongxing/prepared/research_neijiang_seed1
+2026-05-30 13:57:18,408 INFO [MPC] prepared_dir = /Users/zhouning/arcgis-farmland-mpc/runs/dongxing/prepared
+2026-05-30 13:57:18,412 INFO [MPC] Loaded 3 ONNX members: ensemble_member0.onnx, ensemble_member1.onnx, ensemble_member2.onnx
+2026-05-30 13:57:18,413 INFO [MPC] Building CountyLevelEnv via blocks_env.make_env (~30-70s data load)...
+2026-05-30 13:57:33,794 INFO [MPC] env built in 15.4s; n_blocks=3711, max_steps=100, n_parcels=76377
+2026-05-30 13:57:33,795 INFO 
+[MPC] === Episode 1/1 (seed=1) ===
+2026-05-30 13:58:21,944 INFO     step  10/100 slope=-0.0400% cont=+0.0054 baimu_ha=+127.2 mpc_step=6.04s
+2026-05-30 13:59:08,924 INFO     step  20/100 slope=-0.1032% cont=+0.0084 baimu_ha=+132.5 mpc_step=4.52s
+2026-05-30 13:59:53,822 INFO     step  30/100 slope=-0.1837% cont=+0.0117 baimu_ha=+128.1 mpc_step=4.46s
+2026-05-30 14:00:39,050 INFO     step  40/100 slope=-0.2083% cont=+0.0165 baimu_ha=+192.6 mpc_step=4.51s
+2026-05-30 14:01:24,206 INFO     step  50/100 slope=-0.2528% cont=+0.0199 baimu_ha=+230.5 mpc_step=4.51s
+2026-05-30 14:02:09,216 INFO     step  60/100 slope=-0.2939% cont=+0.0247 baimu_ha=+284.4 mpc_step=4.51s
+2026-05-30 14:02:54,712 INFO     step  70/100 slope=-0.3139% cont=+0.0290 baimu_ha=+370.6 mpc_step=4.54s
+2026-05-30 14:03:40,269 INFO     step  80/100 slope=-0.3487% cont=+0.0313 baimu_ha=+388.2 mpc_step=4.52s
+2026-05-30 14:04:25,450 INFO     step  90/100 slope=-0.3955% cont=+0.0336 baimu_ha=+385.7 mpc_step=4.46s
+2026-05-30 14:05:10,642 INFO     step 100/100 slope=-0.4379% cont=+0.0368 baimu_ha=+380.0 mpc_step=4.54s
+2026-05-30 14:05:10,642 INFO [MPC] ep 0: slope=-0.4379% cont=+0.0368 baimu_ha=+379.98 time=456.8s
+2026-05-30 14:05:10,642 INFO 
+2026-05-30 14:05:10,642 INFO [MPC] ==== Summary ====
+2026-05-30 14:05:10,642 INFO   slope: -0.4379% +- 0.0000
+2026-05-30 14:05:10,642 INFO   cont : +0.0368
+2026-05-30 14:05:10,642 INFO   baimu: +379.98 ha
+2026-05-30 14:05:10,642 INFO   outputs written to /Users/zhouning/arcgis-farmland-mpc/paper/repro_artifacts/macos_2026-05-29/dongxing_5seed_RESEARCH_ensembles/seed1

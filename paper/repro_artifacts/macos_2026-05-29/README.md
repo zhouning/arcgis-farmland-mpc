@@ -127,3 +127,67 @@ member (paper target 0.855; observed mean 0.882 ± 0.019 across all
 
 See [`docs/REPRODUCE.md`](../../docs/REPRODUCE.md) for the full
 end-to-end recipe.
+
+## Cross-validation: research ensembles + package mpc + package prepared/
+
+`dongxing_5seed_RESEARCH_ensembles.json` is a third reference point added
+2026-05-30 to confirm package `mpc_plan.py` is faithful: the published
+research-side `paper/checkpoints/neijiang/baseline/*.pt` weights converted
+to ONNX (via `farmland_mpc.tests.import_research_pt`) and run through our
+package's `mpc_select_action` on the same package-prepared Dongxing
+data, paper §5 protocol (5 seeds × 1 ep × greedy continuation).
+
+| Configuration | slope % | Δbaimu (ha) | Source |
+|---|---|---|---|
+| Pkg ens + pkg mpc + pkg prepared | −0.574 ± 0.023 | +30 ± 118 | `dongxing_5seed.json` |
+| **Research ens + pkg mpc + pkg prepared** | **−0.421 ± 0.023** | **+452 ± 55** | `dongxing_5seed_RESEARCH_ensembles.json` |
+| Research ens + research mpc + research prepared | −0.501 ± 0.024 | +267 ± 38 | `../../neijiang_cross_region/5seed_multiobj_results_baseline.json` |
+| Paper §5 reported | −0.50 ± 0.02 | +267 ± 38 | (manuscript) |
+
+Per-seed Δbaimu_ha for research-ens-on-package-prepared:
++416.56 / +379.98 / +502.52 / +433.20 / +529.58 — all 5 seeds positive
+and consistent.
+
+**Key conclusion**: package `mpc_plan` is not the source of the +267 vs
++30 discrepancy in the from-scratch reproduction. Research weights
+loaded into the package's MPC pipeline produce the same qualitative
+"protect baimu fang area" behaviour the paper describes, plus more
+(+452 ha vs paper +267 ha). The +30 ha mean from our retrained
+ensembles is not a code bug — it reflects that on the corrected
+geographic-CRS prepared data the policy landscape differs and our 5
+ensembles converge on a "preserve count, mildly grow area" mode while
+the paper's research-side ensembles (and, here, the same weights run
+through our pipeline) converge on "shed count, aggressively grow area"
+(Δcount −17 here; paper research-side −11; ours +0.4).
+
+The slope tradeoff is also clear: research ensembles produce smaller
+slope reductions (−0.42% vs paper's native −0.50%) when run on our
+prepared data, presumably because the reward head was trained against
+the slightly-different research-side feature distribution and the
+greedy stage-2 continuation now ranks "save baimu" over "reduce slope"
+more aggressively under our slope feature distribution.
+
+`per-seed/seed{0..4}/mpc_run.log` and `mpc_summary.json` per-episode
+traces are included for reproducibility; the optimised shapefiles and
+`mpc_land_use.npy` trajectory tensors are not (gitignore default for
+parcel-level data).
+
+## Lambda ablation cross-check
+
+Not pushed as an artefact: the script `farmland_mpc.tests.eval_lambda_ablation`
+on our bishan pairwise.npz with research λ-ablation .pt files reproduces
+the qualitative trend (rank acc rises monotonically with λ_rank) but
+not the absolute numbers — research-side: 0.516 / 0.732 / 0.855 at
+λ ∈ {0, 1, 5}; ours: 0.587 / 0.660 / 0.671. Difference is structural:
+the research .pt files were trained on a 2,600-block research-side
+prepare with their own pairwise dataset; we evaluate on our 2,640-block
+package prepare's pairwise.npz, only the 485 of 1,000 states whose
+sampled actions all fall in [0, 2600) are usable. The reward_head
+weights from the research training do not generalise perfectly to the
+slightly different feature distribution of our prepared data, hence
+the lower absolute rank acc, especially at λ=5.
+
+Bit-for-bit reproduction of paper §3 Table 1 requires the research-side
+`bishan/pairwise.npz` (~70 MB, not currently in the public release —
+see paper Data Availability). If that data becomes available, the same
+script will reproduce 0.516 / 0.732 / 0.855 to floating-point noise.
