@@ -115,6 +115,9 @@ def sample(
     seed: int = typer.Option(0, "--seed"),
     proj_crs: Optional[str] = typer.Option(None, "--crs",
         help="Forwarded to make_env. Defaults to whatever the env factory picks."),
+    env_kind: str = typer.Option("county", "--env",
+        help="county (default; CountyLevelEnv on cadastral DLTB) | "
+             "restoration (RestorationEnv on planning-unit attributes)."),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
     """Phase B: sample transitions + pairwise data from the prepared environment."""
@@ -128,6 +131,7 @@ def sample(
         n_pairwise_actions=n_pairwise_actions,
         seed=seed,
         proj_crs=proj_crs,
+        env_kind=env_kind,
     )
     typer.echo(
         f"Phase B done -> {summary['transitions']['n_transitions']} transitions, "
@@ -196,6 +200,9 @@ def plan(
     forest_dlbm: str = typer.Option("031", "--forest-dlbm"),
     baimu_area_penalty: Optional[float] = typer.Option(None, "--baimu-area-penalty",
         help="Override env baimu_area_penalty (default 2000.0; paper Eq.1 implies 0)."),
+    env_kind: str = typer.Option("county", "--env",
+        help="county (default; CountyLevelEnv) | "
+             "restoration (RestorationEnv on planning-unit attributes)."),
     verbose: bool = typer.Option(False, "--verbose", "-v"),
 ) -> None:
     """Phase D: MPC planning. Writes per-step traces and (optionally) an optimised DLTB shapefile."""
@@ -214,6 +221,7 @@ def plan(
         scoring=scoring,
         threads=threads,
         seed_offset=seed_offset,
+        env_kind=env_kind,
         prepared_dir=str(prepared_dir),
         proj_crs=proj_crs,
         output_fc=str(output_fc) if output_fc else None,

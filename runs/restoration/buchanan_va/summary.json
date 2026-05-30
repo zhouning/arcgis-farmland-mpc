@@ -1,0 +1,28 @@
+{
+  "aml_points": 1249,
+  "flowlines": 3157,
+  "planning_units": 562,
+  "candidate_units": 522,
+  "adjacency_edges": 2061,
+  "mean_slope_deg": 15.133,
+  "files": [
+    "buchanan_county_boundary.geojson",
+    "cb_2023_us_county_500k.zip",
+    "eamlis_buchanan_va.csv",
+    "eamlis_buchanan_va.geojson",
+    "eamlis_buchanan_va_raw.geojson",
+    "metadata.json",
+    "nhd_flowline_buchanan.geojson",
+    "nhd_flowline_buchanan_raw.geojson",
+    "planning_units_2km.geojson",
+    "planning_units_2km_adjacency.csv",
+    "planning_units_2km_attributes.csv",
+    "planning_units_2km_candidates.geojson",
+    "preview.png",
+    "README.md",
+    "scenario_config.json",
+    "usgs_3dep_dem_buchanan_900x700.tif",
+    "usgs_3dep_dem_request.json",
+    "usgs_3dep_slope_deg_buchanan.tif"
+  ]
+}

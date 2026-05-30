@@ -1,0 +1,27 @@
+{
+  "units": 420,
+  "edges": 1553,
+  "area_ha_total": 179999.99,
+  "land_type_counts": {
+    "mixed_rural_land": 314,
+    "degraded_forest": 58,
+    "abandoned_mine": 28,
+    "riparian_buffer": 20
+  },
+  "mean_slope": 1.531,
+  "mean_priority": 0.5123,
+  "files": [
+    "adjacency_edges.csv",
+    "ecological_sources.geojson",
+    "preview.png",
+    "raster_grid_meta.json",
+    "README.md",
+    "restoration_units.geojson",
+    "restoration_units_attributes.csv",
+    "scenario_config.json",
+    "settlements.geojson",
+    "synthetic_dem.npy",
+    "synthetic_slope_deg.npy",
+    "water_network.geojson"
+  ]
+}

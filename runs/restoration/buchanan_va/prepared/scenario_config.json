@@ -1,0 +1,33 @@
+{
+  "case_name": "buchanan",
+  "feature_cols": [
+    "row",
+    "col",
+    "area_ha",
+    "aml_count",
+    "severity_sum",
+    "severity_mean",
+    "unfunded_cost_sum",
+    "dist_water_m",
+    "water_km",
+    "slope_deg_mean",
+    "risk_index",
+    "water_priority",
+    "restoration_cost_proxy",
+    "benefit_proxy",
+    "priority_score",
+    "candidate"
+  ],
+  "reward_terms": {
+    "risk_index": 0.45,
+    "water_priority": 0.25,
+    "connectivity": 0.2,
+    "cost_penalty": -0.1
+  },
+  "cost_col": "restoration_cost_proxy",
+  "budget": 200000.0,
+  "max_steps": 50,
+  "n_units": 562,
+  "n_candidates": 522,
+  "n_edges": 2061
+}

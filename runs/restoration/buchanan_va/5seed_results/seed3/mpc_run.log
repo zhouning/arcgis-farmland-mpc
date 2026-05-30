@@ -1,0 +1,20 @@
+2026-05-30 19:43:19,168 INFO [MPC] horizon=5 top_k=50 gamma=0.99 continuation=greedy scoring=reward episodes=1 threads=0
+2026-05-30 19:43:19,168 INFO [MPC] ensemble_dir = /Users/zhouning/arcgis-farmland-mpc/runs/restoration/buchanan_va/prepared/ensemble_seed3
+2026-05-30 19:43:19,168 INFO [MPC] prepared_dir = /Users/zhouning/arcgis-farmland-mpc/runs/restoration/buchanan_va/prepared
+2026-05-30 19:43:19,172 INFO [MPC] Loaded 3 ONNX members: ensemble_member0.onnx, ensemble_member1.onnx, ensemble_member2.onnx
+2026-05-30 19:43:19,172 INFO [MPC] Building RestorationEnv via restoration_env.make_restoration_env (~1s data load)...
+2026-05-30 19:43:19,175 INFO [MPC] env built in 0.0s; n_blocks=562, max_steps=50, n_parcels=562
+2026-05-30 19:43:19,175 INFO 
+[MPC] === Episode 1/1 (seed=3) ===
+2026-05-30 19:43:24,976 INFO     step  10/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=0.58s
+2026-05-30 19:43:30,678 INFO     step  20/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=0.57s
+2026-05-30 19:43:36,390 INFO     step  30/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=0.57s
+2026-05-30 19:43:42,082 INFO     step  40/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=0.56s
+2026-05-30 19:43:47,769 INFO     step  50/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=0.56s
+2026-05-30 19:43:47,769 INFO [MPC] ep 0: total_reward=+229.35 n_selected=50 budget_used=132004.2/200000.0 (66.0%) time=28.6s
+2026-05-30 19:43:47,770 INFO 
+2026-05-30 19:43:47,770 INFO [MPC] ==== Summary ====
+2026-05-30 19:43:47,770 INFO   slope: +0.0000% +- 0.0000
+2026-05-30 19:43:47,770 INFO   cont : +0.0000
+2026-05-30 19:43:47,770 INFO   baimu: +0.00 ha
+2026-05-30 19:43:47,770 INFO   outputs written to /Users/zhouning/arcgis-farmland-mpc/runs/restoration/buchanan_va/5seed_results/seed3

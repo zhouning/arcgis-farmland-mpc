@@ -56,6 +56,14 @@ _STATE_ATTRS = [
 
 
 def _snapshot(env):
+    """Capture env state for restoration after a pairwise rollout.
+
+    If the env exposes ``snapshot()`` (e.g. RestorationEnv), use that --
+    it is the env author's authoritative state surface. Otherwise fall back
+    to the per-attribute capture below for CountyLevelEnv.
+    """
+    if hasattr(env, "snapshot") and callable(env.snapshot):
+        return env.snapshot()
     snap = {}
     for attr in _STATE_ATTRS:
         val = getattr(env, attr)
@@ -64,6 +72,15 @@ def _snapshot(env):
 
 
 def _restore(env, snap):
+    """Restore env state captured by ``_snapshot``.
+
+    Mirrors ``_snapshot``: prefer the env's own ``restore()`` method if it
+    exposes one; otherwise treat ``snap`` as the per-attribute dict
+    produced by the fallback path.
+    """
+    if hasattr(env, "restore") and callable(env.restore):
+        env.restore(snap)
+        return
     for attr, val in snap.items():
         if isinstance(val, np.ndarray):
             getattr(env, attr)[...] = val
@@ -91,15 +108,22 @@ def _assert_finite(arrays: dict, label: str) -> None:
             )
 
 
-def _import_make_env():
-    """Resolve ``make_env`` from whichever package layout is available.
+def _import_make_env(env_kind: str = "county"):
+    """Resolve ``make_env`` from whichever package layout / env-kind applies.
 
-    Native open-source layout (``farmland_mpc.blocks_env``) wins if present;
-    fallback is the ArcGIS Pro toolbox layout (``core.blocks_env``). The
-    two implementations are intended to stay in sync; we keep both paths
-    only so this module works inside the toolbox today and inside the
-    standalone CLI tomorrow.
+    For the default ``county`` env, returns ``blocks_env.make_env`` (the
+    region-agnostic farmland CountyLevelEnv factory). For ``restoration``
+    returns ``restoration_env.make_restoration_env`` (the natural-resources
+    selection-priority env). The two factories share the same call shape
+    ``factory(prepared_dir=...)`` so the rest of ``sample.run`` is unchanged.
     """
+    if env_kind == "restoration":
+        try:
+            from farmland_mpc.restoration_env import make_restoration_env  # type: ignore[attr-defined]
+            return make_restoration_env
+        except ImportError:
+            from core.restoration_env import make_restoration_env  # type: ignore[no-redef]
+            return make_restoration_env
     try:
         from farmland_mpc.blocks_env import make_env  # type: ignore[attr-defined]
         return make_env
@@ -239,6 +263,7 @@ def run(prepared_dir: str | Path,
         n_pairwise_actions: int = 50,
         seed: int = 0,
         proj_crs: Optional[str] = None,
+        env_kind: str = "county",
         messages=None) -> dict:
     """Sample transitions + pairwise data from the env built on ``prepared_dir``.
 
@@ -289,8 +314,11 @@ def run(prepared_dir: str | Path,
 
         _say("\n[Tool 2] Building env via make_env ...")
         t0 = time.time()
-        make_env = _import_make_env()
-        env = make_env(prepared_dir=str(prepared_dir), proj_crs=proj_crs)
+        make_env = _import_make_env(env_kind=env_kind)
+        if env_kind == "restoration":
+            env = make_env(prepared_dir=str(prepared_dir))
+        else:
+            env = make_env(prepared_dir=str(prepared_dir), proj_crs=proj_crs)
         _say(f"  env built in {time.time() - t0:.1f}s; "
              f"n_blocks={env.n_blocks}, n_parcels={env.n_parcels}, "
              f"max_steps={env.max_steps}")

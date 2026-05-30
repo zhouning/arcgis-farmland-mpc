@@ -1,0 +1,12 @@
+{
+  "case": "Buchanan County, Virginia abandoned mine land restoration prioritization",
+  "eamlis_source": "https://services5.arcgis.com/wCUM3UgRO334RqJw/arcgis/rest/services/E_AMLIS/FeatureServer/0",
+  "eamlis_query": "tate_Tribe_C_50 = 'VA' AND County = 'BUCHANAN'",
+  "eamlis_records": 1249,
+  "county_boundary_source": "https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_county_500k.zip",
+  "county_geoid": "51027",
+  "notes": [
+    "e-AMLIS web map description says inventory is based on September 2019 data.",
+    "Point records can be aggregated to planning units for restoration prioritization."
+  ]
+}

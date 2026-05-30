@@ -166,6 +166,7 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
         slope_weight=None, cont_weight=None,
         baimu_weight=None, baimu_bonus=None,
         baimu_area_penalty=None,
+        env_kind="county",
         messages=None):
     """MPC planning loop (v0.3).
 
@@ -252,14 +253,26 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
         _say(f"[MPC] Loaded {ensemble.n_members} ONNX members: "
              + ", ".join(os.path.basename(p) for p in ensemble.paths))
 
-        # Build env (v0.2: region-agnostic; v0.3: optional reward weights)
-        _say("[MPC] Building CountyLevelEnv via blocks_env.make_env "
-             "(~30-70s data load)...")
+        # Build env (v0.2: region-agnostic; v0.3: optional reward weights;
+        # v0.4: --env-kind selects between county-level (CountyLevelEnv) and
+        # restoration-priority (RestorationEnv) environments).
+        if env_kind == "restoration":
+            _say("[MPC] Building RestorationEnv via "
+                 "restoration_env.make_restoration_env (~1s data load)...")
+        else:
+            _say("[MPC] Building CountyLevelEnv via blocks_env.make_env "
+                 "(~30-70s data load)...")
         t_env = time.time()
-        try:
-            from farmland_mpc.blocks_env import make_env
-        except ImportError:
-            from core.blocks_env import make_env
+        if env_kind == "restoration":
+            try:
+                from farmland_mpc.restoration_env import make_restoration_env as make_env
+            except ImportError:
+                from core.restoration_env import make_restoration_env as make_env
+        else:
+            try:
+                from farmland_mpc.blocks_env import make_env
+            except ImportError:
+                from core.blocks_env import make_env
 
         env_kwargs = {}
         reward_overrides = {}
@@ -291,8 +304,16 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
                 level="warn",
             )
 
-        env = make_env(prepared_dir=prepared_dir, proj_crs=proj_crs,
-                       **env_kwargs)
+        if env_kind == "restoration":
+            # RestorationEnv reads weights/budget/cost_col from
+            # scenario_config.json in prepared/, so it ignores reward kwargs.
+            if reward_overrides:
+                _say("[MPC] (restoration env) reward overrides are ignored; "
+                     "edit scenario_config.json before training.", level="warn")
+            env = make_env(prepared_dir=prepared_dir)
+        else:
+            env = make_env(prepared_dir=prepared_dir, proj_crs=proj_crs,
+                           **env_kwargs)
         if max_steps is not None and max_steps > 0:
             env.max_steps = int(max_steps)
             _say(f"[MPC] env.max_steps capped to {env.max_steps} for smoke test")
@@ -339,7 +360,7 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
             info = _run_episode(env, ensemble, horizon, top_k, gamma,
                                 continuation, scoring, seed, _progress)
             ep_time = time.time() - t0
-            results.append({
+            record = {
                 "episode": ep, "seed": seed,
                 "slope_change_pct": float(info.get("slope_change_pct", 0.0)),
                 "cont_change": float(info.get("cont_change", 0.0)),
@@ -349,11 +370,28 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
                 "steps_run": int(info.get("steps_run", 0)),
                 "mean_step_time_s": float(info.get("mean_step_time", 0.0)),
                 "total_time_s": float(ep_time),
-            })
-            _say(f"[MPC] ep {ep}: slope={results[-1]['slope_change_pct']:+.4f}% "
-                 f"cont={results[-1]['cont_change']:+.4f} "
-                 f"baimu_ha={results[-1]['baimu_area_change_ha']:+.2f} "
-                 f"time={ep_time:.1f}s")
+            }
+            # For RestorationEnv add the natural-resources-specific summary
+            # (n_selected, budget_used, per-component cumulative rewards).
+            if env_kind == "restoration":
+                record["n_selected"] = int(env.selected.sum())
+                record["budget_used"] = float(env.budget_used)
+                record["budget_fraction_used"] = float(env.budget_used / max(env.budget, 1e-6))
+                # Per-component cumulative reward (first 8 reward terms)
+                for j, term_name in enumerate(list(env.reward_terms.keys())[:8]):
+                    record[f"cum_{term_name}"] = float(env._cum_reward_components[j])
+            results.append(record)
+            if env_kind == "restoration":
+                _say(f"[MPC] ep {ep}: total_reward={record['total_reward']:+.2f} "
+                     f"n_selected={record['n_selected']} "
+                     f"budget_used={record['budget_used']:.1f}/{env.budget:.1f} "
+                     f"({100*record['budget_fraction_used']:.1f}%) "
+                     f"time={ep_time:.1f}s")
+            else:
+                _say(f"[MPC] ep {ep}: slope={record['slope_change_pct']:+.4f}% "
+                     f"cont={record['cont_change']:+.4f} "
+                     f"baimu_ha={record['baimu_area_change_ha']:+.2f} "
+                     f"time={ep_time:.1f}s")
 
             np.save(out_dir / "mpc_land_use.npy", env.land_use.astype(np.int8))
 

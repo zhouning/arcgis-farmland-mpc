@@ -1,0 +1,20 @@
+2026-05-30 19:46:25,436 INFO [MPC] horizon=5 top_k=50 gamma=0.99 continuation=greedy scoring=reward episodes=1 threads=0
+2026-05-30 19:46:25,436 INFO [MPC] ensemble_dir = runs/restoration/buchanan_va/prepared/ensemble_lam0
+2026-05-30 19:46:25,436 INFO [MPC] prepared_dir = runs/restoration/buchanan_va/prepared
+2026-05-30 19:46:25,455 INFO [MPC] Loaded 3 ONNX members: ensemble_member0.onnx, ensemble_member1.onnx, ensemble_member2.onnx
+2026-05-30 19:46:25,455 INFO [MPC] Building RestorationEnv via restoration_env.make_restoration_env (~1s data load)...
+2026-05-30 19:46:25,668 INFO [MPC] env built in 0.2s; n_blocks=562, max_steps=50, n_parcels=562
+2026-05-30 19:46:25,668 INFO 
+[MPC] === Episode 1/1 (seed=0) ===
+2026-05-30 19:46:34,352 INFO     step  10/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=0.83s
+2026-05-30 19:46:42,919 INFO     step  20/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=0.89s
+2026-05-30 19:46:52,728 INFO     step  30/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=1.32s
+2026-05-30 19:47:06,692 INFO     step  40/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=1.33s
+2026-05-30 19:47:20,414 INFO     step  50/50 slope=+0.0000% cont=+0.0000 baimu_ha=+0.0 mpc_step=1.30s
+2026-05-30 19:47:20,414 INFO [MPC] ep 0: total_reward=+229.33 n_selected=50 budget_used=132004.2/200000.0 (66.0%) time=54.7s
+2026-05-30 19:47:20,415 INFO 
+2026-05-30 19:47:20,415 INFO [MPC] ==== Summary ====
+2026-05-30 19:47:20,415 INFO   slope: +0.0000% +- 0.0000
+2026-05-30 19:47:20,415 INFO   cont : +0.0000
+2026-05-30 19:47:20,415 INFO   baimu: +0.00 ha
+2026-05-30 19:47:20,415 INFO   outputs written to runs/restoration/buchanan_va/plan_lam0

@@ -1,0 +1,25 @@
+{
+  "case_name": "synthetic_mine_restoration_priority",
+  "description": "Synthetic natural-resources case: abandoned mine and degraded-slope restoration priority planning under budget, hydrological-risk, and habitat-connectivity objectives.",
+  "spatial_unit": "restoration polygon",
+  "action": "select one restoration unit at each planning step; selected units become restored and cannot be selected again",
+  "episode_length": 60,
+  "budget": 45434.91,
+  "hard_constraints": [
+    "unit must not have been restored previously",
+    "cumulative restoration cost must stay within budget",
+    "at least 25% of selected units should be within 2 km of water network for watershed-risk scenario, configurable as a soft or hard constraint",
+    "protected ecological-source polygons are not restoration candidates but contribute connectivity reward"
+  ],
+  "reward_terms": {
+    "risk_reduction": "sum risk_reduction of selected units",
+    "habitat_connectivity": "bonus when selected units touch existing ecological sources or already restored units, weighted by shared boundary length and biodiversity",
+    "water_quality": "sum water_gain of selected units near streams",
+    "equity_exposure": "sum human_exposure-weighted risk reduction near settlements",
+    "cost_penalty": "rest_cost / budget"
+  },
+  "suggested_reward": "r = 0.35*risk_reduction + 0.25*habitat_connectivity + 0.20*water_gain + 0.10*equity_exposure - 0.10*cost_penalty",
+  "n_units": 420,
+  "n_edges": 1553,
+  "crs": "EPSG:3857"
+}

@@ -45,6 +45,9 @@ def main() -> int:
     ap.add_argument("--scoring", type=str, default="reward")
     ap.add_argument("--lambda-rank", type=float, default=5.0,
                     help="Recorded in output for documentation only.")
+    ap.add_argument("--env", dest="env_kind", default="county",
+                    choices=["county", "restoration"],
+                    help="Forwarded to mpc_plan.run as env_kind.")
     args = ap.parse_args()
 
     prepared_dir = args.prepared_dir.resolve()
@@ -80,6 +83,7 @@ def main() -> int:
             scoring=args.scoring,
             prepared_dir=str(prepared_dir),
             seed_offset=seed,  # different episode RNG per ensemble seed
+            env_kind=args.env_kind,
         )
         elapsed = time.time() - t0
         log.info("seed=%d done in %.1fs", seed, elapsed)

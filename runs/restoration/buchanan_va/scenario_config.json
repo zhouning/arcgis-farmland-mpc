@@ -1,0 +1,19 @@
+{
+  "case_name": "buchanan_va_abandoned_mine_restoration",
+  "spatial_unit": "2-km planning grid clipped to Buchanan County boundary",
+  "action": "select one candidate planning unit for restoration or reclamation priority at each step",
+  "episode_length": 50,
+  "budget_proxy": 20000.0,
+  "reward_terms": {
+    "risk_reduction": "risk_index and AML count/severity in selected unit",
+    "water_protection": "water_priority based on NHD flowline distance and density",
+    "connectivity": "bonus for selecting units adjacent to already selected units",
+    "cost_penalty": "restoration_cost_proxy normalized by budget"
+  },
+  "suggested_reward": "r = 0.45*risk_index + 0.25*water_priority + 0.20*adjacency_connectivity - 0.10*cost_penalty",
+  "n_units_all": 562,
+  "n_candidate_units": 522,
+  "n_aml_points": 1249,
+  "n_flowlines_clipped": 3157,
+  "crs_storage": "EPSG:4326 for GeoJSON outputs; metric features computed in EPSG:3857"
+}
