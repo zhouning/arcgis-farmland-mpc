@@ -1,0 +1,92 @@
+{
+  "0.0": {
+    "lambda_rank": 0.0,
+    "mean_pred_reward_std": 0.7150182525316874,
+    "true_reward_std": 0.8109758496284485,
+    "mean_ranking_acc": 0.6017441701969892,
+    "per_member": [
+      {
+        "pred_reward_std_mean": 0.7498059272766113,
+        "pred_reward_std_median": 0.6919392347335815,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.608911134010501,
+        "n_pairs": 122274
+      },
+      {
+        "pred_reward_std_mean": 0.6627297401428223,
+        "pred_reward_std_median": 0.5497938394546509,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.5897410733271178,
+        "n_pairs": 122274
+      },
+      {
+        "pred_reward_std_mean": 0.7325190901756287,
+        "pred_reward_std_median": 0.6000899076461792,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.606580303253349,
+        "n_pairs": 122274
+      }
+    ],
+    "train_time_s": 216.0914967060089
+  },
+  "1.0": {
+    "lambda_rank": 1.0,
+    "mean_pred_reward_std": 0.389328012863795,
+    "true_reward_std": 0.8109758496284485,
+    "mean_ranking_acc": 0.8160224850199823,
+    "per_member": [
+      {
+        "pred_reward_std_mean": 0.350693941116333,
+        "pred_reward_std_median": 0.2549055814743042,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.8077023733581955,
+        "n_pairs": 122274
+      },
+      {
+        "pred_reward_std_mean": 0.4352675974369049,
+        "pred_reward_std_median": 0.32345205545425415,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.8227750789211116,
+        "n_pairs": 122274
+      },
+      {
+        "pred_reward_std_mean": 0.382022500038147,
+        "pred_reward_std_median": 0.262287437915802,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.8175900027806402,
+        "n_pairs": 122274
+      }
+    ],
+    "train_time_s": 1572.3838613033295
+  },
+  "5.0": {
+    "lambda_rank": 5.0,
+    "mean_pred_reward_std": 0.1833225687344869,
+    "true_reward_std": 0.8109758496284485,
+    "mean_ranking_acc": 0.8550523142014383,
+    "per_member": [
+      {
+        "pred_reward_std_mean": 0.19153521955013275,
+        "pred_reward_std_median": 0.17506688833236694,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.8563881119453032,
+        "n_pairs": 122274
+      },
+      {
+        "pred_reward_std_mean": 0.1777166724205017,
+        "pred_reward_std_median": 0.16749390959739685,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.8502461684413694,
+        "n_pairs": 122274
+      },
+      {
+        "pred_reward_std_mean": 0.18071581423282623,
+        "pred_reward_std_median": 0.1664872169494629,
+        "true_reward_std_mean": 0.8109758496284485,
+        "ranking_acc": 0.8585226622176424,
+        "n_pairs": 122274
+      }
+    ],
+    "train_time_s": 1517.8552000522614
+  }
+}
