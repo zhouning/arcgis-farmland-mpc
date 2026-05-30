@@ -1,0 +1,53 @@
+{
+  "config": {
+    "horizon": 5,
+    "top_k": 50,
+    "gamma": 0.99,
+    "continuation": "greedy",
+    "scoring": "reward",
+    "n_episodes": 1,
+    "threads": 0,
+    "max_steps": 60,
+    "n_blocks": 420,
+    "n_parcels": 420,
+    "prepared_dir": null,
+    "proj_crs": null,
+    "reward_overrides": {}
+  },
+  "ensemble": {
+    "n_members": 3,
+    "paths": [
+      "ensemble_member0.onnx",
+      "ensemble_member1.onnx",
+      "ensemble_member2.onnx"
+    ]
+  },
+  "results": [
+    {
+      "episode": 0,
+      "seed": 2,
+      "slope_change_pct": 0.0,
+      "cont_change": 0.0,
+      "baimu_count_change": 0,
+      "baimu_area_change_ha": 0.0,
+      "total_reward": 8115.576872835296,
+      "steps_run": 49,
+      "mean_step_time_s": 0.6821038041796003,
+      "total_time_s": 33.42634606361389,
+      "n_selected": 49,
+      "budget_used": 45224.621200000016,
+      "budget_fraction_used": 0.9953716470440904,
+      "cum_risk_reduction": 3309.4614,
+      "cum_habitat_gain": 2902.9491499999986,
+      "cum_water_gain": 1901.8583600000004,
+      "cum_connectivity": 1.4075000000000004,
+      "cum_cost_penalty": -0.099537164704409
+    }
+  ],
+  "aggregate": {
+    "slope_pct_mean": 0.0,
+    "slope_pct_std": 0.0,
+    "cont_mean": 0.0,
+    "baimu_ha_mean": 0.0
+  }
+}
