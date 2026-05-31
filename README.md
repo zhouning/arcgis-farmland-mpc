@@ -1,28 +1,32 @@
 # ArcGIS Farmland MPC
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zhouning/arcgis-farmland-mpc/blob/main/notebooks/farmland_mpc_colab_demo.ipynb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zhouning/arcgis-farmland-mpc/blob/main/notebooks/farmland_mpc_colab_demo.ipynb)
+[![Paper draft](https://img.shields.io/badge/paper-CommsEE%20submission-brightgreen)](paper/submission_commsee/01_main_manuscript.pdf)
 
-An ArcGIS Pro Python Toolbox **and** a pure-Python CLI for farmland-consolidation
-planning via a contrastive world-model + Model Predictive Control (MPC). The
-same algorithm backs both interfaces; pick whichever fits your workflow.
+End-to-end pipeline for **county-scale farmland-consolidation planning**, runnable on a desktop CPU. The repository contains the trained ensembles, the deterministic synthetic benchmark, the public-data cross-domain test, the ArcGIS Pro toolbox, and the non-commercial Python CLI used to generate the headline results in the accompanying paper.
 
-## 📚 Documentation
+> **Headline result**: on Bishan District, Chongqing (52,515 parcels) the contrastive learned-surrogate + MPC pipeline reduces area-weighted farmland slope by **−1.289 ± 0.079 %** (5 seeds), **1.6× the magnitude** of in-house Centralised-PPO and multi-agent baselines while reducing wall time by roughly two orders of magnitude (8–12 GPU-hours per seed → ~7 minutes per scenario on a 12-thread desktop CPU). The result reproduces on Neijiang Dongxing (76,376 parcels). Under matched 180 s wall budgets, classical operations-research methods (simulated annealing, random restart) reach less than **11%** of the pipeline's reward on the same simulator — the empirical reason the pipeline dominates this domain.
 
-| Document | Audience | Length |
-|----------|----------|--------|
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | First-time deployers | Full install guide for all 3 paths |
-| [docs/QUICKSTART.md](docs/QUICKSTART.md) | Post-deployment | 5-minute end-to-end verification |
-| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Operators | Full pipeline + parameters + troubleshooting |
-| [docs/MACOS.md](docs/MACOS.md) | macOS users | macOS-specific install, Apple Silicon notes, common pitfalls |
-| [docs/DOCKER.md](docs/DOCKER.md) | OS-agnostic users | CLI / JupyterLab / FastAPI form-UI containers |
-| [verification/README.md](verification/README.md) | Reviewers / auditors | 4-layer headline-result verification stack |
-| [benchmark/README.md](benchmark/README.md) | Benchmarkers | Synthetic landscape generator (7 calibrated presets) |
+## What's in this repository
+
+| Path | Contents |
+|------|----------|
+| `farmland_mpc/` | Python algorithm core: env, ensemble runner, MPC planner, contrastive trainer, sampler |
+| `farmland_mpc/tests/` | OR baselines (greedy, SA, NSGA-II, CBC-MILP), simulator-cost sweep, ranking metrics, Pareto sweep |
+| `paper/` | Manuscript drafts (NCS variant, **CommsEE submission variant**), supplementary, cover letter, all figures |
+| `paper/submission_commsee/` | Submission package for *Communications Earth & Environment* |
+| `paper/checkpoints/` | Trained contrastive ensembles for Bishan, Neijiang, restoration cases (~250 MB) |
+| `runs/` | Reproduction artefacts: pairwise datasets, plan results, OR baselines, sim-cost sweeps, ranking metrics |
+| `benchmark/` | Open synthetic farmland benchmark (7 deterministic landscape presets, CC-BY 4.0) |
+| `verification/` | 5-layer independent verification stack (GIS recompute, ensemble subset, true-env ablation, MAE) |
+| `LandUseOptimization_P9.pyt` | ArcGIS Pro Python Toolbox (5 tools) |
+| `notebooks/farmland_mpc_colab_demo.ipynb` | End-to-end Colab demo, no install required |
 
 ## Two ways to deploy
 
-### Option A — Pure Python (recommended for reviewers, reproducibility, headless servers)
+### Option A — Pure Python CLI (recommended for reviewers, headless servers, QGIS users)
 
 ```bash
 git clone https://github.com/zhouning/arcgis-farmland-mpc.git
@@ -32,15 +36,15 @@ conda activate farmland-mpc
 farmland-mpc --help
 ```
 
-No ArcGIS license required. Works on Windows / macOS (Intel + Apple Silicon) / Linux.
-**macOS users**: see [docs/MACOS.md](docs/MACOS.md) for Apple Silicon install notes, brew/proj conflict avoidance, and a per-stage performance table (M3 Max vs i7-13700K).
-Try the [Colab demo](notebooks/farmland_mpc_colab_demo.ipynb) — runs end-to-end in your browser, no install.
+No ArcGIS license required. Works on Windows, macOS (Intel + Apple Silicon), and Linux.
+**macOS users**: see [docs/MACOS.md](docs/MACOS.md) for Apple Silicon notes.
+**Try the [Colab demo](notebooks/farmland_mpc_colab_demo.ipynb)** — runs end-to-end in your browser.
 
 ### Option B — ArcGIS Pro toolbox (GUI for planners)
 
 ```
 1. Copy this repository to the target machine.
-2. In the ArcGIS Python Command Prompt, install the four extras:
+2. In the ArcGIS Python Command Prompt:
      pip install torch --index-url https://download.pytorch.org/whl/cpu
      pip install onnx onnxruntime gymnasium
 3. In ArcGIS Pro: Add Toolbox -> LandUseOptimization_P9.pyt
@@ -50,104 +54,103 @@ Try the [Colab demo](notebooks/farmland_mpc_colab_demo.ipynb) — runs end-to-en
 
 Requires ArcGIS Pro 3.7 + Spatial Analyst + Image Analyst extensions.
 
-Tools 1-3 are a one-time setup per region; Tool 4 is the planning loop
-you re-run for different parameters.
+## Pipeline (4 + 1 tools)
 
-## Pipeline
-
-| # | Tool | Input | Output | Runtime (county scale) |
-|---|---|---|---|---|
-| 1 | Prepare Data & Blocks | DLTB.shp + DEM (+ optional XZQ.shp) | `<prepared_dir>/` | 10 - 15 min |
-| 2 | Sample Transitions | Tool 1 prepared_dir | `<prepared_dir>/tool2/*.npz` | 15 - 25 min |
-| 3 | Train Contrastive Ensemble | Tool 2 npz | `<prepared_dir>/tool3/*.onnx` | 30 - 60 min |
-| 4 | **MPC Planning** | Tool 1 prepared + Tool 3 onnx | `optimized_dltb.shp` | ~7 min / episode |
+| # | Tool | Input | Output | Wall time |
+|---|------|-------|--------|-----------|
+| 1 | Prepare Data & Blocks | DLTB.shp + DEM (+ optional XZQ.shp) | `<prepared_dir>/` | 10–15 min |
+| 2 | Sample Transitions | Tool 1 prepared_dir | `<prepared_dir>/tool2/*.npz` | 15–25 min |
+| 3 | Train Contrastive Ensemble | Tool 2 npz | `<prepared_dir>/tool3/*.onnx` | 30–60 min |
+| 4 | **MPC Planning** | Tool 1 prepared + Tool 3 onnx | `optimized_dltb.shp` | **~7 min / scenario** |
 | 5 | Check Dependencies | (none) | diagnostic log | seconds |
 
-## Pitfalls
+Tools 1–3 run once per region (one-time setup); Tool 4 is the iterated planning loop a planner re-runs under different reward weightings.
 
-1. **Swapping regions requires retraining the ensemble.** `n_blocks` is
-   baked statically into each ONNX member. An ensemble trained on one
-   region will not load against a different region. Tool 4's
-   `assert_compatible` check surfaces this early.
-2. **The default projected CRS (EPSG:32648, UTM Zone 48N) only covers
-   central and western China.** Regions in the east, north-east, or
-   north-west must override `proj_crs` on Tool 1; otherwise slope and
-   area metrics will be wrong. See the user guide for the zone table.
-3. **Tool 1 requires the Spatial Analyst extension.** The Check
-   Dependencies tool blocks the pipeline until this is resolved.
-4. **The reward-weight overrides on Tool 4 are cosmetic unless you
-   retrain the ensemble.** The UI fields change only what `env.step()`
-   reports; MPC's candidate ranking uses the reward head learned by
-   Tool 3, which was trained under a fixed weight set. To actually
-   steer planning, retrain Tools 2 + 3 with the new weights.
+## Reproducibility
 
-## Repository layout
+Everything required to reproduce the paper's qualitative findings is **public now** (not gated on publication):
+
+- **Open synthetic farmland benchmark**: 7 deterministic landscape presets under CC-BY 4.0 (`benchmark/`). End-to-end sufficient to reproduce the contrastive-MPC qualitative findings without any access to restricted cadastral data.
+- **Public-data Buchanan VA mine-restoration cross-domain case**: planning units, OSMRE e-AMLIS extracts, USGS NHD flowlines, USGS 3DEP slope, Census TIGER boundary — all US-government open data (`runs/restoration/buchanan_va/`).
+- **Trained contrastive ensembles**: 5 × 3 ensemble members per case for both Chinese counties + lambda-ablation set + restoration ensembles (`paper/checkpoints/`, ~250 MB).
+- **Aggregated block-level features**: 17-dimensional vectors for all 2,600 Bishan and 3,711 Neijiang blocks plus the anonymised pairwise dataset (`runs/pairwise/`).
+- **All hyperparameters, random seeds, and de-identified training logs** for every reported experiment.
+- **Smoke test**: `bash scripts/smoke_test.sh` runs Tool 1–4 on a 30-block subset in ~70 s as a continuous-integration check.
+
+The raw cadastral records for Bishan and Neijiang are derived from the Third National Land Survey of China and cannot be publicly redistributed under existing data-governance restrictions. The synthetic benchmark and the Buchanan VA case jointly form a fully open reproduction track that does not require restricted-data access.
+
+## Key findings
+
+- **§5 (Bishan/Neijiang real-county results)**: −1.289 ± 0.079 % slope reduction on Bishan, reproducing on Neijiang Dongxing. Five-layer verification stack (independent GIS recomputation, ensemble subset ablation, MAE measurement, true-env ablation, cross-county replication).
+- **§6 (synthetic benchmark)**: Contrastive MPC strongest on 5/7 fragmented landscape presets; GA wins only on the small consolidated preset where the action space is small enough for population search to cover.
+- **§6.5 (cross-domain Buchanan VA)**: Contrastive MPC and MSE-only MPC are statistically indistinguishable on restoration cases — the contrastive intervention is conditional on σ_a/σ_s < 1, the regime to which farmland's geometric reward function belongs but restoration's attribute-lookup reward does not.
+- **§sec:simcost (simulator-cost crossover)**: We sweep ten (case × reward-profile) cells × five injected step delays. The MPC-vs-SA gap is monotonic in step cost, with crossover at ~30 ms/step. Farmland's actual 17.9 ms/step combined with combinatorial cost interactions in the reward function is the empirical reason the pipeline dominates this domain.
+
+## Repository structure
 
 ```
 arcgis-farmland-mpc/
-|-- LandUseOptimization_P9.pyt     # ArcGIS Pro toolbox (load this in Pro)
-|-- core/                          # Algorithm modules (Python 3.13)
-|   |-- blocks_env.py              # Region-agnostic env factory
-|   |-- block_definition.py        # Block segmentation (Paper 3 hybrid)
-|   |-- contrastive_trainer.py     # MSE + margin ranking trainer
-|   |-- county_env.py              # gym.Env, county-scale MDP
-|   |-- ensemble_runner.py         # ONNX runtime wrapper
-|   |-- mpc_plan.py                # Tool 4 entry
-|   |-- prepare_data.py            # Tool 1 entry
-|   |-- sample_transitions.py      # Tool 2 entry
-|   |-- shapefile_io.py            # DLTB read/write helpers
-|   |-- train_ensemble.py          # Tool 3 entry
-|   |-- transition_model.py        # 237K-param transition head
-|-- LICENSE
-|-- README.md
+├── farmland_mpc/                    # Algorithm core (Python 3.13)
+│   ├── blocks_env.py                # Region-agnostic env factory
+│   ├── county_env.py                # Cadastral simulator (gym.Env)
+│   ├── restoration_env.py           # Restoration-case env (5 reward profiles)
+│   ├── contrastive_trainer.py       # MSE + margin ranking trainer
+│   ├── ensemble_runner.py           # ONNX runtime wrapper
+│   ├── mpc_plan.py                  # MPC scoring + commit (Tool 4)
+│   ├── prepare_data.py              # Tool 1
+│   ├── sample_transitions.py        # Tool 2
+│   ├── train_ensemble.py            # Tool 3
+│   ├── transition_model.py          # 237 k-parameter transition head
+│   └── tests/
+│       ├── or_baselines.py          # greedy / SA / NSGA-II / CBC-MILP
+│       ├── eval_ranking_metrics.py  # NDCG, top-K regret, Spearman, Kendall
+│       ├── simulator_cost_sweep.py  # step-delay × method sweep
+│       ├── eval_mpc_multi_ep.py     # multi-episode budget-matched eval
+│       ├── farmland_baselines.py    # SA / random-restart on Bishan
+│       └── pareto_sweep.py          # 7-config Pareto front
+├── benchmark/                       # Synthetic landscape generator + 7 presets (CC-BY 4.0)
+├── verification/                    # Independent GIS recomputation + 4 other layers
+├── paper/                           # Manuscripts and figures
+│   ├── paper9_v7_draft.tex          # Original v7 draft
+│   ├── paper9_v7_draft_ncs.tex      # NCS variant (36 pages, methodological framing)
+│   ├── paper9_v7_draft_commsee.tex  # CommsEE variant (27 pages, application framing)
+│   ├── paper9_v7_supplementary.tex  # Supplementary information
+│   ├── checkpoints/                 # Trained ensembles (~250 MB)
+│   ├── figures_v2/                  # All paper figures (PDF + PNG)
+│   └── submission_commsee/          # Ready-to-submit CommsEE package
+├── runs/                            # Reproduction artefacts (pairwise data, results, sweeps)
+├── docs/                            # Deployment / quickstart / user guide / macOS / Docker
+├── notebooks/farmland_mpc_colab_demo.ipynb
+├── scripts/                         # Pipeline drivers (training grids, eval grids, etc.)
+├── LandUseOptimization_P9.pyt       # ArcGIS Pro Python Toolbox
+├── environment.yml                  # Conda environment definition
+└── LICENSE                          # MIT
 ```
 
-## System requirements
+## Documentation
 
-- **ArcGIS Pro 3.6+** with Spatial Analyst extension
-- **arcgispro-py3** Python environment (Python 3.13) with torch, onnx,
-  onnxruntime, geopandas (all present by default)
-- Extra dependencies not in vanilla arcgispro-py3: `gymnasium`,
-  `libpysal` (install via `conda install -c conda-forge`, not pip, to
-  avoid clobbering numpy/pandas versions).
+| Document | Audience |
+|----------|----------|
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | First-time deployers — install guide for all paths |
+| [docs/QUICKSTART.md](docs/QUICKSTART.md) | Post-deployment 5-minute end-to-end verification |
+| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Operators — full pipeline + parameters + troubleshooting |
+| [docs/MACOS.md](docs/MACOS.md) | macOS install, Apple Silicon notes |
+| [docs/DOCKER.md](docs/DOCKER.md) | CLI / JupyterLab / FastAPI form-UI containers |
+| [verification/README.md](verification/README.md) | Reviewers — 5-layer headline-result verification stack |
+| [benchmark/README.md](benchmark/README.md) | Benchmarkers — synthetic landscape generator |
+| [paper/submission_commsee/README.md](paper/submission_commsee/README.md) | CommsEE submission package reference |
 
-The Check Dependencies tool (#5) validates all of the above before you
-run any pipeline stage.
+## Operational pitfalls
 
-## Input data schema
-
-Tool 1 expects a standard [Third National Land Survey][tnls] DLTB
-shapefile with these fields:
-
-- `BSM` (text, unique patch ID)
-- `DLBM` (text, 3-digit land use code, e.g. `011` for paddy field)
-- `DLMC` (text, land use name)
-- `QSDWDM` (text, ownership unit code; first 9 digits encode township)
-- Standard `Shape_Length`, `Shape_Area`
-
-Plus a DEM raster for slope derivation. An optional XZQ (administrative
-boundary) shapefile provides the township Chinese labels; if absent,
-Tool 1 falls back to `QSDWDM` prefix matching.
-
-[tnls]: https://en.wikipedia.org/wiki/Third_National_Land_Survey_of_China
-
-## Method overview
-
-The pipeline trains an ensemble of three contrastive world-model
-members on (state, action, reward, next_state) tuples sampled by random
-policy plus pairwise margin-ranking pairs. At planning time, an MPC
-loop rolls out the top-K candidate blocks for H steps under the
-ensemble and commits the one whose rollout accumulates the highest
-predicted discounted return. The objective combines slope reduction
-(more parcels on flat, cultivable land), contiguity (reducing patch
-fragmentation), and baimu-fang area (aggregate areas exceeding the
-100-mu / 6.67-ha threshold used in Chinese land-use planning).
+1. **Region swaps require retraining the ensemble.** `n_blocks` is baked statically into each ONNX member. Tool 4's `assert_compatible` check surfaces this early.
+2. **Default projected CRS (EPSG:32648, UTM Zone 48N) only covers central and western China.** Override `proj_crs` on Tool 1 for other regions; otherwise slope and area metrics are computed in a distorted frame.
+3. **Tool 1 requires the Spatial Analyst extension.** The Check Dependencies tool blocks the pipeline until this is resolved.
+4. **The reward-weight overrides on Tool 4 are cosmetic without retraining.** UI fields change only what `env.step()` reports; MPC's candidate ranking uses the reward head learned by Tool 3 under a fixed weight set. To actually steer planning, retrain Tools 2 + 3 with the new weights.
 
 ## Citation
 
-If you use this toolbox in academic work, please cite the underlying
-research paper (citation TBD; author: Ning Zhou, Peking University).
+A peer-reviewed publication is currently under submission to *Communications Earth & Environment*. The current preprint is at `paper/submission_commsee/01_main_manuscript.pdf`. Citation details will be updated upon acceptance.
 
 ## License
 
-MIT. See `LICENSE`.
+MIT (code). CC-BY 4.0 (synthetic benchmark). See [LICENSE](LICENSE).
