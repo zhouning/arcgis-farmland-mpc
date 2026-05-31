@@ -1,0 +1,32 @@
+\documentclass[11pt]{letter}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{parskip}
+\usepackage{hyperref}
+
+\signature{Ning Zhou\\
+Public R\&D Center, SuperMap Software Co., Ltd.\\
+Beijing, China\\
+\href{mailto:zhouning1@supermap.com}{zhouning1@supermap.com}}
+
+\address{}
+
+\begin{document}
+
+\begin{letter}{The Editor \\ \textit{Communications Earth \& Environment}}
+
+\opening{Dear Editor,}
+
+We are pleased to submit our manuscript, ``Reproducible AI-driven planning for county-scale farmland consolidation: from cadastral data to optimised plans on a desktop CPU,'' for consideration as a Research Article in \textit{Communications Earth \& Environment}.
+
+Farmland consolidation in mountainous terrain is one of the largest spatial-planning levers for food security, slope erosion control, and rural land governance, yet county-scale optimisation has remained operationally inaccessible to routine planning offices: reinforcement-learning baselines on this task require $8$--$12$ GPU-hours per random seed with non-trivial seed collapse, and classical operations-research methods at matched 180\,s wall-clock budgets reach less than $11\%$ of our pipeline's reward because the simulator's per-step cost ($17.9$\,ms/step) limits their iteration budget below the convergence threshold.
+
+The manuscript reports a learned-surrogate model-predictive-control pipeline that delivers a slope reduction of $-1.289 \pm 0.079\%$ on Bishan District (Chongqing, $52{,}515$ parcels), $1.6\times$ the magnitude reached by in-house centralised-PPO and multi-agent baselines, while reducing wall time by roughly two orders of magnitude (8--12 GPU-hours per seed reduced to $\sim$7\,minutes per scenario on a 12-thread desktop CPU). The result reproduces on Neijiang Dongxing (Sichuan, $76{,}376$ parcels), and underlying gains are validated by independent GIS recomputation directly from the optimised cadastral shapefile.
+
+Four aspects align with the journal's mission. The work is an actionable Earth \& environmental science contribution, packaged as both an ArcGIS Pro Python Toolbox and a non-commercial QGIS-compatible CLI. It is fully reproducible: trained ensembles ($\sim$$60$ checkpoints), a deterministic seven-preset synthetic benchmark under CC-BY 4.0, a complete public-data Buchanan VA mine-restoration cross-domain case (entirely US-government open data), and a reproduction recipe are publicly available now (not gated on publication) at \href{https://github.com/zhouning/arcgis-farmland-mpc}{github.com/zhouning/arcgis-farmland-mpc}. The manuscript treats restricted data transparently: the raw cadastral records for the two Chinese counties cannot be publicly redistributed under data-governance restrictions, but the synthetic benchmark and Buchanan restoration case jointly form a fully open reproduction track requiring no restricted-data access. We close with a falsifiable problem-selection criterion: the pipeline's advantage over classical operations-research baselines holds when simulator step cost exceeds $\sim$$30$\,ms or when reward exhibits combinatorial cost interactions, giving practitioners a concrete two-quantity test applicable to hydrologic-model-driven watershed restoration, integrated power-grid maintenance scheduling, and other Earth-science problems with expensive simulators.
+
+The manuscript has not been submitted elsewhere. The authors have no competing interests.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}
