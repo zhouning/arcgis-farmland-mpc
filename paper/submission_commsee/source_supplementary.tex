@@ -30,7 +30,7 @@
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 
-\title{Supplementary Material for ``Model-based AI planning enables county-scale farmland consolidation in fragmented mountain landscapes''}
+\title{Supplementary Material for ``Reproducible model-based AI planning for county-scale farmland consolidation in fragmented mountain landscapes''}
 
 \author{Ning Zhou and Xiang Jing}
 
@@ -55,6 +55,96 @@ The Centralised PPO and Multi-Agent Reinforcement Learning (MARL) baselines repo
 \paragraph{Multi-Agent Reinforcement Learning (MARL).} A 13-agent variant in which each township is a separate MaskablePPO agent with shared parameters and a centralised value function over the global state, trained jointly. Same hyperparameters as Centralised PPO. 5 seeds, all stable. Cross-seed slope improvement: $-0.81\% \pm 0.10\%$ (CV $\approx 12\%$).
 
 \paragraph{Why these are the relevant baselines.} Both baselines are task-faithful: same environment, same action space, same reward function, same evaluation protocol (5-episode deterministic rollout) as the contrastive MPC pipeline. The wall-time and seed-failure characteristics motivate the search for a less compute-intensive learned-model alternative; the slope-improvement magnitudes ($-0.8\%$ range) provide a non-trivial reference against which the contrastive-MPC result ($-1.289\% \pm 0.079\%$ on Bishan) is then compared.
+
+% ============================================================================
+\section{Real-county initial state}\label{si:counties}
+% ============================================================================
+
+The two real-county datasets anchoring the cadastral evaluation in main-text \S\ref{sec:problem} are summarised in Table~\ref{tab:si-counties}. All values are extracted from the Third National Land Survey records and aggregated to spatial blocks (the planning units used by the model); initial-state metrics are computed from the cadastral data before optimisation.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Real-county initial state for Bishan District (Chongqing) and Neijiang Dongxing District (Sichuan).}
+\label{tab:si-counties}
+\begin{tabular}{lcc}
+\toprule
+ & Bishan, Chongqing & Neijiang Dongxing, Sichuan \\
+\midrule
+Townships                                & 13       & 29       \\
+Cadastral parcels                        & 52{,}515 & 76{,}376 \\
+Spatial blocks (planning units)          & 2{,}600  & 3{,}711  \\
+Initial farmland slope (deg)             & 9.62     & 10.55    \\
+Initial contiguity index                 & 3.59     & 2.63     \\
+Initial \textit{baimu fang} count        & 109      & 384      \\
+Initial \textit{baimu fang} area (ha)    & 46{,}844 & 74{,}342 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\section{Bishan replication regimes: cross-regime reconciliation}\label{si:bishan-regimes}
+% ============================================================================
+
+The main text cites Bishan slope-improvement numbers in three regimes (\S5 ``Three Bishan replication regimes''). The numbers differ along three axes---evaluation protocol, prepare pipeline, and parcel-set policy---and we tabulate them here for transparent cross-reference. All three regimes evaluate the same underlying contrastive-MPC pipeline (\(\lambda_{\text{rank}}{=}5.0\), $H{=}5$, $K{=}50$, greedy continuation, $\gamma{=}0.99$); none is a re-tuning of the algorithm. The shipped ensemble used in regimes B and C is the public release \texttt{paper/checkpoints/bishan/shipped\_onnx/} (3-member ensemble, $\lambda_{\text{rank}}{=}5.0$); the regime-A ensembles are the public release \texttt{paper/checkpoints/bishan/contrastive\_5seed/} (five 3-member ensembles, seeds $0$--$4$).
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{The three Bishan replication regimes. Regime A is the canonical headline of main-text \S5. Regime B is the toolchain replication of main-text \S7. Regime C is the deployment-dataset run that anchors the GIS-grounded verification of main-text Methods \emph{Independent GIS-grounded verification} and \emph{Replacing the ensemble with the true environment}. The cross-regime band ($-1.3$ to $-2.0$ pp on slope) defines the deployment-side variance of the same underlying algorithm; the gap between A and B/C is morphological---the corrected geographic-CRS slope step in the package-side prepare exposes a $\sim$$1.2^{\circ}$ taller initial mean slope, leaving more headroom for reduction within the same $100$-step episode budget.}
+\label{tab:si-bishan-regimes}
+\begin{tabular}{lccc}
+\toprule
+Regime & A (lab headline) & B (toolchain) & C (verification) \\
+\midrule
+Slope change \% & $-1.289 \pm 0.079$ & $-1.544 \pm 0.041$ & $-2.001$ \\
+$\Delta$Contiguity & $+0.0160 \pm 0.0016$ & not reported in main text & $+0.01275$ \\
+$\Delta$Baimu count & $+3.4 \pm 1.0$ & not reported in main text & $+8$ \\
+$\Delta$Baimu (ha) & $-312.2 \pm 34.3$ & not reported in main text & $-473.30$ \\
+\midrule
+Replication unit & 5 ensembles $\times$ 1 ep & 1 ensemble $\times$ 5 ep & 1 ensemble $\times$ 1 ep \\
+Variance estimator & cross-seed (5 ensembles) & cross-episode (5 episodes) & ensemble-subset (3 of 2-of-3) \\
+Prepare pipeline & research-side (legacy) & package-side (corrected CRS) & package-side (corrected CRS) \\
+Initial slope $\bar{\sigma}_0$ & $8.41^{\circ}$ & $9.62^{\circ}$ & $9.62^{\circ}$ \\
+Blocks $N_{\text{blocks}}$ & $2{,}600$ & $2{,}640$ & $2{,}640$ \\
+Parcel set & $52{,}515$ & $53{,}004$ (env) & $53{,}086$ (verification) \\
+Anchor location in main text & \S\ref{sec:counties} prose; SI Table~\ref{tab:si-contrastive-multiobj} & \S\ref{sec:deploy} Methods \texttt{toolchain} & \S\ref{sec:counties} Robustness (i,iii); Methods \\
+Source artefact & \texttt{paper/checkpoints/bishan/contrastive\_5seed/} & \texttt{paper/checkpoints/bishan/shipped\_onnx/} & \texttt{paper/checkpoints/bishan/shipped\_onnx/} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Why three regimes coexist.} The research-side prepare (regime A) was used to generate the paper's headline \S\ref{sec:counties} numbers and the published $\lambda$-ablation Table~\ref{tab:contrastive} of \S\ref{sec:rank} because it is the prepare pipeline against which the in-house DRL baselines were originally trained, ensuring an apples-to-apples comparison. The package-side prepare (regimes B and C) is the public-facing toolchain shipped with the repository; it differs from the research-side prepare in two respects relevant to the present numbers: (a)~it computes block aggregation from the DLTB shapefile directly rather than from a precomputed \texttt{DLTB\_with\_slope.gpkg}, so the block boundaries differ slightly ($2{,}640$ vs.\ $2{,}600$ blocks); (b)~it preserves true non-square pixels of geographic-CRS DEMs (commit \texttt{dc3a01c}), which fixes a slope-underestimation bug in the legacy prepare and exposes a $\sim$$1.2^{\circ}$ taller mean initial slope. Regime A and regimes B/C therefore present the same algorithm operating on slightly different prepared inputs, which we treat as deployment-side variance rather than as an algorithmic effect. The 82-parcel difference between regime-B's env-side count ($53{,}004$) and regime-C's verification-side count ($53{,}086$) is auxiliary: the verification script keeps every parcel with a slope value and a farm/forest \texttt{ORIG\_DLBM} regardless of township-registry membership, while the env enforces township membership; the additional 82 parcels all carry \texttt{CHG\_FLAG}~$=$~0 and contribute zero to every delta.
+
+\paragraph{Cross-regime reproduction by the open-source toolchain.} An end-to-end reproduction of all five \S5 metrics on the package-side prepare from raw DLTB shapefiles plus DEM tiles (\texttt{paper/repro\_artifacts/macos\_2026-05-29/bishan\_5seed.json}) achieves slope $-1.7384 \pm 0.024\%$, contiguity $+0.01442 \pm 0.001$, baimu count $+3.40 \pm 1.36$, baimu area $-478.64 \pm 35.0$\,ha. This is closest in magnitude to regime~B/C and reproduces the qualitative cross-county finding (Bishan loses qualifying area; Dongxing gains it) end-to-end without access to the research-side prepare. A separate package-CLI 5-episode greedy run on the shipped ensemble (\texttt{runs/bishan/mpc\_output/mpc\_summary.json}) yields slope $-2.0392 \pm 0.0010\%$, baimu area $-499.12 \pm 0.17$\,ha, also closest in magnitude to regime C but with the $\sim$0.04 pp offset from the regime-C verification anchor of $-2.001\%$ that we attribute to ensemble-determinism path differences across re-runs of the deployment dataset (the shipped ensemble is deterministic across the action-selection path under fixed seed but the 5-episode greedy mean averages over five episode-0 trajectories that differ only in the episode-level random-rollout step the variance estimator consumes; \S\ref{si:bishan-regimes} Table~\ref{tab:si-bishan-regimes} caption). The full reproduction recipe is documented in \texttt{docs/REPRODUCE.md}; the per-seed JSON outputs are released alongside the toolchain.
+
+% ============================================================================
+\section{Statistical tests reported in the main text}\label{si:stat-tests}
+% ============================================================================
+
+Table~\ref{tab:si-stat-tests} consolidates the inline statistical tests cited in the main text. Tests against in-house DRL baselines (Centralised PPO, MARL) use Welch's two-sample $t$-test on summary statistics (the per-seed run logs of the in-house baselines are not redistributed; means and sample standard deviations are reported in \S\ref{si:s1-drl}). Tests between contrastive ($\lambda{=}5$) and MSE-only ($\lambda{=}0$) ensembles on Buchanan are paired tests over $n{=}5$ matched ensemble training seeds, using both Welch's paired $t$ and a Wilcoxon signed-rank test as a non-parametric robustness check, plus a TOST equivalence test at $\Delta = 0.5$ reward units (${\sim}0.22\%$ of mean reward). All tests are two-sided unless stated otherwise. Effect sizes are Cohen's $d$ (independent) or $d_z$ (paired); pooled standard deviations follow Hedges \& Olkin's convention.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{All inline statistical tests reported in main text \S5 and \S6, with raw inputs and effect sizes. Test types: W2 = Welch's two-sample $t$; PT = paired $t$; WSR = Wilcoxon signed-rank; TOST = two-one-sided-tests equivalence at the stated margin $\Delta$. Cohen's effect-size thresholds (Cohen 1988): $|d|{>}0.8$ large, $|d|{>}1.2$ very large.}
+\label{tab:si-stat-tests}
+\renewcommand{\arraystretch}{1.15}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{4.6cm}p{2.5cm}p{2.4cm}llll}
+\toprule
+Comparison & Group 1 (mean$\pm$sd, $n$) & Group 2 (mean$\pm$sd, $n$) & Test & Statistic & $p$ & Effect size \\
+\midrule
+Bishan slope: contrastive vs Centralised PPO     & $-1.289{\pm}0.079\%$ ($5$) & $-0.79{\pm}0.36\%$ ($5$)   & W2  & $t{=}-3.01$, df${=}4.5$ & $0.034$           & $d{=}-1.90$ (very large) \\
+Bishan slope: contrastive vs MARL                 & $-1.289{\pm}0.079\%$ ($5$) & $-0.81{\pm}0.10\%$ ($5$)   & W2  & $t{=}-8.01$, df${=}7.9$ & $<10^{-4}$        & $d{=}-5.07$ (very large) \\
+Buchanan reward: contrastive ($\lambda{=}5$) vs MSE-only ($\lambda{=}0$) & $229.39{\pm}0.030$ ($5$) & $229.20{\pm}0.157$ ($5$) & PT  & $t{=}+2.61$, df${=}4$  & $0.060$           & $d_z{=}+1.17$ (very large) \\
+Buchanan equivalence at $\Delta{=}\pm 0.5$ reward units                  & — & — & TOST  & $t_{\text{lower}}{=}+9.25$, $t_{\text{upper}}{=}-4.04$, df${=}4$ & $0.008$ & equivalence asserted \\
+Buchanan reward (non-parametric robustness)                              & median $229.40$ ($5$) & median $229.26$ ($5$) & WSR & $W{=}0.0$ & $0.063$ & — \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+The Buchanan paired $t$-test result ($p{=}0.060$, marginally outside the conventional $0.05$ superiority threshold) and the TOST equivalence result ($p_{\text{TOST}}{=}0.008$ at a $\pm 0.22\%$-of-mean-reward margin) jointly support the main-text reading: a small, reproducible, but operationally negligible reward advantage of the contrastive variant in the regime where MSE training already acquires the ranking signal as a by-product. Whether the small superiority signal would survive at $n>5$ is unresolved at the present sample size; the equivalence claim is the conservative reading the main text adopts. Source per-seed reward data: \texttt{runs/restoration/buchanan\_va/5seed\_results.json} (contrastive, $\lambda{=}5$) and \texttt{5seed\_lam0\_results.json} (MSE-only, $\lambda{=}0$); the \texttt{paper/checkpoints/restoration/buchanan\_va/} directory holds the corresponding ensemble weights for both conditions.
 
 % ============================================================================
 \section{MPC optimisation ablation on the MSE-only ensemble (Supplementary Table S1)}\label{si:s2-mpc-ablation}
@@ -93,9 +183,58 @@ Dimension & Configuration & Slope \% & Reward & Diagnosis \\
 \section{Synthetic-benchmark secondary metrics (Tables S2--S4)}\label{si:s3-bench-secondary}
 % ============================================================================
 
-Main-text Table~5 (\texttt{tab:bench-slope}) reports the slope-improvement profile across the seven synthetic landscapes. The three secondary metrics referenced in main-text Section~6 ($\Delta$contiguity, $\Delta$\textit{baimu fang} count, and $\Delta$\textit{baimu fang} area, all under the same 50-pair swap budget and $n{=}5$ seeds per cell) are tabulated here. Together with main-text Table~5 these summarise the full $5 \times 7 \times 5 = 175$-cell sweep. Aggregation script: \texttt{scripts/si\_tables\_v7.py} in the released code repository.
+Table~\ref{tab:si-bench-slope} reports the slope-improvement profile across the seven synthetic landscapes, summarised in main-text \S\ref{sec:bench}. The three secondary metrics referenced in main-text \S\ref{sec:bench} ($\Delta$contiguity, $\Delta$\textit{baimu fang} count, and $\Delta$\textit{baimu fang} area, all under the same 50-pair swap budget and $n{=}5$ seeds per cell) are tabulated below the slope profile. Together these summarise the full $5 \times 7 \times 5 = 175$-cell sweep. Aggregation script: \texttt{scripts/si\_tables\_v7.py} in the released code repository.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Slope-improvement profile of five methods across the seven synthetic landscapes, $n{=}5$ seeds per cell (175 cells total). Values are mean $\pm$ sample standard deviation of the relative slope change in percent (negative is better). The rightmost column reports median wall-time per cell (seconds for fast methods, hours for learning-based). Best mean per row in bold. Contrastive MPC is the strongest method on the five planning-favourable presets (the two real-data clones and the three medium--large fragmented presets); the genetic algorithm wins on \texttt{plain\_small\_cons}, where the small action space lets a population search cover the optimum within budget. Numbers regenerated from \texttt{benchmark/results/} via \texttt{scripts/aggregate\_results.py}.}
+\label{tab:si-bench-slope}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc@{\hspace{1.5em}}c}
+\toprule
+Preset & Random & Greedy & GA & PPO & MPC & Wall \\
+($n_{\text{blocks}}$) & & & & & & (MPC) \\
+\midrule
+\texttt{bishan\_clone} (2{,}600)        & $-0.026{\pm}0.003$ & $-0.052{\pm}0.009$ & $-0.060{\pm}0.009$ & $-0.074{\pm}0.015$ & $\mathbf{-0.089{\pm}0.014}$ & $4.1$h \\
+\texttt{neijiang\_clone} (3{,}700)      & $-0.011{\pm}0.002$ & $-0.025{\pm}0.004$ & $-0.026{\pm}0.005$ & $-0.036{\pm}0.011$ & $\mathbf{-0.040{\pm}0.007}$ & $6.1$h \\
+\texttt{plain\_small\_cons} (800)        & $-0.544{\pm}0.072$ & $-0.996{\pm}0.268$ & $\mathbf{-2.757{\pm}0.203}$ & $-2.234{\pm}0.264$ & $-2.226{\pm}0.220$ & $2.0$h \\
+\texttt{plain\_large\_cons} (4{,}500)    & $-0.071{\pm}0.015$ & $-0.128{\pm}0.020$ & $-0.309{\pm}0.018$ & $-0.419{\pm}0.060$ & $\mathbf{-0.424{\pm}0.032}$ & $10.9$h \\
+\texttt{plain\_medium\_frag} (2{,}600)   & $-0.132{\pm}0.028$ & $-0.310{\pm}0.080$ & $-0.651{\pm}0.029$ & $-0.773{\pm}0.076$ & $\mathbf{-0.805{\pm}0.069}$ & $6.3$h \\
+\texttt{mixed\_medium\_frag} (2{,}600)   & $-0.078{\pm}0.018$ & $-0.173{\pm}0.026$ & $-0.405{\pm}0.025$ & $-0.414{\pm}0.076$ & $\mathbf{-0.431{\pm}0.033}$ & $5.3$h \\
+\texttt{hilly\_small\_cons} (800)        & $-0.090{\pm}0.028$ & $-0.152{\pm}0.012$ & $-0.295{\pm}0.050$ & $-0.260{\pm}0.035$ & $\mathbf{-0.271{\pm}0.047}$ & $1.1$h \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
 \input{si_tables_v7.tex}
+
+% ============================================================================
+\section{Per-seed Bishan multi-objective profile}\label{si:contrastive-multiobj}
+% ============================================================================
+
+Main-text \S\ref{sec:counties} reports the cross-seed mean of all four contrastive-MPC primary objectives on Bishan ($\lambda_{\text{rank}}{=}5.0$, greedy, $H{=}5$, $K{=}50$). The per-seed values that produce that mean are listed in Table~\ref{tab:si-contrastive-multiobj}. Initial state: slope 9.616, contiguity 3.585, 109 \textit{baimu fang} totalling 46{,}844\,ha. Slope and contiguity changes are both directionally correct on every seed; the count of large patches ($\geq$6.67\,ha) increases by $+3.4$ on average; total qualifying area decreases by $\sim$$312$\,ha because the agent consolidates many small patches into a smaller number of larger, contiguous patches---the deliberate trade-off discussed in main-text \S\ref{sec:discussion}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Per-seed multi-objective profile of contrastive MPC on Bishan across 5 independently trained ensembles (1 episode each).}
+\label{tab:si-contrastive-multiobj}
+\begin{tabular}{ccccc}
+\toprule
+Seed & Slope \% & $\Delta$Contiguity & $\Delta$Baimu \# & $\Delta$Baimu (ha) \\
+\midrule
+0 & $-1.4235$ & $+0.0150$ & $+3$ & $-324.9$ \\
+1 & $-1.2668$ & $+0.0165$ & $+3$ & $-283.6$ \\
+2 & $-1.3250$ & $+0.0159$ & $+2$ & $-372.7$ \\
+3 & $-1.2264$ & $+0.0139$ & $+5$ & $-278.2$ \\
+4 & $-1.2018$ & $+0.0186$ & $+4$ & $-301.9$ \\
+\midrule
+\textbf{Mean} & $\mathbf{-1.289 \pm 0.079}$ & $\mathbf{+0.0160 \pm 0.0016}$ & $\mathbf{+3.4 \pm 1.0}$ & $\mathbf{-312.2 \pm 34.3}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % ============================================================================
 \section{Toolchain pre-flight checks}\label{si:s4-toolchain}
