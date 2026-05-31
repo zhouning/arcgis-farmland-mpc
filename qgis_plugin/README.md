@@ -78,6 +78,19 @@ CRS:   EPSG:32648
 
 The 70-second smoke test should complete and write a `prepared/` directory readable by stage 2.
 
+A second verification path (no GUI required) exercises the full pipeline against the public `paper/checkpoints/bishan/` artefacts: run `4 — Plan` for one episode against the shipped Bishan ensemble:
+
+```bash
+qgis_process run farmland_mpc:plan \
+    --ENSEMBLE_DIR=<repo>/paper/checkpoints/bishan/contrastive_5seed_seed0_ensemble \
+    --PREPARED_DIR=<your_run>/prepared \
+    --OUT_DIR=/tmp/qgis_plan_smoke \
+    --HORIZON=5 --TOP_K=50 --N_EPISODES=1 \
+    --CONTINUATION=0 --SCORING=0
+```
+
+A correct end-to-end install reaches step 100 with `slope ≈ −1.75%` (matching `paper/repro_artifacts/macos_2026-05-29/bishan_5seed.json` seed 0 to floating-point identity), writes `optimized.shp` and `mpc_summary.json`, and finishes in ~5 minutes on a 12-thread CPU.
+
 ## Pipeline workflow
 
 The four stages are designed to run in order; each writes outputs the next reads.

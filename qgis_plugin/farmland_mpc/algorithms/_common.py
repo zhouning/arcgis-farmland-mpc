@@ -109,20 +109,25 @@ def run_cli(
         raise QgsProcessingException(f"Failed to start farmland-mpc: {e}") from e
 
     assert proc.stdout is not None
-    for line in proc.stdout:
-        if feedback.isCanceled():
-            proc.terminate()
-            raise QgsProcessingException("Cancelled by user.")
-        line = line.rstrip()
-        if not line:
-            continue
-        # Map farmland-mpc log levels to QGIS feedback channels.
-        if " ERROR " in line or line.startswith("ERROR"):
-            feedback.reportError(line)
-        elif " WARNING " in line or line.startswith("WARNING"):
-            feedback.pushWarning(line)
-        else:
-            feedback.pushInfo(line)
+    try:
+        for line in proc.stdout:
+            if feedback.isCanceled():
+                proc.terminate()
+                raise QgsProcessingException("Cancelled by user.")
+            line = line.rstrip()
+            if not line:
+                continue
+            # Map farmland-mpc log levels to QGIS feedback channels.
+            if " ERROR " in line or line.startswith("ERROR"):
+                feedback.reportError(line)
+            elif " WARNING " in line or line.startswith("WARNING"):
+                feedback.pushWarning(line)
+            else:
+                feedback.pushInfo(line)
+    finally:
+        # Close the subprocess pipe explicitly to silence ResourceWarning
+        # that QGIS surfaces when the algorithm finishes.
+        proc.stdout.close()
 
     code = proc.wait()
     if code != 0:
