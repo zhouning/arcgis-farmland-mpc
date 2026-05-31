@@ -1,0 +1,76 @@
+{
+  "method": "random_baseline",
+  "n_seeds": 5,
+  "per_seed": [
+    {
+      "seed": 0,
+      "total_reward": 39.68766188048569,
+      "n_selected": 50,
+      "budget_used": 57265.26279835057,
+      "cum_components": {
+        "risk_index": 12.144830934075248,
+        "water_priority": 16.660412046516612,
+        "connectivity": 0.11464285714285716,
+        "cost_penalty": -0.00858978941975258
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 1,
+      "total_reward": 33.95187413647328,
+      "n_selected": 50,
+      "budget_used": 19061.73841817762,
+      "cum_components": {
+        "risk_index": 2.693604283162508,
+        "water_priority": 18.103292692639517,
+        "connectivity": 0.1521428571428571,
+        "cost_penalty": -0.0028592607627266446
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 2,
+      "total_reward": 34.69440305304789,
+      "n_selected": 50,
+      "budget_used": 20381.926748723483,
+      "cum_components": {
+        "risk_index": 4.361509789718211,
+        "water_priority": 18.83435840862206,
+        "connectivity": 0.09150000000000003,
+        "cost_penalty": -0.003057289012308525
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 3,
+      "total_reward": 45.188601681474466,
+      "n_selected": 50,
+      "budget_used": 51157.02518380417,
+      "cum_components": {
+        "risk_index": 13.074646522479705,
+        "water_priority": 17.465870045083363,
+        "connectivity": 0.11571428571428571,
+        "cost_penalty": -0.007673553777570631
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 4,
+      "total_reward": 48.98656579989727,
+      "n_selected": 50,
+      "budget_used": 47786.167116463694,
+      "cum_components": {
+        "risk_index": 11.054243072468038,
+        "water_priority": 18.108483969594275,
+        "connectivity": 0.1512857142857143,
+        "cost_penalty": -0.007167925067469558
+      },
+      "steps_run": 50
+    }
+  ],
+  "cross_seed": {
+    "reward_mean": 40.50182131027572,
+    "reward_std": 5.852308427844842,
+    "n_selected_mean": 50.0
+  }
+}

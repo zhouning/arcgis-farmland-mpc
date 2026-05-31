@@ -1,0 +1,36 @@
+{
+  "case_name": "synthetic",
+  "feature_cols": [
+    "row",
+    "col",
+    "area_ha",
+    "slope_deg",
+    "disturbance",
+    "erosion_risk",
+    "biodiversity",
+    "human_exposure",
+    "dist_water_m",
+    "dist_settle_m",
+    "dist_source_m",
+    "rest_cost",
+    "risk_reduction",
+    "habitat_gain",
+    "water_gain",
+    "priority_score"
+  ],
+  "reward_terms": {
+    "risk_reduction": 0.35,
+    "habitat_gain": 0.25,
+    "water_gain": 0.2,
+    "connectivity": 0.1,
+    "cost_penalty": -0.1
+  },
+  "cost_col": "rest_cost",
+  "budget": 45434.91,
+  "max_steps": 60,
+  "n_units": 420,
+  "n_candidates": 420,
+  "n_edges": 1553,
+  "reward_profile": "connectivity_dominant",
+  "reward_profile_params": {}
+}

@@ -1,0 +1,81 @@
+{
+  "method": "random_baseline",
+  "n_seeds": 5,
+  "per_seed": [
+    {
+      "seed": 0,
+      "total_reward": 2834.0438498878243,
+      "n_selected": 60,
+      "budget_used": 44210.695400000004,
+      "cum_components": {
+        "risk_reduction": 689.9698049999998,
+        "habitat_gain": 927.4958849999999,
+        "water_gain": 204.70960199999996,
+        "connectivity": 0.08100000000000002,
+        "cost_penalty": -0.029191669181252915
+      },
+      "steps_run": 60
+    },
+    {
+      "seed": 1,
+      "total_reward": 3595.1033913989318,
+      "n_selected": 60,
+      "budget_used": 44932.03100000001,
+      "cum_components": {
+        "risk_reduction": 733.0939139999998,
+        "habitat_gain": 849.1792125000001,
+        "water_gain": 259.15785,
+        "connectivity": 0.10875000000000004,
+        "cost_penalty": -0.029667956423815953
+      },
+      "steps_run": 60
+    },
+    {
+      "seed": 2,
+      "total_reward": 3825.0081105566765,
+      "n_selected": 59,
+      "budget_used": 45401.27199999999,
+      "cum_components": {
+        "risk_reduction": 777.2385495,
+        "habitat_gain": 870.2386650000001,
+        "water_gain": 258.7633860000001,
+        "connectivity": 0.10800000000000004,
+        "cost_penalty": -0.0299777893254328
+      },
+      "steps_run": 59
+    },
+    {
+      "seed": 3,
+      "total_reward": 4246.196569961344,
+      "n_selected": 60,
+      "budget_used": 44100.87319999999,
+      "cum_components": {
+        "risk_reduction": 704.9077560000004,
+        "habitat_gain": 962.8675875,
+        "water_gain": 229.33700399999995,
+        "connectivity": 0.14700000000000008,
+        "cost_penalty": -0.02911915520466532
+      },
+      "steps_run": 60
+    },
+    {
+      "seed": 4,
+      "total_reward": 3446.8847654355623,
+      "n_selected": 60,
+      "budget_used": 45163.01630000002,
+      "cum_components": {
+        "risk_reduction": 734.6917829999999,
+        "habitat_gain": 830.6665199999999,
+        "water_gain": 212.078304,
+        "connectivity": 0.13725000000000007,
+        "cost_penalty": -0.029820472605756237
+      },
+      "steps_run": 60
+    }
+  ],
+  "cross_seed": {
+    "reward_mean": 3589.447337448068,
+    "reward_std": 464.2841671083772,
+    "n_selected_mean": 59.8
+  }
+}

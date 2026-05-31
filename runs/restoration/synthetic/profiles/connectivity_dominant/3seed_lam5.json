@@ -1,0 +1,99 @@
+{
+  "region": "synthetic-connectivity_dominant-lam5",
+  "mode": "baseline",
+  "lambda_rank": 5.0,
+  "n_seeds": 3,
+  "eval_episodes_per_seed": 1,
+  "per_seed": {
+    "0": {
+      "slopes": [
+        0.0
+      ],
+      "rewards": [
+        3306.6229064722856
+      ],
+      "times": [
+        28.199146032333374
+      ],
+      "cont_deltas": [
+        0.0
+      ],
+      "cont_pcts": [
+        0.0
+      ],
+      "baimu_count_deltas": [
+        0
+      ],
+      "baimu_area_deltas_ha": [
+        0.0
+      ]
+    },
+    "1": {
+      "slopes": [
+        0.0
+      ],
+      "rewards": [
+        3316.641579686634
+      ],
+      "times": [
+        30.912914991378784
+      ],
+      "cont_deltas": [
+        0.0
+      ],
+      "cont_pcts": [
+        0.0
+      ],
+      "baimu_count_deltas": [
+        0
+      ],
+      "baimu_area_deltas_ha": [
+        0.0
+      ]
+    },
+    "2": {
+      "slopes": [
+        0.0
+      ],
+      "rewards": [
+        3327.373964554766
+      ],
+      "times": [
+        30.256937980651855
+      ],
+      "cont_deltas": [
+        0.0
+      ],
+      "cont_pcts": [
+        0.0
+      ],
+      "baimu_count_deltas": [
+        0
+      ],
+      "baimu_area_deltas_ha": [
+        0.0
+      ]
+    }
+  },
+  "cross_seed": {
+    "slope_pct_mean": 0.0,
+    "slope_pct_std": 0.0,
+    "cont_pct_mean": 0.0,
+    "cont_pct_std": 0.0,
+    "cont_raw_delta_mean": 0.0,
+    "cont_raw_delta_std": 0.0,
+    "baimu_count_delta_mean": 0.0,
+    "baimu_count_delta_std": 0.0,
+    "baimu_area_delta_ha_mean": 0.0,
+    "baimu_area_delta_ha_std": 0.0,
+    "reward_mean": 3316.879483571229,
+    "reward_std": 8.473254061234844
+  },
+  "mpc_config": {
+    "horizon": 5,
+    "top_k": 50,
+    "continuation": "greedy",
+    "scoring": "reward"
+  },
+  "package": "farmland_mpc (open-source)"
+}

@@ -1,0 +1,29 @@
+{
+  "config": {
+    "prepared_dir": "runs/restoration/buchanan_va/prepared_delayed",
+    "n_transition_episodes": 60,
+    "n_pairwise_states": 1000,
+    "n_pairwise_actions": 50,
+    "seed": 0,
+    "proj_crs": null,
+    "n_blocks": 562,
+    "n_parcels": 562
+  },
+  "transitions": {
+    "elapsed_s": 2.7,
+    "n_transitions": 3000,
+    "output": "runs/restoration/buchanan_va/prepared_delayed/tool2/transitions.npz"
+  },
+  "pairwise": {
+    "elapsed_s": 1.8,
+    "n_states": 1000,
+    "n_actions_per_state": 50,
+    "reward_std_median": 0.3348153829574585,
+    "reward_mean": 0.793946385383606,
+    "reward_range": [
+      0.10026437789201736,
+      21.796995162963867
+    ],
+    "output": "runs/restoration/buchanan_va/prepared_delayed/tool2/pairwise.npz"
+  }
+}

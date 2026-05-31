@@ -1,0 +1,29 @@
+{
+  "config": {
+    "prepared_dir": "runs/restoration/buchanan_va/prepared_watershed",
+    "n_transition_episodes": 60,
+    "n_pairwise_states": 1000,
+    "n_pairwise_actions": 50,
+    "seed": 0,
+    "proj_crs": null,
+    "n_blocks": 562,
+    "n_parcels": 562
+  },
+  "transitions": {
+    "elapsed_s": 2.8,
+    "n_transitions": 3000,
+    "output": "runs/restoration/buchanan_va/prepared_watershed/tool2/transitions.npz"
+  },
+  "pairwise": {
+    "elapsed_s": 1.2,
+    "n_states": 1000,
+    "n_actions_per_state": 50,
+    "reward_std_median": 1.016885757446289,
+    "reward_mean": 1.6259088516235352,
+    "reward_range": [
+      0.33421459794044495,
+      22.55605125427246
+    ],
+    "output": "runs/restoration/buchanan_va/prepared_watershed/tool2/pairwise.npz"
+  }
+}

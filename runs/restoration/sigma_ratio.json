@@ -1,0 +1,62 @@
+{
+  "buchanan_va/default": {
+    "sigma_a": 1.192741721184295,
+    "sigma_s": 0.20803137990481319,
+    "ratio": 5.733470218435535,
+    "reward_mean": 1.4590668678283691
+  },
+  "buchanan_va/connectivity_dominant": {
+    "sigma_a": 0.578512062200874,
+    "sigma_s": 0.09317514885411246,
+    "ratio": 6.208866519834277,
+    "reward_mean": 0.6209210157394409
+  },
+  "buchanan_va/watershed": {
+    "sigma_a": 1.8773658449521358,
+    "sigma_s": 0.2596829074724368,
+    "ratio": 7.229454811735743,
+    "reward_mean": 1.6259088516235352
+  },
+  "buchanan_va/scale_economy": {
+    "sigma_a": 1.8757196316971279,
+    "sigma_s": 0.2595133596244816,
+    "ratio": 7.2278345685606045,
+    "reward_mean": 1.6074093580245972
+  },
+  "buchanan_va/delayed": {
+    "sigma_a": 0.581950418888744,
+    "sigma_s": 0.9503928564306514,
+    "ratio": 0.612326171173413,
+    "reward_mean": 0.793946385383606
+  },
+  "synthetic/default": {
+    "sigma_a": 34.57248669010518,
+    "sigma_s": 4.652058603050462,
+    "ratio": 7.431653304503774,
+    "reward_mean": 102.92704010009766
+  },
+  "synthetic/connectivity_dominant": {
+    "sigma_a": 13.450750870290081,
+    "sigma_s": 1.801175022722289,
+    "ratio": 7.467764487407042,
+    "reward_mean": 38.057891845703125
+  },
+  "synthetic/watershed": {
+    "sigma_a": 38.50053583738316,
+    "sigma_s": 5.22324054790597,
+    "ratio": 7.3710056973765585,
+    "reward_mean": 114.47633361816406
+  },
+  "synthetic/scale_economy": {
+    "sigma_a": 34.65315198337393,
+    "sigma_s": 4.542220312314297,
+    "ratio": 7.629121795221307,
+    "reward_mean": 103.16354370117188
+  },
+  "synthetic/delayed": {
+    "sigma_a": 13.157615608868584,
+    "sigma_s": 39.41120762083817,
+    "ratio": 0.33385466731833063,
+    "reward_mean": 59.367916107177734
+  }
+}

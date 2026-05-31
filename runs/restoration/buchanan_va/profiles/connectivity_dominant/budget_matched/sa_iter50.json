@@ -1,0 +1,14 @@
+{
+  "total_reward": 77.54415330980194,
+  "n_selected": 50,
+  "n_committed": 50,
+  "budget_used": 131663.92908949632,
+  "cum_components": {
+    "risk_index": 31.3941792064573,
+    "water_priority": 34.55330606788941,
+    "connectivity": 11.662500000000001,
+    "cost_penalty": -0.06583196454474816
+  },
+  "max_iters": 50,
+  "wall_s": 0.22174787521362305
+}

@@ -1,0 +1,76 @@
+{
+  "method": "random_baseline",
+  "n_seeds": 5,
+  "per_seed": [
+    {
+      "seed": 0,
+      "total_reward": 32.518921159567604,
+      "n_selected": 50,
+      "budget_used": 57265.26279835057,
+      "cum_components": {
+        "risk_index": 8.99617106227796,
+        "water_priority": 22.213882728688816,
+        "connectivity": 1.3374999999999997,
+        "cost_penalty": -0.028632631399175237
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 1,
+      "total_reward": 27.898455152949175,
+      "n_selected": 50,
+      "budget_used": 19061.73841817762,
+      "cum_components": {
+        "risk_index": 1.995262431972229,
+        "water_priority": 24.137723590186024,
+        "connectivity": 1.7750000000000001,
+        "cost_penalty": -0.00953086920908881
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 2,
+      "total_reward": 29.400534907172233,
+      "n_selected": 50,
+      "budget_used": 20381.926748723483,
+      "cum_components": {
+        "risk_index": 3.230747992383861,
+        "water_priority": 25.112477878162753,
+        "connectivity": 1.0675000000000001,
+        "cost_penalty": -0.010190963374361742
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 3,
+      "total_reward": 34.297171564170895,
+      "n_selected": 50,
+      "budget_used": 51157.02518380417,
+      "cum_components": {
+        "risk_index": 9.684923349984965,
+        "water_priority": 23.287826726777812,
+        "connectivity": 1.35,
+        "cost_penalty": -0.02557851259190206
+      },
+      "steps_run": 50
+    },
+    {
+      "seed": 4,
+      "total_reward": 34.07408041106232,
+      "n_selected": 50,
+      "budget_used": 47786.167116463694,
+      "cum_components": {
+        "risk_index": 8.188328201828172,
+        "water_priority": 24.14464529279237,
+        "connectivity": 1.765,
+        "cost_penalty": -0.02389308355823182
+      },
+      "steps_run": 50
+    }
+  ],
+  "cross_seed": {
+    "reward_mean": 31.637832638984445,
+    "reward_std": 2.560162058577901,
+    "n_selected_mean": 50.0
+  }
+}

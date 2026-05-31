@@ -1,0 +1,56 @@
+{
+  "config": {
+    "prepared_dir": "runs/restoration/buchanan_va/prepared_watershed",
+    "n_members": 3,
+    "epochs": 30,
+    "patience": 8,
+    "lambda_rank": 0.0,
+    "margin": 0.1,
+    "batch_size": 256,
+    "n_pairs_per_state": 10,
+    "pw_subsample": 100,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "val_split": 0.1,
+    "seed_base": 0,
+    "torch_threads": 4,
+    "n_blocks": 562,
+    "k_global": 12
+  },
+  "members": [
+    {
+      "index": 0,
+      "seed": 0,
+      "elapsed_s": 14.9,
+      "best_epoch": 30,
+      "best_val_loss": 0.001592,
+      "final_cosine_sim": 0.99998,
+      "final_ranking_acc": 0.9562,
+      "onnx": "runs/restoration/buchanan_va/prepared_watershed/ensemble_lam0_seed0/ensemble_member0.onnx",
+      "pt": "runs/restoration/buchanan_va/prepared_watershed/ensemble_lam0_seed0/ensemble_member0.pt"
+    },
+    {
+      "index": 1,
+      "seed": 1000,
+      "elapsed_s": 15.1,
+      "best_epoch": 28,
+      "best_val_loss": 0.001384,
+      "final_cosine_sim": 0.999983,
+      "final_ranking_acc": 0.9661,
+      "onnx": "runs/restoration/buchanan_va/prepared_watershed/ensemble_lam0_seed0/ensemble_member1.onnx",
+      "pt": "runs/restoration/buchanan_va/prepared_watershed/ensemble_lam0_seed0/ensemble_member1.pt"
+    },
+    {
+      "index": 2,
+      "seed": 2000,
+      "elapsed_s": 15.2,
+      "best_epoch": 29,
+      "best_val_loss": 0.001179,
+      "final_cosine_sim": 0.99999,
+      "final_ranking_acc": 0.9613,
+      "onnx": "runs/restoration/buchanan_va/prepared_watershed/ensemble_lam0_seed0/ensemble_member2.onnx",
+      "pt": "runs/restoration/buchanan_va/prepared_watershed/ensemble_lam0_seed0/ensemble_member2.pt"
+    }
+  ],
+  "total_elapsed_s": 48.1
+}

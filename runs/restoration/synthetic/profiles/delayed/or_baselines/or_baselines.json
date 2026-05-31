@@ -1,0 +1,99 @@
+{
+  "case": "synthetic",
+  "results": {
+    "greedy": {
+      "total_reward": 7124.859585613716,
+      "n_selected": 60,
+      "n_committed": 60,
+      "budget_used": 41698.71109999999,
+      "cum_components": {
+        "risk_reduction": 742.5467279999999,
+        "habitat_gain": 1330.1699775000004,
+        "water_gain": 504.11508000000015,
+        "connectivity": 0.45975000000000005,
+        "cost_penalty": -0.027533043049936715
+      }
+    },
+    "sa": {
+      "total_reward": 7468.484426881709,
+      "n_selected": 60,
+      "n_committed": 60,
+      "budget_used": 43023.408899999995,
+      "cum_components": {
+        "risk_reduction": 779.8580894999998,
+        "habitat_gain": 1268.4365025,
+        "water_gain": 517.2839160000001,
+        "connectivity": 0.39075000000000015,
+        "cost_penalty": -0.028407721441508296
+      }
+    },
+    "nsga2": {
+      "total_reward": 4778.117085411549,
+      "n_selected": 59,
+      "n_committed": 59,
+      "budget_used": 45076.42799999999,
+      "cum_components": {
+        "risk_reduction": 755.2142745000001,
+        "habitat_gain": 909.1949550000003,
+        "water_gain": 271.3126139999999,
+        "connectivity": 0.20175000000000004,
+        "cost_penalty": -0.029763299630174243
+      }
+    },
+    "milp": {
+      "total_reward": 6862.24600608977,
+      "n_selected": 49,
+      "n_committed": 49,
+      "budget_used": 44901.047900000005,
+      "cum_components": {
+        "risk_reduction": 965.344485,
+        "habitat_gain": 935.2101525,
+        "water_gain": 537.2085300000001,
+        "connectivity": 0.4169999999999999,
+        "cost_penalty": -0.02964749874050592
+      }
+    }
+  },
+  "timings_s": {
+    "greedy": 0.024025678634643555,
+    "sa": 0.8920300006866455,
+    "nsga2": 3.8910677433013916,
+    "milp": 0.0296018123626709
+  },
+  "scenario_config": {
+    "case_name": "synthetic",
+    "feature_cols": [
+      "row",
+      "col",
+      "area_ha",
+      "slope_deg",
+      "disturbance",
+      "erosion_risk",
+      "biodiversity",
+      "human_exposure",
+      "dist_water_m",
+      "dist_settle_m",
+      "dist_source_m",
+      "rest_cost",
+      "risk_reduction",
+      "habitat_gain",
+      "water_gain",
+      "priority_score"
+    ],
+    "reward_terms": {
+      "risk_reduction": 0.35,
+      "habitat_gain": 0.25,
+      "water_gain": 0.2,
+      "connectivity": 0.1,
+      "cost_penalty": -0.1
+    },
+    "cost_col": "rest_cost",
+    "budget": 45434.91,
+    "max_steps": 60,
+    "n_units": 420,
+    "n_candidates": 420,
+    "n_edges": 1553,
+    "reward_profile": "delayed",
+    "reward_profile_params": {}
+  }
+}

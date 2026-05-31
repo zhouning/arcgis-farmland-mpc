@@ -1,0 +1,94 @@
+{
+  "case": "buchanan",
+  "results": {
+    "greedy": {
+      "total_reward": 67.59291335183843,
+      "n_selected": 50,
+      "n_committed": 50,
+      "budget_used": 131663.92908949632,
+      "cum_components": {
+        "risk_index": 31.40395059668862,
+        "water_priority": 34.84229471969458,
+        "connectivity": 1.4125,
+        "cost_penalty": -0.06583196454474824
+      }
+    },
+    "sa": {
+      "total_reward": 81.92713154271102,
+      "n_selected": 50,
+      "n_committed": 50,
+      "budget_used": 131873.53484004858,
+      "cum_components": {
+        "risk_index": 31.403528849964218,
+        "water_priority": 33.564539460166856,
+        "connectivity": 17.024999999999995,
+        "cost_penalty": -0.06593676742002427
+      }
+    },
+    "nsga2": {
+      "total_reward": 59.02726218480921,
+      "n_selected": 50,
+      "n_committed": 50,
+      "budget_used": 53358.81775049715,
+      "cum_components": {
+        "risk_index": 12.037267958989274,
+        "water_priority": 24.379173634695196,
+        "connectivity": 22.637500000000003,
+        "cost_penalty": -0.026679408875248563
+      }
+    },
+    "milp": {
+      "total_reward": 67.94434024041098,
+      "n_selected": 50,
+      "n_committed": 50,
+      "budget_used": 131972.27478086052,
+      "cum_components": {
+        "risk_index": 31.41093699245949,
+        "water_priority": 35.08688938534192,
+        "connectivity": 1.5125000000000002,
+        "cost_penalty": -0.06598613739043035
+      }
+    }
+  },
+  "timings_s": {
+    "greedy": 0.023068904876708984,
+    "sa": 1.0568020343780518,
+    "nsga2": 4.680124282836914,
+    "milp": 0.043894052505493164
+  },
+  "scenario_config": {
+    "case_name": "buchanan",
+    "feature_cols": [
+      "row",
+      "col",
+      "area_ha",
+      "aml_count",
+      "severity_sum",
+      "severity_mean",
+      "unfunded_cost_sum",
+      "dist_water_m",
+      "water_km",
+      "slope_deg_mean",
+      "risk_index",
+      "water_priority",
+      "restoration_cost_proxy",
+      "benefit_proxy",
+      "priority_score",
+      "candidate"
+    ],
+    "reward_terms": {
+      "risk_index": 0.45,
+      "water_priority": 0.25,
+      "connectivity": 0.2,
+      "cost_penalty": -0.1
+    },
+    "cost_col": "restoration_cost_proxy",
+    "budget": 200000.0,
+    "max_steps": 50,
+    "n_units": 562,
+    "n_candidates": 522,
+    "n_edges": 2061,
+    "reward_profile": "connectivity_dominant",
+    "reward_profile_params": {}
+  }
+}

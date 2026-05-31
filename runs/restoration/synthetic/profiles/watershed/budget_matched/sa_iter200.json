@@ -1,0 +1,15 @@
+{
+  "total_reward": 9334.92283161553,
+  "n_selected": 60,
+  "n_committed": 60,
+  "budget_used": 42044.7317,
+  "cum_components": {
+    "risk_reduction": 3283.529624999999,
+    "habitat_gain": 4283.669725,
+    "water_gain": 1764.8760200000002,
+    "connectivity": 2.94,
+    "cost_penalty": -0.09253838447132391
+  },
+  "max_iters": 200,
+  "wall_s": 0.59511399269104
+}

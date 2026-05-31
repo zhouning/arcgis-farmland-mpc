@@ -1,0 +1,29 @@
+{
+  "config": {
+    "prepared_dir": "runs/restoration/synthetic/prepared_connectivity_dominant",
+    "n_transition_episodes": 60,
+    "n_pairwise_states": 1000,
+    "n_pairwise_actions": 50,
+    "seed": 0,
+    "proj_crs": null,
+    "n_blocks": 420,
+    "n_parcels": 420
+  },
+  "transitions": {
+    "elapsed_s": 0.5,
+    "n_transitions": 3585,
+    "output": "runs/restoration/synthetic/prepared_connectivity_dominant/tool2/transitions.npz"
+  },
+  "pairwise": {
+    "elapsed_s": 0.5,
+    "n_states": 1000,
+    "n_actions_per_state": 50,
+    "reward_std_median": 13.36408805847168,
+    "reward_mean": 38.057891845703125,
+    "reward_range": [
+      8.693517684936523,
+      89.06077575683594
+    ],
+    "output": "runs/restoration/synthetic/prepared_connectivity_dominant/tool2/pairwise.npz"
+  }
+}

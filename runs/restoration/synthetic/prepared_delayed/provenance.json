@@ -1,0 +1,36 @@
+{
+  "case": "synthetic",
+  "raw_dir": "/Users/zhouning/arcgis-farmland-mpc/runs/restoration/synthetic",
+  "raw_attributes": "restoration_units_attributes.csv",
+  "raw_adjacency": "adjacency_edges.csv",
+  "n_units": 420,
+  "n_candidates": 420,
+  "n_edges": 1553,
+  "budget": 45434.91,
+  "max_steps": 60,
+  "feature_cols": [
+    "row",
+    "col",
+    "area_ha",
+    "slope_deg",
+    "disturbance",
+    "erosion_risk",
+    "biodiversity",
+    "human_exposure",
+    "dist_water_m",
+    "dist_settle_m",
+    "dist_source_m",
+    "rest_cost",
+    "risk_reduction",
+    "habitat_gain",
+    "water_gain",
+    "priority_score"
+  ],
+  "reward_terms": {
+    "risk_reduction": 0.35,
+    "habitat_gain": 0.25,
+    "water_gain": 0.2,
+    "connectivity": 0.1,
+    "cost_penalty": -0.1
+  }
+}
