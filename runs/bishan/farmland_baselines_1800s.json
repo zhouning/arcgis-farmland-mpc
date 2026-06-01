@@ -1,0 +1,20 @@
+{
+  "prepared_dir": "/Users/zhouning/farmland_mpc_runs/bishan/prepared",
+  "wall_budget_s": 1800.0,
+  "step_cost_ms": 14.299821853637695,
+  "random_action_5ep": {
+    "mean": 11.548531114257425,
+    "std": 10.312193101549449,
+    "n_runs": 5
+  },
+  "sa": {
+    "best": 9.53846785518972,
+    "n_iter": 1187,
+    "wall_s": 1801.4868302345276
+  },
+  "random_restart": {
+    "best": 37.695893898174745,
+    "n_eps": 1105,
+    "wall_s": 1800.9817879199982
+  }
+}

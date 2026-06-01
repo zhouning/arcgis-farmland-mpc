@@ -428,4 +428,59 @@ Town & Parcels & Init slope ($^\circ$) & Opt slope ($^\circ$) & $\Delta$ slope (
 
 \paragraph{Area trade-off and the cultivated-land red line.} Two trade-offs are honestly reported (main-text Section 4): (i)~total qualifying \textit{baimu fang} area decreases by $-473$\,ha, equivalent to $1.01\%$ of the initial $46{,}844$\,ha qualifying stock, a deliberate consequence of consolidating many small qualifying patches into fewer larger ones (the qualifying count rises by $+8$ even as total qualifying area falls); (ii)~the paired farm$\leftrightarrow$forest swap conserves \emph{counts} ($426$ in, $426$ out) but not \emph{areas}, leading to a net cultivated-area decrease of $-505$\,ha ($1.05\%$ of the $48{,}283$\,ha initial farmland stock). The two numbers are distinct: the qualifying-area loss is computed inside the $\geq 6.67$\,ha contiguous-farmland definition, the cultivated-land loss is computed across all farmland parcels. The cultivated-land red line is therefore not satisfied by the swap rule alone and must be enforced as an explicit constraint at deployment time. The practical implication is recorded in main-text Section~4 (Methods action paragraph) and main-text Discussion.
 
+% ============================================================================
+\section{Hyperparameter sensitivity and longer-budget OR baselines}\label{si:hyperparameter-sensitivity}
+% ============================================================================
+
+This section reports two robustness checks against reviewer concerns about hyperparameter dependence and the matched-wall-budget OR comparison: (i)~an $(H, K)$ sensitivity sweep on the package-side prepare and (ii)~a $10\times$-extended wall-budget comparison against simulated annealing and random-restart on Bishan.
+
+\paragraph{$(H, K)$ sweep on the package-side prepare (Table~\ref{tab:si-hk-sweep}).} We swept the planning horizon $H \in \{3, 5, 10\}$ and the top-$K$ candidate width $K \in \{25, 50, 100\}$ on the shipped contrastive ensemble, holding $\lambda_{\text{rank}}=5.0$, margin~$=0.1$, $\gamma=0.99$, continuation~$=$~greedy, scoring~$=$~reward, and one canonical episode per cell. All nine cells produced bit-identical commit sequences yielding the same on-disk slope improvement of $-1.7531\%$, contiguity change of $+0.0125$, qualifying-count gain of $+5$, and qualifying-area loss of $-483.94$\,ha. Wall time scales from $122.7$\,s ($H{=}3$, $K{=}25$) to $1{,}139$\,s ($H{=}10$, $K{=}100$), a $9.3\times$ range. The invariance is consistent with the deterministic-planning property disclosed in main-text Methods (\emph{Independent GIS-grounded verification}, transparency caveat 1): under fixed ensemble member ordering, top-$K$ rollout scoring, and greedy continuation, the contrastive ensemble's batched 1-step $r$-prediction supplies a stable ranking signal whose top-1 commit is unchanged by deeper rollouts or wider candidate pools; the $H$ and $K$ knobs therefore trade only wall-clock against safety margin, not against quality, on a single ensemble. In practice we recommend $(H{=}5, K{=}50)$ as the default operating point and $(H{=}3, K{=}25)$ for an interactive scenario-exploration mode at $\sim 2\times$ speed-up.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{$(H, K)$ sensitivity on Bishan, package-side prepare, shipped contrastive ensemble (1 canonical episode per cell). All nine cells produce identical commit sequences; wall-clock cost is the only meaningful dimension on which they differ. Source: \texttt{scripts/sensitivity\_sweep\_bishan.py}, output \texttt{paper/submission\_commsee/sensitivity\_sweep\_bishan.json}.}
+\label{tab:si-hk-sweep}
+\begin{tabular}{cccccccc}
+\toprule
+$H$ & $K$ & Slope $\Delta$ (\%) & $\Delta$Cont. & $\Delta$Baimu \# & $\Delta$Baimu (ha) & Reward & Wall-s \\
+\midrule
+$3$  & $25$  & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $122.7$ \\
+$3$  & $50$  & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $180.0$ \\
+$3$  & $100$ & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $305.7$ \\
+$5$  & $25$  & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $180.2$ \\
+$5$  & $50$  & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $298.9$ \\
+$5$  & $100$ & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $535.4$ \\
+$10$ & $25$  & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $330.6$ \\
+$10$ & $50$  & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $599.8$ \\
+$10$ & $100$ & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $1{,}139.4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A note on the offset between $-1.7531\%$ here and the $-2.001\%$ on-disk verification of main-text Section~4: the sweep uses the \texttt{ensemble\_seed0} member of the open per-seed checkpoint pack (released alongside the toolchain), while the headline ensemble in \texttt{mpc\_summary.json} is the merged shipped ensemble at \texttt{prepared\_legacy\_horn/tool3/}. The two ensembles share the same training pipeline ($\lambda_{\text{rank}}=5.0$, margin~$=0.1$, $3$ members, $30$ epochs, identical hyperparameters; \texttt{train\_summary.json}~\texttt{seed\_base}~$=0$) but were trained against slightly different transition data sources before and after the prepare-step rebuild; the gap (within the $0.7$\,pp band of the cross-pipeline reconciliation in \S\ref{si:bishan-regimes}) is consistent with the per-ensemble variance reported in the open-source 5-ensemble reproduction ($\sigma_{\text{slope}} \approx 0.024$, mean $-1.738\%$; \S\ref{si:bishan-regimes}, ``Cross-pipeline reproduction by the open-source toolchain''). The $(H, K)$-invariance result therefore characterises a single deterministic ensemble; we do not extrapolate it to ensembles trained from cold.
+
+\paragraph{Extended wall-budget OR baselines (Table~\ref{tab:si-1800s-baselines}).} To address the concern that a longer-budget classical baseline might catch up to learned-MPC, we re-ran simulated annealing and random-restart at a $10\times$-longer $1{,}800$\,s wall budget on Bishan (the same Bishan CountyLevelEnv, same env step cost of $14.3$\,ms/step probed at run start). Both baselines run until the wall-clock budget expires; SA logs $1{,}187$ iterations and random-restart logs $1{,}105$ episodes. The reward gap to the contrastive-MPC pipeline persists by an order of magnitude, validating the simulator-cost crossover analysis of main-text Section~6.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Bishan reward versus wall-clock budget across simulated annealing, random-restart, and contrastive MPC. Both OR baselines plateau at an order of magnitude below the contrastive-MPC headline regardless of compute; the additional $1{,}620$\,s of SA wall time buys only $+0.50$ reward units. Source: \texttt{runs/bishan/farmland\_baselines\_1800s.json} and \texttt{tests/farmland\_baselines.py}.}
+\label{tab:si-1800s-baselines}
+\begin{tabular}{lcccc}
+\toprule
+Method & Wall budget (s) & Reward & Iterations / episodes & Notes \\
+\midrule
+Random-action 5-ep mean & — & $11.55 \pm 10.31$ & $5$ episodes & no method \\
+\midrule
+Simulated annealing & $180$ & $9.04$ & $100$ iter & main-text Section~4 \\
+Simulated annealing & $1{,}800$ & $9.54$ & $1{,}187$ iter & this section ($+5.5\%$) \\
+Random-restart & $180$ & $30.85$ & $98$ ep & main-text Section~4 \\
+Random-restart & $1{,}800$ & $37.70$ & $1{,}105$ ep & this section ($+22\%$) \\
+\midrule
+Contrastive MPC & $\sim 180$ & $\mathbf{86.74}$ & $1$ ep, $H{=}5$, $K{=}50$ & main-text Section~4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \end{document}

@@ -1,0 +1,110 @@
+{
+  "prepared_dir": "/Users/zhouning/farmland_mpc_runs/bishan/prepared",
+  "shipped_onnx_dir": "/Users/zhouning/farmland_mpc_runs/bishan/prepared/ensemble_seed0",
+  "hk_sweep": [
+    {
+      "H": 3,
+      "K": 25,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451329,
+      "wall_s_episode": 122.72942328453064,
+      "wall_s_total": 132.4088490009308
+    },
+    {
+      "H": 3,
+      "K": 50,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451329,
+      "wall_s_episode": 180.01817989349365,
+      "wall_s_total": 189.29619884490967
+    },
+    {
+      "H": 3,
+      "K": 100,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451329,
+      "wall_s_episode": 305.7420606613159,
+      "wall_s_total": 314.8280699253082
+    },
+    {
+      "H": 5,
+      "K": 25,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451328,
+      "wall_s_episode": 180.22317099571228,
+      "wall_s_total": 189.6356327533722
+    },
+    {
+      "H": 5,
+      "K": 50,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451328,
+      "wall_s_episode": 298.8678367137909,
+      "wall_s_total": 307.6482729911804
+    },
+    {
+      "H": 5,
+      "K": 100,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451328,
+      "wall_s_episode": 535.4167330265045,
+      "wall_s_total": 544.7656219005585
+    },
+    {
+      "H": 10,
+      "K": 25,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451332,
+      "wall_s_episode": 330.5750570297241,
+      "wall_s_total": 339.74358105659485
+    },
+    {
+      "H": 10,
+      "K": 50,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451332,
+      "wall_s_episode": 599.7756621837616,
+      "wall_s_total": 609.1598598957062
+    },
+    {
+      "H": 10,
+      "K": 100,
+      "slope_change_pct": -1.7530763329854409,
+      "cont_change": 0.012494941319304065,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "total_reward": 71.78351430451332,
+      "wall_s_episode": 1139.3524968624115,
+      "wall_s_total": 1148.4362981319427
+    }
+  ],
+  "lambda_sweep_package_side": [],
+  "notes": [
+    "(H,K) cells run with continuation=greedy, scoring=reward, n_episodes=1 each (the shipped ensemble is deterministic across the action-selection path under fixed seed).",
+    "lambda sweep on package-side prepare uses only lam=5.0 (the ensembles trained for the headline result); the lab-pipeline lambda_ablation/ checkpoints in paper/checkpoints/ cover lam in {0.0, 1.0, 5.0} for cross-pipeline reference."
+  ]
+}
