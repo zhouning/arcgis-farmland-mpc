@@ -34,6 +34,10 @@ LOG = Path('/Users/zhouning/farmland_mpc_runs/bishan/mpc_output/mpc_run.log')
 SHP = Path('/Users/zhouning/farmland_mpc_runs/bishan/mpc_output/optimized.shp')
 OUT_PDF = ROOT / 'paper/figures_v2/bishan_headline.pdf'
 OUT_PNG = ROOT / 'paper/figures_v2/bishan_headline.png'
+# Single-panel exports for slide-deck use (each is a complete figure on its own,
+# preserving the per-panel aspect ratio so PowerPoint doesn't have to stretch).
+OUT_A_PNG = ROOT / 'paper/figures_v2/bishan_headline_panel_a.png'
+OUT_B_PNG = ROOT / 'paper/figures_v2/bishan_headline_panel_b.png'
 
 # Style: nature-style soft tones, single-column friendly
 mpl.rcParams.update({
@@ -212,3 +216,98 @@ fig.savefig(OUT_PDF, format='pdf', bbox_inches='tight', pad_inches=0.04, dpi=300
 fig.savefig(OUT_PNG, format='png', dpi=300, bbox_inches='tight', pad_inches=0.04)
 print(f'wrote {OUT_PDF}')
 print(f'wrote {OUT_PNG}')
+
+# ---- single-panel exports for the slide deck ---------------------------------
+# Each panel is rendered as its own figure so the slide layout doesn't have to
+# crop or stretch the combined PDF.
+
+def _save_panel_a():
+    fa, ax = plt.subplots(figsize=(6.0, 3.4), constrained_layout=False)
+    fa.subplots_adjust(left=0.10, right=0.74, top=0.92, bottom=0.16)
+    # 5-episode envelope band
+    ax.fill_between(xs, min_y, max_y, color='#1f77b4', alpha=0.18,
+                    linewidth=0, label='5-episode envelope')
+    ax.plot(xs, mean_y, color='#1f77b4', linewidth=1.6,
+            marker='o', markersize=3.4, markeredgewidth=0,
+            label='Contrastive MPC (mean of 5 episodes)')
+    ax.axhline(PPO_MEAN, linestyle='--', color='#d95f02', linewidth=1.0,
+               alpha=0.9, label='Centralised PPO (−0.79 ± 0.36%)')
+    ax.axhline(MARL_MEAN, linestyle=':', color='#7570b3', linewidth=1.0,
+               alpha=0.9, label='MARL (−0.81 ± 0.10%)')
+    ax.fill_between([0, 100], PPO_MEAN - PPO_SD, PPO_MEAN + PPO_SD,
+                    color='#d95f02', alpha=0.07, linewidth=0)
+    ax.fill_between([0, 100], MARL_MEAN - MARL_SD, MARL_MEAN + MARL_SD,
+                    color='#7570b3', alpha=0.10, linewidth=0)
+    ax.annotate(f'−2.04%\n(env-side)\n−2.001% (verification)',
+                xy=(100, mean_y[-1]), xytext=(105, mean_y[-1] - 0.05),
+                ha='left', va='center', fontsize=7,
+                color='#1f77b4', linespacing=1.2,
+                arrowprops=dict(arrowstyle='-', color='#1f77b4',
+                                linewidth=0.5, alpha=0.6))
+    ax.set_xlim(0, 138)
+    ax.set_ylim(-2.30, 0.10)
+    ax.set_xlabel('Planning step')
+    ax.set_ylabel('Slope change (%, lower is better)')
+    ax.grid(True, axis='y', linewidth=0.4, alpha=0.3)
+    for s in ('top', 'right'):
+        ax.spines[s].set_visible(False)
+    ax.legend(loc='lower left', fontsize=7, frameon=False)
+    fa.savefig(OUT_A_PNG, format='png', dpi=300, bbox_inches='tight',
+               pad_inches=0.04)
+    plt.close(fa)
+    print(f'wrote {OUT_A_PNG}')
+
+
+def _save_panel_b():
+    fb, ax = plt.subplots(figsize=(4.4, 5.6), constrained_layout=False)
+    fb.subplots_adjust(left=0.02, right=0.98, top=0.97, bottom=0.03)
+    unchanged.plot(ax=ax, facecolor='#e8e8e8', edgecolor='none', linewidth=0,
+                   rasterized=True)
+    county_gdf.boundary.plot(ax=ax, color='#888888', linewidth=0.4)
+    farm2for_buf.plot(ax=ax, facecolor='#d62728', edgecolor='none',
+                      linewidth=0, alpha=0.85, rasterized=True)
+    for2farm_buf.plot(ax=ax, facecolor='#2ca02c', edgecolor='none',
+                      linewidth=0, alpha=0.85, rasterized=True)
+    ax.set_aspect('equal')
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for s in ('top', 'right', 'bottom', 'left'):
+        ax.spines[s].set_visible(False)
+    legend_handles_b = [
+        Patch(facecolor='#d62728', edgecolor='none',
+              label=f'Farm $\\to$ Forest ({len(farm2for)} parcels)'),
+        Patch(facecolor='#2ca02c', edgecolor='none',
+              label=f'Forest $\\to$ Farm ({len(for2farm)} parcels)'),
+        Patch(facecolor='#e8e8e8', edgecolor='#888888',
+              linewidth=0.4,
+              label=f'Unchanged ({len(unchanged):,} parcels)'),
+    ]
+    xmin_b, ymin_b, xmax_b, ymax_b = shp.total_bounds
+    xpad = (xmax_b - xmin_b) * 0.02
+    ypad = (ymax_b - ymin_b) * 0.02
+    ax.set_xlim(xmin_b - xpad, xmax_b + xpad)
+    ax.set_ylim(ymin_b - ypad, ymax_b + ypad)
+    bar_x0 = xmax_b - (xmax_b - xmin_b) * 0.22
+    bar_y0 = ymax_b - (ymax_b - ymin_b) * 0.04
+    ax.plot([bar_x0, bar_x0 + 10000], [bar_y0, bar_y0],
+            color='black', linewidth=1.5, solid_capstyle='butt')
+    ax.text(bar_x0 + 5000, bar_y0 - (ymax_b - ymin_b) * 0.012,
+            '10 km', ha='center', va='top', fontsize=8)
+    arrow_x0 = xmin_b + (xmax_b - xmin_b) * 0.08
+    arrow_y0 = ymax_b - (ymax_b - ymin_b) * 0.04
+    ax.annotate('', xy=(arrow_x0, arrow_y0),
+                xytext=(arrow_x0, arrow_y0 - (ymax_b - ymin_b) * 0.06),
+                arrowprops=dict(arrowstyle='-|>', color='black',
+                                lw=0.9, mutation_scale=10))
+    ax.text(arrow_x0, arrow_y0 - (ymax_b - ymin_b) * 0.075,
+            'N', ha='center', va='top', fontsize=9, fontweight='bold')
+    ax.legend(handles=legend_handles_b, loc='lower left',
+              fontsize=7, frameon=False, bbox_to_anchor=(0.0, 0.0))
+    fb.savefig(OUT_B_PNG, format='png', dpi=300, bbox_inches='tight',
+               pad_inches=0.04)
+    plt.close(fb)
+    print(f'wrote {OUT_B_PNG}')
+
+
+_save_panel_a()
+_save_panel_b()
