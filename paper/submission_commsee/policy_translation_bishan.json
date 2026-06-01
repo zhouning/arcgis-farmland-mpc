@@ -1,0 +1,227 @@
+{
+  "source_optimized_shp": "/Users/zhouning/farmland_mpc_runs/bishan/mpc_output/optimized.shp",
+  "n_swappable_parcels": 53086,
+  "slope_bands": {
+    "definition_deg": [
+      {
+        "name": "lt6",
+        "lo": 0.0,
+        "hi": 6.0
+      },
+      {
+        "name": "6_15",
+        "lo": 6.0,
+        "hi": 15.0
+      },
+      {
+        "name": "15_25",
+        "lo": 15.0,
+        "hi": 25.0
+      },
+      {
+        "name": "gt25",
+        "lo": 25.0,
+        "hi": 90.0
+      }
+    ],
+    "orig": {
+      "total_farmland_ha": 48282.848730787366,
+      "by_band_ha": {
+        "lt6": 15892.046031024549,
+        "6_15": 28186.925414998037,
+        "15_25": 3951.8280330921016,
+        "gt25": 252.04925167267936
+      }
+    },
+    "opt": {
+      "total_farmland_ha": 47777.62029961424,
+      "by_band_ha": {
+        "lt6": 15940.463889650562,
+        "6_15": 28320.54326810013,
+        "15_25": 3336.459700642193,
+        "gt25": 180.15344122134857
+      }
+    },
+    "delta_ha": {
+      "lt6": 48.417858626013185,
+      "6_15": 133.61785310209234,
+      "15_25": -615.3683324499084,
+      "gt25": -71.89581045133079
+    },
+    "orig_pct": {
+      "lt6": 32.91447470225809,
+      "6_15": 58.378753855558564,
+      "15_25": 8.184744970468643,
+      "gt25": 0.5220264717147088
+    },
+    "opt_pct": {
+      "lt6": 33.36387159864316,
+      "6_15": 59.27575105352996,
+      "15_25": 6.983310762903636,
+      "gt25": 0.3770665849232411
+    }
+  },
+  "township_fairness": {
+    "core_townships": [
+      {
+        "town_code": "500227001",
+        "n_parcels_swappable": 3906,
+        "farmland_area_orig_ha": 2801.926295184465,
+        "farmland_area_opt_ha": 2774.8943235584543,
+        "slope_mean_orig_deg": 9.540324515370619,
+        "slope_mean_opt_deg": 9.382963229879836,
+        "slope_change_pct": -1.6494332581376532,
+        "n_farm_to_forest": 40,
+        "n_forest_to_farm": 40
+      },
+      {
+        "town_code": "500227002",
+        "n_parcels_swappable": 5415,
+        "farmland_area_orig_ha": 4009.374573874344,
+        "farmland_area_opt_ha": 4014.4025775550394,
+        "slope_mean_orig_deg": 6.52774706165015,
+        "slope_mean_opt_deg": 6.490514578598648,
+        "slope_change_pct": -0.5703726369889307,
+        "n_farm_to_forest": 13,
+        "n_forest_to_farm": 13
+      },
+      {
+        "town_code": "500227100",
+        "n_parcels_swappable": 2317,
+        "farmland_area_orig_ha": 3166.380828044991,
+        "farmland_area_opt_ha": 3076.230316939097,
+        "slope_mean_orig_deg": 9.852671866896236,
+        "slope_mean_opt_deg": 9.450429041965911,
+        "slope_change_pct": -4.082576080522997,
+        "n_farm_to_forest": 39,
+        "n_forest_to_farm": 39
+      },
+      {
+        "town_code": "500227101",
+        "n_parcels_swappable": 2899,
+        "farmland_area_orig_ha": 3378.156811762865,
+        "farmland_area_opt_ha": 3325.1677565998107,
+        "slope_mean_orig_deg": 8.589760793356751,
+        "slope_mean_opt_deg": 8.341871381012703,
+        "slope_change_pct": -2.885870960874291,
+        "n_farm_to_forest": 33,
+        "n_forest_to_farm": 33
+      },
+      {
+        "town_code": "500227102",
+        "n_parcels_swappable": 5875,
+        "farmland_area_orig_ha": 5942.05271208357,
+        "farmland_area_opt_ha": 5882.982557978217,
+        "slope_mean_orig_deg": 9.646310342899941,
+        "slope_mean_opt_deg": 9.507095155927693,
+        "slope_change_pct": -1.4431962276096097,
+        "n_farm_to_forest": 61,
+        "n_forest_to_farm": 61
+      },
+      {
+        "town_code": "500227103",
+        "n_parcels_swappable": 3617,
+        "farmland_area_orig_ha": 2702.5611216708517,
+        "farmland_area_opt_ha": 2664.273948794014,
+        "slope_mean_orig_deg": 11.32546373882086,
+        "slope_mean_opt_deg": 11.117535337501327,
+        "slope_change_pct": -1.83593719528505,
+        "n_farm_to_forest": 49,
+        "n_forest_to_farm": 49
+      },
+      {
+        "town_code": "500227104",
+        "n_parcels_swappable": 2538,
+        "farmland_area_orig_ha": 1810.4054204821232,
+        "farmland_area_opt_ha": 1799.2864843495072,
+        "slope_mean_orig_deg": 11.309556469423704,
+        "slope_mean_opt_deg": 11.169352943426718,
+        "slope_change_pct": -1.2396907551241072,
+        "n_farm_to_forest": 20,
+        "n_forest_to_farm": 20
+      },
+      {
+        "town_code": "500227105",
+        "n_parcels_swappable": 6787,
+        "farmland_area_orig_ha": 5760.052865983397,
+        "farmland_area_opt_ha": 5708.031725254897,
+        "slope_mean_orig_deg": 8.407784161995906,
+        "slope_mean_opt_deg": 8.29394371426499,
+        "slope_change_pct": -1.3539887030578914,
+        "n_farm_to_forest": 27,
+        "n_forest_to_farm": 27
+      },
+      {
+        "town_code": "500227106",
+        "n_parcels_swappable": 5739,
+        "farmland_area_orig_ha": 4605.230875309083,
+        "farmland_area_opt_ha": 4588.8765188716025,
+        "slope_mean_orig_deg": 7.219696124889591,
+        "slope_mean_opt_deg": 7.156527389471151,
+        "slope_change_pct": -0.8749500578101694,
+        "n_farm_to_forest": 13,
+        "n_forest_to_farm": 13
+      },
+      {
+        "town_code": "500227107",
+        "n_parcels_swappable": 5927,
+        "farmland_area_orig_ha": 5941.703251668042,
+        "farmland_area_opt_ha": 5894.906482807276,
+        "slope_mean_orig_deg": 6.758732487780386,
+        "slope_mean_opt_deg": 6.613246810277335,
+        "slope_change_pct": -2.1525586012774616,
+        "n_farm_to_forest": 36,
+        "n_forest_to_farm": 36
+      },
+      {
+        "town_code": "500227108",
+        "n_parcels_swappable": 2669,
+        "farmland_area_orig_ha": 3384.655501414635,
+        "farmland_area_opt_ha": 3304.042683939914,
+        "slope_mean_orig_deg": 7.905096313323951,
+        "slope_mean_opt_deg": 7.590513162284685,
+        "slope_change_pct": -3.9794980171087846,
+        "n_farm_to_forest": 41,
+        "n_forest_to_farm": 41
+      },
+      {
+        "town_code": "500227109",
+        "n_parcels_swappable": 1601,
+        "farmland_area_orig_ha": 2117.6086864505096,
+        "farmland_area_opt_ha": 2094.1508224530094,
+        "slope_mean_orig_deg": 8.70906012446124,
+        "slope_mean_opt_deg": 8.491564762918879,
+        "slope_change_pct": -2.4973459642502642,
+        "n_farm_to_forest": 18,
+        "n_forest_to_farm": 18
+      },
+      {
+        "town_code": "500227200",
+        "n_parcels_swappable": 3225,
+        "farmland_area_orig_ha": 2577.4236645804435,
+        "farmland_area_opt_ha": 2565.0579782353566,
+        "slope_mean_orig_deg": 6.364346697299696,
+        "slope_mean_opt_deg": 6.213741579976076,
+        "slope_change_pct": -2.366387698324472,
+        "n_farm_to_forest": 36,
+        "n_forest_to_farm": 36
+      }
+    ],
+    "summary": {
+      "n_townships_core": 13,
+      "slope_pct_min": 0.5703726369889307,
+      "slope_pct_max": 4.082576080522997,
+      "slope_pct_mean": 2.0716773966439757,
+      "slope_pct_std": 1.0856333454744738,
+      "slope_pct_gini": 0.27968224099371225,
+      "swap_count_max_min_ratio": 4.6923076923076925
+    }
+  },
+  "qualifying_area_trade_off": {
+    "initial_qualifying_baimu_fang_ha": 46844.0,
+    "delta_qualifying_baimu_fang_ha": -499.2,
+    "delta_qualifying_baimu_fang_count": 7,
+    "delta_pct_of_initial": -1.0656647596277005,
+    "total_farmland_area_change_ha": -505.2284311731279
+  }
+}

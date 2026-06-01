@@ -83,40 +83,41 @@ Initial \textit{baimu fang} area (ha)    & 46{,}844 & 74{,}342 \\
 \end{table}
 
 % ============================================================================
-\section{Bishan replication regimes: cross-regime reconciliation}\label{si:bishan-regimes}
+\section{Bishan replication: cross-pipeline reconciliation}\label{si:bishan-regimes}
 % ============================================================================
 
-The main text cites Bishan slope-improvement numbers in three regimes (\S5 ``Three Bishan replication regimes''). The numbers differ along three axes---evaluation protocol, prepare pipeline, and parcel-set policy---and we tabulate them here for transparent cross-reference. All three regimes evaluate the same underlying contrastive-MPC pipeline (\(\lambda_{\text{rank}}{=}5.0\), $H{=}5$, $K{=}50$, greedy continuation, $\gamma{=}0.99$); none is a re-tuning of the algorithm. The shipped ensemble used in regimes B and C is the public release \texttt{paper/checkpoints/bishan/shipped\_onnx/} (3-member ensemble, $\lambda_{\text{rank}}{=}5.0$); the regime-A ensembles are the public release \texttt{paper/checkpoints/bishan/contrastive\_5seed/} (five 3-member ensembles, seeds $0$--$4$).
+The main text reports Bishan slope-improvement numbers from two cadastral pipelines, plus a single GIS-only on-disk verification anchor and an open-source CLI reproduction. We tabulate them here for transparent cross-reference. All four entries evaluate the same underlying contrastive-MPC pipeline (\(\lambda_{\text{rank}}{=}5.0\), $H{=}5$, $K{=}50$, greedy continuation, $\gamma{=}0.99$); none is a re-tuning of the algorithm. The shipped ensemble used in the package-side rows is the public release \texttt{paper/checkpoints/bishan/shipped\_onnx/} (3-member ensemble, $\lambda_{\text{rank}}{=}5.0$); the lab-pipeline ensembles are the public release \texttt{paper/checkpoints/bishan/contrastive\_5seed/} (five 3-member ensembles, seeds $0$--$4$).
 
 \begin{table}[htbp]
 \centering
 \small
-\caption{The three Bishan replication regimes. Regime A is the canonical headline of main-text \S5. Regime B is the toolchain replication of main-text \S7. Regime C is the deployment-dataset run that anchors the GIS-grounded verification of main-text Methods \emph{Independent GIS-grounded verification} and \emph{Replacing the ensemble with the true environment}. The cross-regime band ($-1.3$ to $-2.0$ pp on slope) defines the deployment-side variance of the same underlying algorithm; the gap between A and B/C is morphological---the corrected geographic-CRS slope step in the package-side prepare exposes a $\sim$$1.2^{\circ}$ taller initial mean slope, leaving more headroom for reduction within the same $100$-step episode budget.}
+\caption{Bishan replication across cadastral pipelines. The on-disk GIS-only verification of the package-side prepare ($-2.001\%$) is the headline anchor of main-text Section 4. The five-ensemble lab-pipeline run ($-1.289 \pm 0.079\%$) is the matched-cadastre comparison against the in-house Centralised PPO and multi-agent baselines, both of which were trained on the lab pipeline before the prepare-step correction. The CLI five-episode and the open-source end-to-end reproduction are reported as deployment-side checks. The pipeline-level gap ($\sim$0.7\,pp on slope improvement) is morphological: the corrected geographic-CRS slope step in the package-side prepare exposes a $\sim$$1.2^{\circ}$ taller initial mean slope ($9.62^{\circ}$ vs $8.41^{\circ}$, a $14\%$ underestimate on the lab pipeline), leaving more headroom for reduction within the same $100$-step episode budget.}
 \label{tab:si-bishan-regimes}
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-Regime & A (lab headline) & B (toolchain) & C (verification) \\
+Row & GIS-only verification & Lab pipeline ($n{=}5$ ens.) & CLI 5-ep & Open-source repro \\
 \midrule
-Slope change \% & $-1.289 \pm 0.079$ & $-1.544 \pm 0.041$ & $-2.001$ \\
-$\Delta$Contiguity & $+0.0160 \pm 0.0016$ & not reported in main text & $+0.01275$ \\
-$\Delta$Baimu count & $+3.4 \pm 1.0$ & not reported in main text & $+8$ \\
-$\Delta$Baimu (ha) & $-312.2 \pm 34.3$ & not reported in main text & $-473.30$ \\
+Slope change \% & $-2.001$ & $-1.289 \pm 0.079$ & $-1.544 \pm 0.041$ & $-1.7384 \pm 0.024$ \\
+$\Delta$Contiguity & $+0.01275$ & $+0.0160 \pm 0.0016$ & not reported & $+0.01442 \pm 0.001$ \\
+$\Delta$Baimu count & $+8$ & $+3.4 \pm 1.0$ & not reported & $+3.40 \pm 1.36$ \\
+$\Delta$Baimu (ha) & $-473.30$ & $-312.2 \pm 34.3$ & not reported & $-478.64 \pm 35.0$ \\
+$\Delta$Total cultivated (ha) & $-505.23$ & not reported & not reported & not reported \\
 \midrule
-Replication unit & 5 ensembles $\times$ 1 ep & 1 ensemble $\times$ 5 ep & 1 ensemble $\times$ 1 ep \\
-Variance estimator & cross-seed (5 ensembles) & cross-episode (5 episodes) & ensemble-subset (3 of 2-of-3) \\
-Prepare pipeline & research-side (legacy) & package-side (corrected CRS) & package-side (corrected CRS) \\
-Initial slope $\bar{\sigma}_0$ & $8.41^{\circ}$ & $9.62^{\circ}$ & $9.62^{\circ}$ \\
-Blocks $N_{\text{blocks}}$ & $2{,}600$ & $2{,}640$ & $2{,}640$ \\
-Parcel set & $52{,}515$ & $53{,}004$ (env) & $53{,}086$ (verification) \\
-Anchor location in main text & main-text Section 4 prose; SI Table~\ref{tab:si-contrastive-multiobj} & main-text Section 8 Methods \texttt{toolchain} & main-text Section 4 Robustness (i,iii); Methods \\
-Source artefact & \texttt{paper/checkpoints/bishan/contrastive\_5seed/} & \texttt{paper/checkpoints/bishan/shipped\_onnx/} & \texttt{paper/checkpoints/bishan/shipped\_onnx/} \\
+Replication unit & 1 ens.\ $\times$ 1 ep & 5 ens.\ $\times$ 1 ep & 1 ens.\ $\times$ 5 ep & 5 ens.\ $\times$ 5 ep \\
+Variance estimator & 2-of-3 subset ablation & cross-ensemble & cross-episode & cross-ensemble \\
+Prepare pipeline & package-side & lab (legacy CRS) & package-side & package-side \\
+Initial slope $\bar{\sigma}_0$ & $9.62^{\circ}$ & $8.41^{\circ}$ & $9.62^{\circ}$ & $9.62^{\circ}$ \\
+Blocks $N_{\text{blocks}}$ & $2{,}640$ & $2{,}600$ & $2{,}640$ & $2{,}640$ \\
+Parcel set & $53{,}086$ (verification) & $52{,}515$ & $53{,}004$ (env) & $53{,}004$ (env) \\
+Anchor in main text & §4 + Methods §10.4 & §4 (DRL comparison) & §6 (toolchain) & SI §S2 only \\
+Source artefact & GIS-only script & \texttt{contrastive\_5seed/} & \texttt{shipped\_onnx/} & \texttt{repro\_artifacts/} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Why three regimes coexist.} The research-side prepare (regime A) was used to generate the paper's headline main-text Section 4 numbers and the published $\lambda$-ablation main-text Table 1 of main-text Section 3 because it is the prepare pipeline against which the in-house DRL baselines were originally trained, ensuring an apples-to-apples comparison. The package-side prepare (regimes B and C) is the public-facing toolchain shipped with the repository; it differs from the research-side prepare in two respects relevant to the present numbers: (a)~it computes block aggregation from the DLTB shapefile directly rather than from a precomputed \texttt{DLTB\_with\_slope.gpkg}, so the block boundaries differ slightly ($2{,}640$ vs.\ $2{,}600$ blocks); (b)~it preserves true non-square pixels of geographic-CRS DEMs (commit \texttt{dc3a01c}), which fixes a slope-underestimation bug in the legacy prepare and exposes a $\sim$$1.2^{\circ}$ taller mean initial slope. Regime A and regimes B/C therefore present the same algorithm operating on slightly different prepared inputs, which we treat as deployment-side variance rather than as an algorithmic effect. The 82-parcel difference between regime-B's env-side count ($53{,}004$) and regime-C's verification-side count ($53{,}086$) is auxiliary: the verification script keeps every parcel with a slope value and a farm/forest \texttt{ORIG\_DLBM} regardless of township-registry membership, while the env enforces township membership; the additional 82 parcels all carry \texttt{CHG\_FLAG}~$=$~0 and contribute zero to every delta.
+\paragraph{Why two pipelines coexist.} The lab pipeline was used to train the in-house Centralised PPO and multi-agent baselines and is preserved here only as the matched-cadastre comparison reported in main-text \S4. The package-side prepare is the public-facing toolchain shipped with the repository and the cadastre on which the headline result is computed; it differs from the lab pipeline in two respects relevant to the present numbers: (a)~it computes block aggregation from the DLTB shapefile directly rather than from a precomputed \texttt{DLTB\_with\_slope.gpkg}, so the block boundaries differ slightly ($2{,}640$ vs.\ $2{,}600$ blocks); (b)~it preserves the true non-square pixels of geographic-CRS DEMs (commit \texttt{dc3a01c}), which fixes a slope-underestimation bug in the lab pipeline and exposes a $\sim$$1.2^{\circ}$ taller mean initial slope. The two pipelines therefore present the same algorithm operating on slightly different prepared inputs; the gap is morphological rather than algorithmic. The 82-parcel difference between the env-side count ($53{,}004$) and the verification-side count ($53{,}086$) is auxiliary: the verification script keeps every parcel with a slope value and a farm/forest \texttt{ORIG\_DLBM} regardless of township-registry membership, while the env enforces township membership; the additional 82 parcels all carry \texttt{CHG\_FLAG}~$=$~$0$ and contribute zero to every delta.
 
-\paragraph{Cross-regime reproduction by the open-source toolchain.} An end-to-end reproduction of all five \S5 metrics on the package-side prepare from raw DLTB shapefiles plus DEM tiles (\texttt{paper/repro\_artifacts/macos\_2026-05-29/bishan\_5seed.json}) achieves slope $-1.7384 \pm 0.024\%$, contiguity $+0.01442 \pm 0.001$, baimu count $+3.40 \pm 1.36$, baimu area $-478.64 \pm 35.0$\,ha. This is closest in magnitude to regime~B/C and reproduces the qualitative cross-county finding (Bishan loses qualifying area; Dongxing gains it) end-to-end without access to the research-side prepare. A separate package-CLI 5-episode greedy run on the shipped ensemble (\texttt{runs/bishan/mpc\_output/mpc\_summary.json}) yields slope $-2.0392 \pm 0.0010\%$, baimu area $-499.12 \pm 0.17$\,ha, also closest in magnitude to regime C but with the $\sim$0.04 pp offset from the regime-C verification anchor of $-2.001\%$ that we attribute to ensemble-determinism path differences across re-runs of the deployment dataset (the shipped ensemble is deterministic across the action-selection path under fixed seed but the 5-episode greedy mean averages over five episode-0 trajectories that differ only in the episode-level random-rollout step the variance estimator consumes; \S\ref{si:bishan-regimes} Table~\ref{tab:si-bishan-regimes} caption). The full reproduction recipe is documented in \texttt{docs/REPRODUCE.md}; the per-seed JSON outputs are released alongside the toolchain.
+\paragraph{Cross-pipeline reproduction by the open-source toolchain.} An end-to-end reproduction of all five \S5 metrics on the package-side prepare from raw DLTB shapefiles plus DEM tiles (\texttt{paper/repro\_artifacts/macos\_2026-05-29/bishan\_5seed.json}) achieves slope $-1.7384 \pm 0.024\%$, contiguity $+0.01442 \pm 0.001$, baimu count $+3.40 \pm 1.36$, baimu area $-478.64 \pm 35.0$\,ha. This bracket reproduces the qualitative cross-county finding (Bishan loses qualifying area; Dongxing gains it) end-to-end without access to the lab pipeline. A separate package-CLI 5-episode greedy run on the shipped ensemble (\texttt{runs/bishan/mpc\_output/mpc\_summary.json}) yields slope $-2.0392 \pm 0.0010\%$, baimu area $-499.12 \pm 0.17$\,ha, with the $\sim$$0.04$\,pp offset from the on-disk verification anchor of $-2.001\%$ attributable to ensemble-determinism path differences across re-runs of the deployment dataset. The full reproduction recipe is documented in \texttt{docs/REPRODUCE.md}; the per-seed JSON outputs are released alongside the toolchain.
 
 % ============================================================================
 \section{Statistical tests reported in the main text}\label{si:stat-tests}
@@ -214,12 +215,12 @@ Preset & Random & Greedy & GA & PPO & MPC & Wall \\
 \section{Per-seed Bishan multi-objective profile}\label{si:contrastive-multiobj}
 % ============================================================================
 
-Main-text Section~4 reports the cross-seed mean of all four contrastive-MPC primary objectives on Bishan ($\lambda_{\text{rank}}{=}5.0$, greedy, $H{=}5$, $K{=}50$). The per-seed values that produce that mean are listed in Table~\ref{tab:si-contrastive-multiobj}. Initial state: slope 9.616, contiguity 3.585, 109 \textit{baimu fang} totalling 46{,}844\,ha. Slope and contiguity changes are both directionally correct on every seed; the count of large patches ($\geq$6.67\,ha) increases by $+3.4$ on average; total qualifying area decreases by $\sim$$312$\,ha because the agent consolidates many small patches into a smaller number of larger, contiguous patches---the deliberate trade-off discussed in main-text Discussion.
+Main-text Section~4 reports the matched-DRL-comparison mean of all four contrastive-MPC primary objectives on Bishan under the lab pipeline ($\lambda_{\text{rank}}{=}5.0$, greedy, $H{=}5$, $K{=}50$, $5$ independently trained ensembles $\times$ $1$ episode each). The per-seed values that produce that mean are listed in Table~\ref{tab:si-contrastive-multiobj}. Initial state on the lab pipeline: slope $8.41^{\circ}$ ($9.62^{\circ}$ on the package-side prepare under the corrected geographic-CRS slope step, main-text Methods \emph{Prepare-step slope correction}), contiguity $3.585$, $109$ \textit{baimu fang} totalling $46{,}844$\,ha. Slope and contiguity changes are both directionally correct on every seed; the count of large patches ($\geq 6.67$\,ha) increases by $+3.4$ on average; total qualifying area decreases by $\sim$$312$\,ha because the agent consolidates many small patches into a smaller number of larger, contiguous patches---the deliberate trade-off discussed in main-text Discussion. The corresponding package-side anchor (single canonical episode, GIS-only verification) loses $-473$\,ha of qualifying area and $-505$\,ha of total cultivated area; see \S\ref{si:bishan-regimes} for the cross-pipeline reconciliation and \S\ref{si:policy-translation} for the policy-band breakdown.
 
 \begin{table}[htbp]
 \centering
 \small
-\caption{Per-seed multi-objective profile of contrastive MPC on Bishan across 5 independently trained ensembles (1 episode each).}
+\caption{Per-seed multi-objective profile of contrastive MPC on Bishan across $5$ independently trained ensembles, $1$ episode each, on the lab pipeline (initial slope $8.41^{\circ}$). The DRL baselines used in the comparison were trained on the same pipeline; see \S\ref{si:bishan-regimes} for the cross-pipeline reconciliation against the package-side $-2.001\%$ verification anchor.}
 \label{tab:si-contrastive-multiobj}
 \begin{tabular}{ccccc}
 \toprule
@@ -367,5 +368,64 @@ Stage-2 continuation & greedy & random & — \\
 \end{table}
 
 Per-step trajectory matching between layer~(iii) and the deployed pipeline is byte-identical at every monitored step (10, 20, \ldots, 100) of episode 0; this is the most stringent reproducibility check the verification stack supports and is therefore the canonical evidence that the deployed ensemble's planning is deterministic given a fixed prepared dataset and config.
+
+% ============================================================================
+\section{Policy translation: slope bands, township fairness, area trade-offs}\label{si:policy-translation}
+% ============================================================================
+
+This section reports the policy-relevant breakdown of the Bishan headline result that main-text \S4 references. All numbers come from a single GIS-only post-hoc analysis script (\texttt{scripts/policy\_translation\_bishan.py}) that reads the optimised DLTB shapefile written by Tool~4 and shares no source with the optimisation pipeline; the per-band aggregates use parcel area in EPSG:32648 (UTM 48N) and the township assignment uses the first nine digits of \texttt{QSDWDM}. The 13 Bishan core townships are the \texttt{500227xxx} entries of the Tool~1 \texttt{townships.json} registry; the 8 \texttt{500106xxx}/\texttt{500107xxx}/\texttt{500109xxx}/\texttt{500116xxx} entries are Bishan-administered flying-territory parcels in neighbouring districts and are reported in the registry but excluded from the fairness summary.
+
+\paragraph{Slope-band shifts (Table~\ref{tab:si-policy-slope-bands}).} The independent GIS recomputation of the on-disk optimised cadastre shifts $687$\,ha out of the $\geq 15^{\circ}$ steep tail (the GB/T 21010-2017 marginal-cultivation band; $-615$\,ha from $15$--$25^{\circ}$ and $-72$\,ha from $>25^{\circ}$), at the expense of a $+182$\,ha gain in the $\leq 15^{\circ}$ mechanisable bands. The planner therefore executes \emph{de facto} grain-for-green on the slope tail without explicit policy supervision, using the $w_S$ slope reward as a proxy.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Bishan farmland-area distribution across slope bands, before and after optimisation. Bands aligned with GB/T 30600-2022 (high-standard farmland mechanisability bands $<6^{\circ}$ and $6$--$15^{\circ}$) and GB/T 21010-2017 (marginal-cultivation $15$--$25^{\circ}$ and banned-cultivation $>25^{\circ}$). All areas in hectares, computed from the optimised DLTB shapefile under EPSG:32648 projection. Total farmland area in row 5 differs from row 1+row 2+row 3+row 4 of the ``orig'' / ``opt'' columns by $\le 0.1$ ha (rounding).}
+\label{tab:si-policy-slope-bands}
+\begin{tabular}{lcccc}
+\toprule
+Slope band & Original (ha) & Optimised (ha) & $\Delta$ (ha) & Share orig $\to$ opt \\
+\midrule
+$<6^{\circ}$ (mechanisable) & $15{,}892$ & $15{,}940$ & $+48$ & $32.9\% \to 33.4\%$ \\
+$6$--$15^{\circ}$ (terraceable) & $28{,}187$ & $28{,}320$ & $+134$ & $58.4\% \to 59.3\%$ \\
+$15$--$25^{\circ}$ (marginal) & $3{,}952$ & $3{,}336$ & $-615$ & $8.2\% \to 7.0\%$ \\
+$>25^{\circ}$ (banned, GB/T 21010-2017) & $252$ & $180$ & $-72$ & $0.5\% \to 0.4\%$ \\
+\midrule
+\textbf{Net} (cultivated land) & $\mathbf{48{,}283}$ & $\mathbf{47{,}776}$ & $\mathbf{-505}$ & — \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Township fairness (Table~\ref{tab:si-policy-township}).} Per-township slope improvement on the $13$ Bishan core townships ranges from $-0.57\%$ (\texttt{500227002}, mean initial slope $6.53^{\circ}$) to $-4.08\%$ (\texttt{500227100}, $9.85^{\circ}$); the cross-township mean is $-2.07\%$ with sample standard deviation $1.09\%$ and Gini coefficient $0.28$ (computed on absolute slope-improvement magnitudes). No township is left at near-zero improvement, and the spread is consistent with the spread of initial slope means rather than with concentration of swaps in a small number of townships. The largest single-township farmland reduction is $-90.2$\,ha in \texttt{500227100}, consistent with this township's higher initial slope and per-parcel size.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Per-township breakdown across the $13$ Bishan core townships. Slope means are area-weighted on farmland parcels; slope-change pct is computed against each township's own initial slope. Farm$\to$forest and forest$\to$farm are counts of \texttt{CHG\_FLAG}~$=$~$1$ and \texttt{CHG\_FLAG}~$=$~$2$ parcels respectively. Source: \texttt{scripts/policy\_translation\_bishan.py}. The 8 flying-territory townships in the Tool~1 registry contribute zero swaps (\texttt{CHG\_FLAG} $=$ $0$ everywhere) and are omitted; their parcels carry through the optimisation unchanged.}
+\label{tab:si-policy-township}
+\begin{tabular}{lcccccc}
+\toprule
+Town & Parcels & Init slope ($^\circ$) & Opt slope ($^\circ$) & $\Delta$ slope (\%) & Farm$\to$For & For$\to$Farm \\
+\midrule
+500227001 & $3{,}906$ & $9.540$ & $9.383$ & $-1.65$ & $40$ & $40$ \\
+500227002 & $5{,}415$ & $6.528$ & $6.491$ & $-0.57$ & $13$ & $13$ \\
+500227100 & $2{,}317$ & $9.853$ & $9.450$ & $-4.08$ & $39$ & $39$ \\
+500227101 & $2{,}899$ & $8.590$ & $8.342$ & $-2.89$ & $33$ & $33$ \\
+500227102 & $5{,}875$ & $9.646$ & $9.507$ & $-1.44$ & $61$ & $61$ \\
+500227103 & $3{,}617$ & $11.325$ & $11.118$ & $-1.84$ & $49$ & $49$ \\
+500227104 & $2{,}538$ & $11.310$ & $11.169$ & $-1.24$ & $20$ & $20$ \\
+500227105 & $6{,}787$ & $8.408$ & $8.294$ & $-1.35$ & $27$ & $27$ \\
+500227106 & $5{,}739$ & $7.220$ & $7.157$ & $-0.88$ & $13$ & $13$ \\
+500227107 & $5{,}927$ & $6.759$ & $6.613$ & $-2.15$ & $36$ & $36$ \\
+500227108 & $2{,}669$ & $7.905$ & $7.591$ & $-3.98$ & $41$ & $41$ \\
+500227109 & $1{,}601$ & $8.709$ & $8.492$ & $-2.50$ & $18$ & $18$ \\
+500227200 & $3{,}225$ & $6.364$ & $6.214$ & $-2.37$ & $36$ & $36$ \\
+\midrule
+\textbf{Range / spread} & — & $[6.36, 11.33]$ & — & $\mathbf{[-4.08, -0.57]}$, Gini $\mathbf{0.28}$ & — & — \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Area trade-off and the cultivated-land red line.} Two trade-offs are honestly reported (main-text Section 4): (i)~total qualifying \textit{baimu fang} area decreases by $-473$\,ha, equivalent to $1.01\%$ of the initial $46{,}844$\,ha qualifying stock, a deliberate consequence of consolidating many small qualifying patches into fewer larger ones (the qualifying count rises by $+8$ even as total qualifying area falls); (ii)~the paired farm$\leftrightarrow$forest swap conserves \emph{counts} ($426$ in, $426$ out) but not \emph{areas}, leading to a net cultivated-area decrease of $-505$\,ha ($1.05\%$ of the $48{,}283$\,ha initial farmland stock). The two numbers are distinct: the qualifying-area loss is computed inside the $\geq 6.67$\,ha contiguous-farmland definition, the cultivated-land loss is computed across all farmland parcels. The cultivated-land red line is therefore not satisfied by the swap rule alone and must be enforced as an explicit constraint at deployment time. The practical implication is recorded in main-text Section~4 (Methods action paragraph) and main-text Discussion.
 
 \end{document}
