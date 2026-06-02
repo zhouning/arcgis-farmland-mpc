@@ -35,6 +35,10 @@ class PlanAlgorithm(QgsProcessingAlgorithm):
     ENV_KIND = "ENV_KIND"
     FARM_DLBM = "FARM_DLBM"
     FOREST_DLBM = "FOREST_DLBM"
+    CULTIVATED_AREA_FLOOR_DELTA_HA = "CULTIVATED_AREA_FLOOR_DELTA_HA"
+    BAIMU_AREA_FLOOR_DELTA_HA = "BAIMU_AREA_FLOOR_DELTA_HA"
+    GAMMA_CONN = "GAMMA_CONN"
+    DELTA_CONN = "DELTA_CONN"
 
     CONTINUATIONS = ("greedy", "random")
     SCORINGS = ("reward", "slope_only")
@@ -137,6 +141,30 @@ class PlanAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterString(
             self.FOREST_DLBM, "Forest land-use code", defaultValue="031",
         ))
+        self.addParameter(QgsProcessingParameterNumber(
+            self.CULTIVATED_AREA_FLOOR_DELTA_HA,
+            "Cultivated-area floor delta in ha (blank = disabled; 0 = no net loss)",
+            type=QgsProcessingParameterNumber.Double,
+            optional=True,
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            self.BAIMU_AREA_FLOOR_DELTA_HA,
+            "Baimu-fang area floor delta in ha (blank = disabled; 0 = no net loss)",
+            type=QgsProcessingParameterNumber.Double,
+            optional=True,
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            self.GAMMA_CONN,
+            "Forest-entry connectivity weight gamma",
+            type=QgsProcessingParameterNumber.Double,
+            optional=True,
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            self.DELTA_CONN,
+            "Farmland-retirement connectivity protection delta",
+            type=QgsProcessingParameterNumber.Double,
+            optional=True,
+        ))
 
     def processAlgorithm(self, parameters, context, feedback):  # noqa: N802
         ensemble_dir = self.parameterAsFile(parameters, self.ENSEMBLE_DIR, context)
@@ -172,6 +200,18 @@ class PlanAlgorithm(QgsProcessingAlgorithm):
         ]
         if crs.isValid() and crs.authid():
             args.extend(["--crs", crs.authid()])
+        area_floor = parameters.get(self.CULTIVATED_AREA_FLOOR_DELTA_HA)
+        if area_floor is not None:
+            args.extend(["--cultivated-area-floor-delta-ha", str(area_floor)])
+        baimu_floor = parameters.get(self.BAIMU_AREA_FLOOR_DELTA_HA)
+        if baimu_floor is not None:
+            args.extend(["--baimu-area-floor-delta-ha", str(baimu_floor)])
+        gamma_conn = parameters.get(self.GAMMA_CONN)
+        if gamma_conn is not None:
+            args.extend(["--gamma-conn", str(gamma_conn)])
+        delta_conn = parameters.get(self.DELTA_CONN)
+        if delta_conn is not None:
+            args.extend(["--delta-conn", str(delta_conn)])
 
         run_cli("plan", args, feedback)
         return {

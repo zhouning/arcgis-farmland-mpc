@@ -95,6 +95,8 @@ class CountyLevelEnv(gym.Env):
                  slope_weight=4000.0, cont_weight=500.0,
                  baimu_weight=1500.0, baimu_bonus=5.0,
                  baimu_area_penalty=2000.0,
+                 cultivated_area_floor_delta_ha=None,
+                 baimu_area_floor_delta_ha=None,
                  baimu_threshold_m2=BAIMU_THRESHOLD_M2,
                  gamma_conn=1.0, delta_conn=0.5):
         super().__init__()
@@ -107,6 +109,16 @@ class CountyLevelEnv(gym.Env):
         self.baimu_weight = baimu_weight
         self.baimu_bonus = baimu_bonus
         self.baimu_area_penalty = baimu_area_penalty
+        self.cultivated_area_floor_delta_ha = (
+            None if cultivated_area_floor_delta_ha is None
+            else float(cultivated_area_floor_delta_ha)
+        )
+        self.cultivated_area_floor_m2 = None
+        self.baimu_area_floor_delta_ha = (
+            None if baimu_area_floor_delta_ha is None
+            else float(baimu_area_floor_delta_ha)
+        )
+        self.baimu_area_floor_m2 = None
         self.baimu_threshold_m2 = baimu_threshold_m2
         self.gamma_conn = gamma_conn
         self.delta_conn = delta_conn
@@ -514,6 +526,84 @@ class CountyLevelEnv(gym.Env):
             if self.land_use[j] == FARMLAND:
                 self.total_farmland_adj += 1
 
+    def _area_floor_allows_pair(self, farm_idx, forest_idx):
+        """Return True if a farm->forest / forest->farm pair preserves area floor."""
+        if self.cultivated_area_floor_m2 is None:
+            return True
+        next_area = self.total_farm_area - self.areas[farm_idx] + self.areas[forest_idx]
+        return bool(next_area >= self.cultivated_area_floor_m2 - 1e-6)
+
+    def _baimu_floor_allows_pair(self, farm_idx, forest_idx):
+        """Return True if a proposed pair preserves the configured baimu floor.
+
+        This is intentionally checked only during real pair execution, not in
+        the block action mask, because recomputing connected components is an
+        expensive global operation.
+        """
+        if self.baimu_area_floor_m2 is None:
+            return True
+        old_farm = self.land_use[farm_idx]
+        old_forest = self.land_use[forest_idx]
+        self.land_use[farm_idx] = FOREST
+        self.land_use[forest_idx] = FARMLAND
+        try:
+            _, next_baimu_area = self._count_baimu_fang()
+        finally:
+            self.land_use[farm_idx] = old_farm
+            self.land_use[forest_idx] = old_forest
+        return bool(next_baimu_area >= self.baimu_area_floor_m2 - 1e-6)
+
+    def _select_greedy_swap_pair(self, farm_idx, forest_idx, enforce_baimu_floor=True):
+        """Select the greedy slope-improving pair, respecting area floor if active."""
+        if len(farm_idx) == 0 or len(forest_idx) == 0:
+            return None
+
+        farm_scores = (
+            self.slopes[farm_idx]
+            - self.delta_conn * self.farmland_nbr_count[farm_idx]
+        )
+        forest_scores = (
+            self.slopes[forest_idx]
+            - self.gamma_conn * self.farmland_nbr_count[forest_idx]
+        )
+
+        if self.cultivated_area_floor_m2 is None and (
+            self.baimu_area_floor_m2 is None or not enforce_baimu_floor
+        ):
+            best_farm = int(farm_idx[np.argmax(farm_scores)])
+            best_forest = int(forest_idx[np.argmin(forest_scores)])
+            if self.slopes[best_farm] <= self.slopes[best_forest]:
+                return None
+            return best_farm, best_forest
+
+        farm_order = np.argsort(farm_scores)[::-1]
+        forest_order = np.argsort(forest_scores)
+        for farm_pos in farm_order:
+            candidate_farm = int(farm_idx[farm_pos])
+            for forest_pos in forest_order:
+                candidate_forest = int(forest_idx[forest_pos])
+                if self.slopes[candidate_farm] <= self.slopes[candidate_forest]:
+                    continue
+                if self._area_floor_allows_pair(candidate_farm, candidate_forest):
+                    if enforce_baimu_floor and not self._baimu_floor_allows_pair(
+                        candidate_farm, candidate_forest
+                    ):
+                        continue
+                    return candidate_farm, candidate_forest
+        return None
+
+    def _block_has_area_feasible_swap(self, block_id):
+        """Check whether a block has any slope-improving pair under area floor."""
+        parcels = self.block_parcels[block_id]
+        types = self.land_use[parcels]
+        avail = ~self.swapped[parcels]
+
+        farm_idx = parcels[(types == FARMLAND) & avail]
+        forest_idx = parcels[(types == FOREST) & avail]
+        return self._select_greedy_swap_pair(
+            farm_idx, forest_idx, enforce_baimu_floor=False
+        ) is not None
+
     # ==================================================================
     # Greedy execution engine
     # ==================================================================
@@ -539,16 +629,13 @@ class CountyLevelEnv(gym.Env):
             farm_idx = parcels[farm_local]
             forest_idx = parcels[forest_local]
 
-            farm_scores = (self.slopes[farm_idx]
-                           - self.delta_conn * self.farmland_nbr_count[farm_idx])
-            best_farm = farm_idx[np.argmax(farm_scores)]
-
-            forest_scores = (self.slopes[forest_idx]
-                             - self.gamma_conn * self.farmland_nbr_count[forest_idx])
-            best_forest = forest_idx[np.argmin(forest_scores)]
-
-            if self.slopes[best_farm] <= self.slopes[best_forest]:
+            pair = self._select_greedy_swap_pair(farm_idx, forest_idx)
+            if pair is None:
+                if self.baimu_area_floor_m2 is not None:
+                    self._block_farm_avail[block_id] = 0
+                    self._block_forest_avail[block_id] = 0
                 break
+            best_farm, best_forest = pair
 
             self._swap_to_forest(best_farm)
             self._swap_to_farmland(best_forest)
@@ -707,7 +794,14 @@ class CountyLevelEnv(gym.Env):
 
     def action_masks(self):
         """Boolean mask: True if block has swap potential."""
-        return (self._block_farm_avail > 0) & (self._block_forest_avail > 0)
+        mask = (self._block_farm_avail > 0) & (self._block_forest_avail > 0)
+        if self.cultivated_area_floor_m2 is None:
+            return mask
+
+        constrained = mask.copy()
+        for block_id in np.where(mask)[0]:
+            constrained[block_id] = self._block_has_area_feasible_swap(block_id)
+        return constrained
 
     def _cache_initial_state(self):
         """Cache initial state for fast reset."""
@@ -716,6 +810,16 @@ class CountyLevelEnv(gym.Env):
         self.initial_baimu_count = self.baimu_count
         self.initial_baimu_area = self.baimu_total_area
         self.initial_farm_area = self.total_farm_area
+        if self.cultivated_area_floor_delta_ha is not None:
+            self.cultivated_area_floor_m2 = (
+                self.initial_farm_area
+                + self.cultivated_area_floor_delta_ha * 10000.0
+            )
+        if self.baimu_area_floor_delta_ha is not None:
+            self.baimu_area_floor_m2 = (
+                self.initial_baimu_area
+                + self.baimu_area_floor_delta_ha * 10000.0
+            )
         self._init_cache = {
             'land_use': self.land_use.copy(),
             'n_farmland': self.n_farmland,
@@ -761,6 +865,14 @@ class CountyLevelEnv(gym.Env):
             'contiguity': self.contiguity,
             'baimu_count': self.baimu_count,
             'baimu_area_ha': self.baimu_total_area / 10000.0,
+            'cultivated_area_ha': self.total_farm_area / 10000.0,
+            'cultivated_area_change_ha': 0.0,
+            'cultivated_area_change_pct': 0.0,
+            'baimu_area_floor_delta_ha': self.baimu_area_floor_delta_ha,
+            'baimu_area_floor_ha': (
+                None if self.baimu_area_floor_m2 is None
+                else self.baimu_area_floor_m2 / 10000.0
+            ),
             'budget_used': 0,
         }
         return obs, info
@@ -815,6 +927,23 @@ class CountyLevelEnv(gym.Env):
             'contiguity': cur_cont,
             'baimu_count': self.baimu_count,
             'baimu_area_ha': self.baimu_total_area / 10000.0,
+            'cultivated_area_ha': self.total_farm_area / 10000.0,
+            'cultivated_area_change_ha': (
+                self.total_farm_area - self.initial_farm_area
+            ) / 10000.0,
+            'cultivated_area_change_pct': 100.0 * (
+                self.total_farm_area - self.initial_farm_area
+            ) / (abs(self.initial_farm_area) + 1e-8),
+            'cultivated_area_floor_delta_ha': self.cultivated_area_floor_delta_ha,
+            'cultivated_area_floor_ha': (
+                None if self.cultivated_area_floor_m2 is None
+                else self.cultivated_area_floor_m2 / 10000.0
+            ),
+            'baimu_area_floor_delta_ha': self.baimu_area_floor_delta_ha,
+            'baimu_area_floor_ha': (
+                None if self.baimu_area_floor_m2 is None
+                else self.baimu_area_floor_m2 / 10000.0
+            ),
             'budget_used': self.budget_used,
             'completed_swaps': completed,
             'block_selected': block_id,

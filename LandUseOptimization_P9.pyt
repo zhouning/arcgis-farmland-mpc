@@ -663,11 +663,29 @@ class MPCPlanTool(object):
             name="baimu_bonus", datatype="GPDouble",
             parameterType="Optional", direction="Input")
 
+        p_area_floor = arcpy.Parameter(
+            displayName="Cultivated-area floor delta in ha (blank = disabled; 0 = no net loss)",
+            name="cultivated_area_floor_delta_ha", datatype="GPDouble",
+            parameterType="Optional", direction="Input")
+        p_baimu_area_floor = arcpy.Parameter(
+            displayName="Baimu-fang area floor delta in ha (blank = disabled; 0 = no net loss)",
+            name="baimu_area_floor_delta_ha", datatype="GPDouble",
+            parameterType="Optional", direction="Input")
+        p_gamma_conn = arcpy.Parameter(
+            displayName="Forest-entry connectivity weight gamma (blank = default)",
+            name="gamma_conn", datatype="GPDouble",
+            parameterType="Optional", direction="Input")
+        p_delta_conn = arcpy.Parameter(
+            displayName="Farmland-retirement connectivity protection delta (blank = default)",
+            name="delta_conn", datatype="GPDouble",
+            parameterType="Optional", direction="Input")
+
         return [p_prepared, p_ensemble_dir, p_out, p_horizon, p_topk,
                 p_gamma, p_continuation, p_scoring, p_episodes, p_max_steps,
                 p_threads, p_proj_crs, p_input_dltb, p_output_fc,
                 p_farm_dlbm, p_forest_dlbm,
-                p_slope_weight, p_cont_weight, p_baimu_weight, p_baimu_bonus]
+                p_slope_weight, p_cont_weight, p_baimu_weight, p_baimu_bonus,
+                p_area_floor, p_baimu_area_floor, p_gamma_conn, p_delta_conn]
 
     def isLicensed(self):
         return True
@@ -728,6 +746,10 @@ class MPCPlanTool(object):
         cont_weight  = parameters[17].value
         baimu_weight = parameters[18].value
         baimu_bonus  = parameters[19].value
+        area_floor   = parameters[20].value
+        baimu_floor  = parameters[21].value
+        gamma_conn   = parameters[22].value
+        delta_conn   = parameters[23].value
 
         try:
             mpc_run(
@@ -741,6 +763,9 @@ class MPCPlanTool(object):
                 farm_dlbm=farm_dlbm, forest_dlbm=forest_dlbm,
                 slope_weight=slope_weight, cont_weight=cont_weight,
                 baimu_weight=baimu_weight, baimu_bonus=baimu_bonus,
+                cultivated_area_floor_delta_ha=area_floor,
+                baimu_area_floor_delta_ha=baimu_floor,
+                gamma_conn=gamma_conn, delta_conn=delta_conn,
                 messages=messages,
             )
         except Exception as e:

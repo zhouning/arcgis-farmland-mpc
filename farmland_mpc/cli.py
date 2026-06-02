@@ -200,6 +200,20 @@ def plan(
     forest_dlbm: str = typer.Option("031", "--forest-dlbm"),
     baimu_area_penalty: Optional[float] = typer.Option(None, "--baimu-area-penalty",
         help="Override env baimu_area_penalty (default 2000.0; paper Eq.1 implies 0)."),
+    cultivated_area_floor_delta_ha: Optional[float] = typer.Option(
+        None, "--cultivated-area-floor-delta-ha",
+        help="Hard cumulative cultivated-area floor relative to initial area in ha. "
+             "Use 0 for no net loss; negative values allow an explicit tolerance."),
+    baimu_area_floor_delta_ha: Optional[float] = typer.Option(
+        None, "--baimu-area-floor-delta-ha",
+        help="Hard cumulative baimu-fang area floor relative to initial qualifying "
+             "area in ha. Use 0 for no net loss; negative values allow a tolerance."),
+    gamma_conn: Optional[float] = typer.Option(
+        None, "--gamma-conn",
+        help="Override local forest-entry connectivity weight for pair selection."),
+    delta_conn: Optional[float] = typer.Option(
+        None, "--delta-conn",
+        help="Override local farmland-retirement connectivity protection weight."),
     env_kind: str = typer.Option("county", "--env",
         help="county (default; CountyLevelEnv) | "
              "restoration (RestorationEnv on planning-unit attributes)."),
@@ -229,6 +243,10 @@ def plan(
         farm_dlbm=farm_dlbm,
         forest_dlbm=forest_dlbm,
         baimu_area_penalty=baimu_area_penalty,
+        cultivated_area_floor_delta_ha=cultivated_area_floor_delta_ha,
+        baimu_area_floor_delta_ha=baimu_area_floor_delta_ha,
+        gamma_conn=gamma_conn,
+        delta_conn=delta_conn,
     )
     typer.echo(f"Phase D done -> see {out_dir}")
 

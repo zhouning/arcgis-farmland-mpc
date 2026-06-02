@@ -23,6 +23,7 @@
 \usepackage{hyperref}
 \usepackage{natbib}
 \usepackage[margin=1in]{geometry}
+\graphicspath{{./figures/}}
 \bibliographystyle{plainnat}
 
 % renumber tables/sections with S prefix
@@ -181,7 +182,7 @@ Dimension & Configuration & Slope \% & Reward & Diagnosis \\
 \end{table}
 
 % ============================================================================
-\section{Synthetic-benchmark secondary metrics (Supplementary Table S5)}\label{si:s3-bench-secondary}
+\section{Synthetic-benchmark secondary metrics (Supplementary Tables S5--S8)}\label{si:s3-bench-secondary}
 % ============================================================================
 
 Table~\ref{tab:si-bench-slope} reports the slope-improvement profile across the seven synthetic landscapes, summarised in main-text Section 5. The three secondary metrics referenced in main-text Section 5 ($\Delta$contiguity, $\Delta$\textit{baimu fang} count, and $\Delta$\textit{baimu fang} area, all under the same 50-pair swap budget and $n{=}5$ seeds per cell) are tabulated below the slope profile. Together these summarise the full $5 \times 7 \times 5 = 175$-cell sweep. Aggregation script: \texttt{scripts/si\_tables\_v7.py} in the released code repository.
@@ -209,7 +210,7 @@ Preset & Random & Greedy & GA & PPO & MPC & Wall \\
 }
 \end{table}
 
-\input{si_tables_v7.tex}
+\input{../si_tables_v7.tex}
 
 % ============================================================================
 \section{Per-seed Bishan multi-objective profile}\label{si:contrastive-multiobj}
@@ -270,7 +271,7 @@ The synthetic benchmark, the pre-trained Bishan ensemble, the ArcGIS Pro toolbox
 \end{itemize}
 
 % ============================================================================
-\section{Verification stack: full per-episode data (Supplementary Tables S7--S10)}\label{si:s5-verification}
+\section{Verification stack: full per-episode data (Supplementary Tables S10--S13)}\label{si:s5-verification}
 % ============================================================================
 
 The main-text Methods sections (\texttt{Independent GIS-grounded verification}, \texttt{Direct measurement of ensemble 1-step prediction accuracy}, and \texttt{Replacing the ensemble with the true environment}) summarise four of the five independent verification layers underwriting the Bishan reported candidate result (the fifth, Neijiang cross-county replication, is in main-text Section~4). Tables~\ref{tab:si-validate}--\ref{tab:si-trueenv} give the per-replicate, per-channel numbers for each verification layer so external readers can audit them without rerunning the released scripts.
@@ -373,7 +374,7 @@ Per-step trajectory matching between layer~(iii) and the deployed pipeline is by
 \section{Policy translation: slope bands, township fairness, area trade-offs}\label{si:policy-translation}
 % ============================================================================
 
-This section reports the policy-relevant breakdown of the Bishan reported candidate result that main-text \S4 references. All numbers come from a single GIS-only post-hoc analysis script (\texttt{scripts/policy\_translation\_bishan.py}) that reads the optimised DLTB shapefile written by Tool~4 and shares no source with the optimisation pipeline; the per-band aggregates use parcel area in EPSG:32648 (UTM 48N) and the township assignment uses the first nine digits of \texttt{QSDWDM}. The 13 Bishan core townships are the \texttt{500227xxx} entries of the Tool~1 \texttt{townships.json} registry; the 8 \texttt{500106xxx}/\texttt{500107xxx}/\texttt{500109xxx}/\texttt{500116xxx} entries are Bishan-administered flying-territory parcels in neighbouring districts and are reported in the registry but excluded from the fairness summary.
+This section reports the policy-relevant breakdown of the real-county candidate results that main-text \S4 references. All numbers come from GIS-only post-hoc analysis scripts (\texttt{scripts/policy\_translation\_bishan.py} for the original Bishan audit and the generic \texttt{scripts/policy\_translation\_optimized.py} for the constrained and Neijiang audits) that read the optimised DLTB shapefile written by Tool~4 and share no source with the optimisation pipeline; the per-band aggregates use parcel area in EPSG:32648 (UTM 48N) and the township assignment uses the first nine digits of \texttt{QSDWDM}. The 13 Bishan core townships are the \texttt{500227xxx} entries of the Tool~1 \texttt{townships.json} registry; the 8 \texttt{500106xxx}/\texttt{500107xxx}/\texttt{500109xxx}/\texttt{500116xxx} entries are Bishan-administered flying-territory parcels in neighbouring districts and are reported in the registry but excluded from the fairness summary.
 
 \paragraph{Slope-band shifts (Table~\ref{tab:si-policy-slope-bands}).} The independent GIS recomputation of the on-disk optimised cadastre shifts $687$\,ha out of the $\geq 15^{\circ}$ steep tail (the GB/T 21010-2017 marginal-cultivation band; $-615$\,ha from $15$--$25^{\circ}$ and $-72$\,ha from $>25^{\circ}$), at the expense of a $+182$\,ha gain in the $\leq 15^{\circ}$ mechanisable bands. The planner therefore executes a candidate high-slope-retirement pattern on the slope tail without explicit policy supervision, using the $w_S$ slope reward as a proxy.
 
@@ -426,13 +427,65 @@ Town & Parcels & Init slope ($^\circ$) & Opt slope ($^\circ$) & $\Delta$ slope (
 \end{tabular}
 \end{table}
 
-\paragraph{Area trade-off and cultivated-land constraint status.} The Bishan package-side output is an unconstrained candidate scenario. It is useful because it exposes a high-slope-retirement frontier, but it is not a policy-compliant constrained plan under a cultivated-area-preservation requirement. Two trade-offs are reported: (i)~total qualifying \textit{baimu fang} area decreases by $-473$\,ha, equivalent to $1.01\%$ of the initial $46{,}844$\,ha qualifying stock, while the qualifying count rises by $+8$; (ii)~the paired farm$\leftrightarrow$forest swap conserves parcel \emph{counts} but not parcel \emph{areas}, leading to a net cultivated-area decrease of $-505$\,ha ($1.05\%$ of the $48{,}283$\,ha initial farmland stock). The two numbers are distinct: the qualifying-area loss is computed inside the $\geq 6.67$\,ha contiguous-farmland definition, whereas the cultivated-land loss is computed across all farmland parcels. The cultivated-land constraint is therefore failed in this candidate. A policy-compliant version would need area-matched pair selection, a cumulative cultivated-area constraint in the action mask or reward, or a post-planning rejection rule. We do not claim that such a constrained variant has been run in this revision.
+\paragraph{Area trade-off and cultivated-land constraint status.} The Bishan package-side output is an unconstrained candidate scenario. It is useful because it exposes a high-slope-retirement frontier, but it is not a policy-compliant constrained plan under a cultivated-area-preservation requirement. Two trade-offs are reported: (i)~total qualifying \textit{baimu fang} area decreases by $-473$\,ha, equivalent to $1.01\%$ of the initial $46{,}844$\,ha qualifying stock, while the qualifying count rises by $+8$; (ii)~the paired farm$\leftrightarrow$forest swap conserves parcel \emph{counts} but not parcel \emph{areas}, leading to a net cultivated-area decrease of $-505$\,ha ($1.05\%$ of the $48{,}283$\,ha initial farmland stock). The two numbers are distinct: the qualifying-area loss is computed inside the $\geq 6.67$\,ha contiguous-farmland definition, whereas the cultivated-land loss is computed across all farmland parcels. The cultivated-land constraint is therefore failed in this candidate.
+
+We then activated Tool~4's hard cumulative cultivated-area floor with \texttt{cultivated\_area\_floor\_delta\_ha=0.0}. At execution time, every farm$\to$forest / forest$\to$farm pair is rejected unless it leaves total cultivated area at or above the initial stock. Table~\ref{tab:si-constrained-policy} compares the unconstrained and no-net-loss outputs. On Bishan, the hard floor trades the maximum slope reduction ($-2.001\%$ to $-0.675\%$) for policy feasibility, while improving contiguity and turning both \textit{baimu fang} area and total cultivated area positive. On Neijiang, the same floor removes the $-261$\,ha cultivated-area loss and retains a $-0.492\%$ slope change, $+0.0373$ contiguity, and $+252.6$\,ha qualifying-area gain.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Unconstrained versus hard cultivated-area no-net-loss planning on the two real counties. Slope, contiguity, \textit{baimu fang}, and cultivated-area deltas are recomputed from the optimised shapefile by GIS-only scripts. Steep-tail delta is the total farmland-area change in the $15$--$25^{\circ}$ and $>25^{\circ}$ slope bands. Source files: \texttt{policy\_translation\_bishan.json}, \texttt{policy\_translation\_bishan\_constrained.json}, \texttt{policy\_translation\_neijiang.json}, and \texttt{policy\_translation\_neijiang\_constrained.json}.}
+\label{tab:si-constrained-policy}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrrrrr}
+\toprule
+County & Planning mode & $\Delta$ slope (\%) & $\Delta$ cont. & Steep tail (ha) & $\Delta$Baimu \# & $\Delta$Baimu (ha) & $\Delta$cultivated (ha) & Swaps \\
+\midrule
+Bishan & Unconstrained candidate & $-2.001$ & $+0.0128$ & $-687.3$ & $+8$ & $-473.3$ & $-505.2$ & $428$ \\
+Bishan & Hard no-net-loss floor & $-0.675$ & $+0.0204$ & $-218.5$ & $+1$ & $+29.8$ & $+3.0$ & $401$ \\
+Neijiang Dongxing & Unconstrained candidate & $-0.664$ & $+0.0324$ & $-218.5$ & $+7$ & $-103.6$ & $-261.0$ & $454$ \\
+Neijiang Dongxing & Hard no-net-loss floor & $-0.492$ & $+0.0373$ & $-330.4$ & $0$ & $+252.6$ & $+62.2$ & $466$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\paragraph{Bishan execution-constraint frontier.} To make the cultivated-area trade-off explicit, we swept seven Tool~4 execution profiles on the same package-side Bishan prepare and the same released contrastive ensemble (Table~\ref{tab:si-bishan-constraint-frontier}, Figure~\ref{fig:si-bishan-constraint-frontier}). This is an execution-constraint frontier rather than a full retrained reward-weight Pareto sweep: runtime hard constraints and local pair-selection settings change the committed cadastral swaps, whereas changing the scalar reward weights alone would require re-running Tool~2 sampling and Tool~3 training because the ONNX reward head is fixed after export. The sweep shows a monotone policy trade-off in the cultivated-area floor. Allowing a $\sim$500\,ha loss preserves almost the full slope-retirement benefit ($-1.746\%$ versus $-1.753\%$ on the default unconstrained profile), but it remains non-compliant. Tightening the floor to $-250$ and $-100$\,ha reduces slope change to $-1.261\%$ and $-0.918\%$ respectively while preserving $469$ and $329$\,ha of steep-tail retirement. The three no-net-loss profiles all pass the cultivated-area floor, with slope changes from $-0.608\%$ to $-0.711\%$, contiguity gains from $+0.0204$ to $+0.0259$, qualifying \textit{baimu fang} area gains from $+29.2$ to $+43.4$\,ha, and total cultivated-area gains from $+0.2$ to $+4.8$\,ha.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Bishan execution-constraint frontier on the package-side prepare. Each row is one canonical Tool~4 planning episode followed by GIS-only validation and policy-band translation. The cultivated-area floor rows enforce a hard lower bound on cumulative total cultivated-area change; the ``No net cultivated + baimu area'' row additionally enforces a hard lower bound on qualifying \textit{baimu fang} area; the connectivity-conservative row keeps the cultivated-area no-net-loss floor and increases the local pair-selection connectivity weights. Source: \texttt{scripts/pareto\_sweep\_bishan\_constraints.py}, output \texttt{paper/submission\_commsee/pareto\_sweep\_bishan\_constraints.json}.}
+\label{tab:si-bishan-constraint-frontier}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Mode & $\Delta$ slope (\%) & $\Delta$ cont. & Steep tail (ha) & $\Delta$Baimu \# & $\Delta$Baimu (ha) & $\Delta$cultivated (ha) & Reward & Swaps \\
+\midrule
+Unconstrained & $-1.753$ & $+0.0124$ & $-691.9$ & $+5$ & $-483.9$ & $-486.0$ & $+71.78$ & $427$ \\
+Cultivated floor $-500$\,ha & $-1.746$ & $+0.0118$ & $-681.5$ & $+6$ & $-503.9$ & $-498.5$ & $+74.73$ & $438$ \\
+Cultivated floor $-250$\,ha & $-1.261$ & $+0.0180$ & $-468.6$ & $+3$ & $-244.9$ & $-249.7$ & $+59.37$ & $420$ \\
+Cultivated floor $-100$\,ha & $-0.918$ & $+0.0197$ & $-329.2$ & $+3$ & $-78.5$ & $-100.0$ & $+56.87$ & $415$ \\
+No net cultivated loss & $-0.675$ & $+0.0204$ & $-218.5$ & $+1$ & $+29.8$ & $+3.0$ & $+45.05$ & $401$ \\
+No net cultivated + baimu area & $-0.711$ & $+0.0207$ & $-234.0$ & $+2$ & $+29.2$ & $+0.2$ & $+51.27$ & $414$ \\
+Connectivity conservative & $-0.608$ & $+0.0259$ & $-210.5$ & $+1$ & $+43.4$ & $+4.8$ & $+43.72$ & $408$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{bishan_constraint_pareto.pdf}
+\caption{Bishan execution-constraint frontier. Points show independently recomputed farmland-slope change versus total cultivated-area change for the seven execution profiles in Table~\ref{tab:si-bishan-constraint-frontier}; marker area scales with the absolute qualifying \textit{baimu fang} area change and colour distinguishes profiles that violate (red) or satisfy (green) cultivated-area no-net-loss. The dashed vertical line is the policy no-net-loss boundary.}
+\label{fig:si-bishan-constraint-frontier}
+\end{figure}
 
 % ============================================================================
 \section{Hyperparameter sensitivity and longer-budget OR baselines}\label{si:hyperparameter-sensitivity}
 % ============================================================================
 
-This section reports two robustness checks against reviewer concerns about hyperparameter dependence and the matched-wall-budget OR comparison: (i)~an $(H, K)$ sensitivity sweep on the package-side prepare and (ii)~a $10\times$-extended wall-budget comparison against simulated annealing and random-restart on Bishan. These checks address computational robustness only. They do not repair the cultivated-area constraint violation identified in \S\ref{si:policy-translation}.
+This section reports two robustness checks against reviewer concerns about hyperparameter dependence and the matched-wall-budget OR comparison: (i)~an $(H, K)$ sensitivity sweep on the package-side prepare and (ii)~a $10\times$-extended wall-budget comparison against simulated annealing and random-restart on Bishan. These checks address computational robustness only. The cultivated-area constraint issue is handled separately by the hard no-net-loss runs in Table~\ref{tab:si-constrained-policy} and by the Bishan execution-constraint frontier in Table~\ref{tab:si-bishan-constraint-frontier}.
 
 \paragraph{$(H, K)$ sweep on the package-side prepare (Table~\ref{tab:si-hk-sweep}).} We swept the planning horizon $H \in \{3, 5, 10\}$ and the top-$K$ candidate width $K \in \{25, 50, 100\}$ on one released contrastive ensemble, holding $\lambda_{\text{rank}}=5.0$, margin~$=0.1$, $\gamma=0.99$, continuation~$=$~greedy, scoring~$=$~reward, and one canonical episode per cell. All nine cells produced bit-identical commit sequences yielding the same on-disk slope improvement of $-1.7531\%$, contiguity change of $+0.0125$, qualifying-count gain of $+5$, and qualifying-area loss of $-483.94$\,ha. Wall time scales from $122.7$\,s ($H{=}3$, $K{=}25$) to $1{,}139$\,s ($H{=}10$, $K{=}100$), a $9.3\times$ range. This invariance should be interpreted conservatively: for this trained ensemble and deterministic greedy-continuation setting, the 1-step ranking signal is strong enough that deeper rollouts and wider candidate menus do not change the top committed action. The result supports faster interactive auditing with $(H{=}3, K{=}25)$ on this ensemble, but it is not evidence that horizon never matters, nor that reward-weight or red-line-constrained variants would be invariant.
 
@@ -483,6 +536,6 @@ Contrastive MPC & $\sim 180$ & $\mathbf{86.74}$ & $1$ ep, $H{=}5$, $K{=}50$ & ma
 \end{tabular}
 \end{table}
 
-\paragraph{Reward-weight and red-line sweeps not completed.} A Bishan reward-weight Pareto sweep and a cultivated-area-constrained planning run remain the main missing experiments for a policy-compliant deployment claim. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate that the code path can evaluate multiple reward configurations, but they are not a substitute for a Bishan-specific slope--contiguity--area frontier. For the current manuscript, we therefore keep the stronger claim at the level of rapid scenario generation plus independent constraint audit.
+\paragraph{Reward-weight and execution-constraint frontiers.} The Bishan sweep reported in Table~\ref{tab:si-bishan-constraint-frontier} is the policy-relevant multi-profile execution frontier added for this revision. We do not present it as a full retrained reward-weight Pareto sweep: such a sweep would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The Bishan execution-constraint frontier instead answers the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
 
 \end{document}

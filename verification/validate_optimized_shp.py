@@ -254,6 +254,10 @@ def main():
     cont_change = opt_cont - base_cont
     baimu_count_change = opt_baimu_n - base_baimu_n
     baimu_area_change_ha = (opt_baimu_area - base_baimu_area) / 10000.0
+    cultivated_area_change_ha = (opt_farm_area - base_farm_area) / 10000.0
+    cultivated_area_change_pct = (
+        100.0 * (opt_farm_area - base_farm_area) / max(abs(base_farm_area), 1e-8)
+    )
 
     # Cross-check against mpc_summary.json
     with open(args.summary, "r", encoding="utf-8") as f:
@@ -268,6 +272,8 @@ def main():
         "slope_pct": slope_change_pct,
         "cont": cont_change,
         "baimu_ha": baimu_area_change_ha,
+        "cultivated_area_ha": cultivated_area_change_ha,
+        "cultivated_area_pct": cultivated_area_change_pct,
     }
     diff = {
         "slope_pct": recomputed["slope_pct"] - reported["slope_pct"],
@@ -304,6 +310,11 @@ def main():
     print(f"Optimized baimu area (ha) : {opt_baimu_area/10000:.2f}")
     print(f"  baimu area change (ha)  : recomputed {recomputed['baimu_ha']:+.4f}   "
           f"reported {reported['baimu_ha']:+.4f}   diff {diff['baimu_ha']:+.4f}")
+    print()
+    print(f"Baseline cultivated (ha)  : {base_farm_area/10000:.2f}")
+    print(f"Optimized cultivated (ha) : {opt_farm_area/10000:.2f}")
+    print(f"  cultivated change       : recomputed {cultivated_area_change_ha:+.4f} ha "
+          f"({cultivated_area_change_pct:+.4f}%)")
     print()
     print(f"Total wall time           : {time.time()-t0:.1f}s")
     print("=" * 70)

@@ -1,0 +1,165 @@
+{
+  "kind": "bishan_execution_constraint_frontier",
+  "date": "2026-06-02",
+  "prepared_dir": "/Users/zhouning/farmland_mpc_runs/bishan/prepared",
+  "ensemble_dir": "/Users/zhouning/farmland_mpc_runs/bishan/prepared/ensemble_seed0",
+  "note": "Hard constraints and local pair-selection settings alter the real execution path. Runtime reward-weight overrides are not interpreted as a full reward-policy Pareto sweep because the ONNX reward head is not retrained under new weights.",
+  "configs": [
+    {
+      "id": "unconstrained",
+      "label": "Unconstrained",
+      "description": "Default shipped Tool 4 execution; audit scenario only.",
+      "constraints": {},
+      "pair_selection": {},
+      "slope_change_pct": -1.7525744624270747,
+      "cont_change": 0.012436176128608256,
+      "baimu_count_change": 5,
+      "baimu_area_change_ha": -483.9414482830465,
+      "cultivated_area_change_ha": -485.99595614557865,
+      "cultivated_area_change_pct": -1.0065602360278407,
+      "steep_tail_change_ha": -691.9048271235939,
+      "total_reward": 71.78351430451328,
+      "swaps": 427,
+      "steps_run": 100,
+      "runtime_s": 302.0736680030823,
+      "source_optimized_shp": "runs/bishan/pareto/constraints/unconstrained/optimized.shp",
+      "validation_overall_pass": true
+    },
+    {
+      "id": "loss_tolerance_500ha",
+      "label": "Cultivated floor -500 ha",
+      "description": "Slope-heavy setting with explicit maximum cultivated-area loss near the audited unconstrained loss.",
+      "constraints": {
+        "cultivated_area_floor_delta_ha": -500.0
+      },
+      "pair_selection": {},
+      "slope_change_pct": -1.7461369998750216,
+      "cont_change": 0.011778979829128566,
+      "baimu_count_change": 6,
+      "baimu_area_change_ha": -503.8940187675774,
+      "cultivated_area_change_ha": -498.5406321462989,
+      "cultivated_area_change_pct": -1.0325418761557175,
+      "steep_tail_change_ha": -681.5162159498774,
+      "total_reward": 74.72981773008689,
+      "swaps": 438,
+      "steps_run": 100,
+      "runtime_s": 299.4227919578552,
+      "source_optimized_shp": "runs/bishan/pareto/constraints/loss_tolerance_500ha/optimized.shp",
+      "validation_overall_pass": true
+    },
+    {
+      "id": "loss_tolerance_250ha",
+      "label": "Cultivated floor -250 ha",
+      "description": "Intermediate area-preservation setting.",
+      "constraints": {
+        "cultivated_area_floor_delta_ha": -250.0
+      },
+      "pair_selection": {},
+      "slope_change_pct": -1.2612450238200579,
+      "cont_change": 0.017997067893432916,
+      "baimu_count_change": 3,
+      "baimu_area_change_ha": -244.94013638784887,
+      "cultivated_area_change_ha": -249.74783826172947,
+      "cultivated_area_change_pct": -0.517259948049583,
+      "steep_tail_change_ha": -468.6192657883015,
+      "total_reward": 59.36550756996526,
+      "swaps": 420,
+      "steps_run": 100,
+      "runtime_s": 299.24641585350037,
+      "source_optimized_shp": "runs/bishan/pareto/constraints/loss_tolerance_250ha/optimized.shp",
+      "validation_overall_pass": true
+    },
+    {
+      "id": "loss_tolerance_100ha",
+      "label": "Cultivated floor -100 ha",
+      "description": "Strict area-preservation setting with small explicit tolerance.",
+      "constraints": {
+        "cultivated_area_floor_delta_ha": -100.0
+      },
+      "pair_selection": {},
+      "slope_change_pct": -0.9175321506224557,
+      "cont_change": 0.019715888984378704,
+      "baimu_count_change": 3,
+      "baimu_area_change_ha": -78.50022205799222,
+      "cultivated_area_change_ha": -99.96977773541808,
+      "cultivated_area_change_pct": -0.20705028879473045,
+      "steep_tail_change_ha": -329.1937332945324,
+      "total_reward": 56.86927024763263,
+      "swaps": 415,
+      "steps_run": 100,
+      "runtime_s": 303.8299241065979,
+      "source_optimized_shp": "runs/bishan/pareto/constraints/loss_tolerance_100ha/optimized.shp",
+      "validation_overall_pass": true
+    },
+    {
+      "id": "no_net_loss",
+      "label": "No net cultivated loss",
+      "description": "Hard cultivated-area no-net-loss execution floor.",
+      "constraints": {
+        "cultivated_area_floor_delta_ha": 0.0
+      },
+      "pair_selection": {},
+      "slope_change_pct": -0.6745909726149795,
+      "cont_change": 0.02037308528385795,
+      "baimu_count_change": 1,
+      "baimu_area_change_ha": 29.79951765986085,
+      "cultivated_area_change_ha": 3.0340656511068342,
+      "cultivated_area_change_pct": 0.00628394084206588,
+      "steep_tail_change_ha": -218.49414687644594,
+      "total_reward": 45.049088858474704,
+      "swaps": 401,
+      "steps_run": 100,
+      "runtime_s": 304.95969009399414,
+      "source_optimized_shp": "runs/bishan/pareto/constraints/no_net_loss/optimized.shp",
+      "validation_overall_pass": true
+    },
+    {
+      "id": "conservative_baimu_no_loss",
+      "label": "No net cultivated + baimu area",
+      "description": "Conservative profile with cultivated-area and qualifying baimu-fang-area no-net-loss floors.",
+      "constraints": {
+        "cultivated_area_floor_delta_ha": 0.0,
+        "baimu_area_floor_delta_ha": 0.0
+      },
+      "pair_selection": {},
+      "slope_change_pct": -0.7109019252736409,
+      "cont_change": 0.020726960214346946,
+      "baimu_count_change": 2,
+      "baimu_area_change_ha": 29.17938331363797,
+      "cultivated_area_change_ha": 0.24164770117402076,
+      "cultivated_area_change_pct": 0.000500483520600422,
+      "steep_tail_change_ha": -234.01684795049619,
+      "total_reward": 51.26858804749922,
+      "swaps": 414,
+      "steps_run": 100,
+      "runtime_s": 334.19082498550415,
+      "source_optimized_shp": "runs/bishan/pareto/constraints/conservative_baimu_no_loss/optimized.shp",
+      "validation_overall_pass": true
+    },
+    {
+      "id": "connectivity_conservative",
+      "label": "Connectivity conservative",
+      "description": "No-net-loss floor with stronger local connectivity protection during pair selection.",
+      "constraints": {
+        "cultivated_area_floor_delta_ha": 0.0
+      },
+      "pair_selection": {
+        "gamma_conn": 2.0,
+        "delta_conn": 1.0
+      },
+      "slope_change_pct": -0.607958472547839,
+      "cont_change": 0.02588342348718431,
+      "baimu_count_change": 1,
+      "baimu_area_change_ha": 43.41665801985264,
+      "cultivated_area_change_ha": 4.7601489864051345,
+      "cultivated_area_change_pct": 0.009858881800753906,
+      "steep_tail_change_ha": -210.54992846911716,
+      "total_reward": 43.72174824801764,
+      "swaps": 408,
+      "steps_run": 100,
+      "runtime_s": 302.26867723464966,
+      "source_optimized_shp": "runs/bishan/pareto/constraints/connectivity_conservative/optimized.shp",
+      "validation_overall_pass": true
+    }
+  ]
+}

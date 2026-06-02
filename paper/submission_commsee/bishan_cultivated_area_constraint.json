@@ -1,0 +1,121 @@
+{
+  "experiment": "bishan_cultivated_area_constraint",
+  "constraint": {
+    "kind": "hard_cumulative_cultivated_area_floor",
+    "floor_delta_ha": 0.0,
+    "enforcement": "Every committed farm->forest / forest->farm parcel pair must keep cumulative cultivated area at or above the configured floor."
+  },
+  "tool4_summary": {
+    "config": {
+      "horizon": 5,
+      "top_k": 50,
+      "gamma": 0.99,
+      "continuation": "greedy",
+      "scoring": "reward",
+      "n_episodes": 1,
+      "threads": 0,
+      "max_steps": 100,
+      "n_blocks": 2640,
+      "n_parcels": 53004,
+      "prepared_dir": "/Users/zhouning/farmland_mpc_runs/bishan/prepared",
+      "proj_crs": null,
+      "reward_overrides": {},
+      "cultivated_area_floor_delta_ha": 0.0
+    },
+    "ensemble": {
+      "n_members": 3,
+      "paths": [
+        "ensemble_member0.onnx",
+        "ensemble_member1.onnx",
+        "ensemble_member2.onnx"
+      ]
+    },
+    "results": [
+      {
+        "episode": 0,
+        "seed": 0,
+        "slope_change_pct": -0.6747421970913702,
+        "cont_change": 0.02043707001214079,
+        "baimu_count_change": 1,
+        "baimu_area_change_ha": 29.79951765986085,
+        "total_reward": 45.049088858474704,
+        "steps_run": 100,
+        "swaps_completed": 401,
+        "mean_step_time_s": 2.949295403957367,
+        "total_time_s": 299.61345911026,
+        "cultivated_area_ha": 48280.0046749478,
+        "cultivated_area_change_ha": 3.0340656510949136,
+        "cultivated_area_change_pct": 0.006284705963945971,
+        "cultivated_area_floor_delta_ha": 0.0,
+        "cultivated_area_floor_ha": 48276.9706092967
+      }
+    ],
+    "aggregate": {
+      "slope_pct_mean": -0.6747421970913702,
+      "slope_pct_std": 0.0,
+      "cont_mean": 0.02043707001214079,
+      "baimu_ha_mean": 29.79951765986085
+    },
+    "shapefile_output": {
+      "n_input": 101657,
+      "n_in_env": 53004,
+      "n_farm_to_forest": 401,
+      "n_forest_to_farm": 401,
+      "n_unchanged": 52202
+    }
+  },
+  "gis_audit_exit_code": 0,
+  "gis_audit": {
+    "n_parcels_in_scope": 53086,
+    "swap_counts": {
+      "farm_to_forest": 401,
+      "forest_to_farm": 401,
+      "unchanged": 52284
+    },
+    "baseline": {
+      "slope_deg": 9.580831058314315,
+      "contiguity": 3.5790404934027604,
+      "n_farmland": 39562,
+      "farm_area_ha": 48282.848730787366,
+      "baimu_count": 110,
+      "baimu_area_ha": 46903.82284949786
+    },
+    "optimized": {
+      "slope_deg": 9.516199636825975,
+      "contiguity": 3.5994135786866184,
+      "n_farmland": 39562,
+      "farm_area_ha": 48285.882796438476,
+      "baimu_count": 111,
+      "baimu_area_ha": 46933.622367157725
+    },
+    "delta_recomputed": {
+      "slope_pct": -0.6745909726149795,
+      "cont": 0.02037308528385795,
+      "baimu_ha": 29.79951765986085,
+      "cultivated_area_ha": 3.0340656511068342,
+      "cultivated_area_pct": 0.00628394084206588
+    },
+    "delta_reported": {
+      "slope_pct": -0.6747421970913702,
+      "cont": 0.02043707001214079,
+      "baimu_ha": 29.79951765986085
+    },
+    "delta_diff": {
+      "slope_pct": 0.00015122447639071002,
+      "cont": -6.398472828283985e-05,
+      "baimu_ha": 0.0
+    },
+    "tolerance": {
+      "slope_pct_abs": 0.05,
+      "cont_abs": 0.001,
+      "baimu_ha_abs": 1.0
+    },
+    "pass_flags": {
+      "slope_pct": true,
+      "cont": true,
+      "baimu_ha": true
+    },
+    "overall_pass": true,
+    "wall_time_s": 7.5629050731658936
+  }
+}

@@ -166,6 +166,9 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
         slope_weight=None, cont_weight=None,
         baimu_weight=None, baimu_bonus=None,
         baimu_area_penalty=None,
+        cultivated_area_floor_delta_ha=None,
+        baimu_area_floor_delta_ha=None,
+        gamma_conn=None, delta_conn=None,
         env_kind="county",
         messages=None):
     """MPC planning loop (v0.3).
@@ -203,6 +206,20 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
         baimu_area_penalty was in effect when Tool 2 sampled and Tool 3
         trained. To actually steer planning by a different penalty, re-run
         Tools 2 and 3 with the desired value.
+    cultivated_area_floor_delta_ha : float or None
+        Optional hard execution constraint. When set, real env.step() may only
+        commit farm->forest / forest->farm pairs that keep cumulative cultivated
+        area >= initial_farm_area + this delta. Use 0.0 for exact no-net-loss,
+        or a negative value for an explicit hectare tolerance.
+    baimu_area_floor_delta_ha : float or None
+        Optional hard execution constraint on cumulative qualifying baimu-fang
+        area. Use 0.0 for no net loss in qualifying large-patch area. This
+        floor is checked during real pair execution and can be slower because it
+        recomputes connected components for candidate pairs.
+    gamma_conn, delta_conn : float or None
+        Optional local pair-selection heuristic overrides. Higher gamma_conn
+        favours forest parcels with more farmland neighbours; higher delta_conn
+        protects farmland parcels with more farmland neighbours from retirement.
 
     See v0.2 docstring for the rest.
     """
@@ -243,6 +260,12 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
             _say(f"[MPC] output_fc   = {output_fc}")
             if not input_dltb_fc:
                 raise ValueError("output_fc requires input_dltb_fc")
+        if cultivated_area_floor_delta_ha is not None:
+            _say("[MPC] cultivated-area floor active: "
+                 f"delta >= {float(cultivated_area_floor_delta_ha):+.3f} ha")
+        if baimu_area_floor_delta_ha is not None:
+            _say("[MPC] baimu-area floor active: "
+                 f"delta >= {float(baimu_area_floor_delta_ha):+.3f} ha")
 
         # Load ensemble
         try:
@@ -282,10 +305,18 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
             ("baimu_weight", baimu_weight),
             ("baimu_bonus", baimu_bonus),
             ("baimu_area_penalty", baimu_area_penalty),
+            ("cultivated_area_floor_delta_ha", cultivated_area_floor_delta_ha),
+            ("baimu_area_floor_delta_ha", baimu_area_floor_delta_ha),
+            ("gamma_conn", gamma_conn),
+            ("delta_conn", delta_conn),
         ):
             if val is not None:
                 env_kwargs[name] = float(val)
-                reward_overrides[name] = float(val)
+                if name in {
+                    "slope_weight", "cont_weight", "baimu_weight",
+                    "baimu_bonus", "baimu_area_penalty",
+                }:
+                    reward_overrides[name] = float(val)
         if reward_overrides:
             _say(
                 "[MPC] WARNING: overriding env reward weights "
@@ -368,9 +399,21 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
                 "baimu_area_change_ha": float(info.get("baimu_area_change_ha", 0.0)),
                 "total_reward": float(info.get("total_reward", 0.0)),
                 "steps_run": int(info.get("steps_run", 0)),
+                "swaps_completed": int(info.get("budget_used", 0)),
                 "mean_step_time_s": float(info.get("mean_step_time", 0.0)),
                 "total_time_s": float(ep_time),
             }
+            for key in (
+                "cultivated_area_ha",
+                "cultivated_area_change_ha",
+                "cultivated_area_change_pct",
+                "cultivated_area_floor_delta_ha",
+                "cultivated_area_floor_ha",
+                "baimu_area_floor_delta_ha",
+                "baimu_area_floor_ha",
+            ):
+                if key in info:
+                    record[key] = info[key]
             # For RestorationEnv add the natural-resources-specific summary
             # (n_selected, budget_used, per-component cumulative rewards).
             if env_kind == "restoration":
@@ -409,6 +452,12 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
                 "prepared_dir": getattr(env, "_prepared_dir", None),
                 "proj_crs": proj_crs,
                 "reward_overrides": reward_overrides,
+                "cultivated_area_floor_delta_ha": cultivated_area_floor_delta_ha,
+                "baimu_area_floor_delta_ha": baimu_area_floor_delta_ha,
+                "pair_selection_overrides": {
+                    "gamma_conn": gamma_conn,
+                    "delta_conn": delta_conn,
+                },
             },
             "ensemble": {
                 "n_members": ensemble.n_members,
