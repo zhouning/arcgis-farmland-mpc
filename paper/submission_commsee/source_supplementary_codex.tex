@@ -31,7 +31,7 @@
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 
-\title{Supplementary Material for ``Reproducible learned-surrogate planning for county-scale farmland-consolidation scenario audit''}
+\title{Supplementary Information for\\``Reproducible model-based AI planning for county-scale farmland consolidation in fragmented mountain landscapes''}
 
 \author{Ning Zhou and Xiang Jing}
 
@@ -94,6 +94,7 @@ The main text reports Bishan slope-improvement numbers from two cadastral pipeli
 \small
 \caption{Bishan replication across cadastral pipelines. The on-disk GIS-only verification of the package-side prepare ($-2.001\%$) is the GIS-only anchor for the candidate scenario in main-text Section 4. The five-ensemble lab-pipeline run ($-1.289 \pm 0.079\%$) is the matched-cadastre comparison against the in-house Centralised PPO and multi-agent baselines, both of which were trained on the lab pipeline before the prepare-step correction. The CLI five-episode and the open-source end-to-end reproduction are reported as deployment-side checks. The pipeline-level gap ($\sim$0.7\,pp on slope improvement) is morphological: the corrected geographic-CRS slope step in the package-side prepare exposes a $\sim$$1.2^{\circ}$ taller initial mean slope ($9.62^{\circ}$ vs $8.41^{\circ}$, a $14\%$ underestimate on the lab pipeline), leaving more headroom for reduction within the same $100$-step episode budget.}
 \label{tab:si-bishan-regimes}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 Row & GIS-only verification & Lab pipeline ($n{=}5$ ens.) & CLI 5-ep & Open-source repro \\
@@ -114,6 +115,7 @@ Main-text role & Section 4 + Methods verification & Section 4 (DRL comparison) &
 Source artefact & GIS-only script & \texttt{contrastive\_5seed/} & \texttt{shipped\_onnx/} & \texttt{repro\_artifacts/} \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
 \paragraph{Why two pipelines coexist.} The lab pipeline was used to train the in-house Centralised PPO and multi-agent baselines and is preserved here only as the matched-cadastre comparison reported in main-text \S4. The package-side prepare is the public-facing toolchain shipped with the repository and the cadastre on which the reported package-side candidate is computed; it differs from the lab pipeline in two respects relevant to the present numbers: (a)~it computes block aggregation from the DLTB shapefile directly rather than from a precomputed \texttt{DLTB\_with\_slope.gpkg}, so the block boundaries differ slightly ($2{,}640$ vs.\ $2{,}600$ blocks); (b)~it preserves the true non-square pixels of geographic-CRS DEMs (commit \texttt{dc3a01c}), which fixes a slope-underestimation bug in the lab pipeline and exposes a $\sim$$1.2^{\circ}$ taller mean initial slope. The two pipelines therefore present the same algorithm operating on slightly different prepared inputs; the gap is morphological rather than algorithmic. The 82-parcel difference between the env-side count ($53{,}004$) and the verification-side count ($53{,}086$) is auxiliary: the verification script keeps every parcel with a slope value and a farm/forest \texttt{ORIG\_DLBM} regardless of township-registry membership, while the env enforces township membership; the additional 82 parcels all carry \texttt{CHG\_FLAG}~$=$~$0$ and contribute zero to every delta.
@@ -353,6 +355,7 @@ $gf[6]$ baimu-count-norm MAE & $0.00270$ (channel std $0.00817$) \\
 \small
 \caption{True-environment MPC vs.\ deployed ensemble MPC, Bishan, 100 outer steps, seed 0. ``True-env'' replaces every ensemble call with actual env.step; otherwise H=5, K=50, $\gamma$=0.99 unchanged. Implementation concessions stated in caption: random (rather than greedy) continuation, stage-1 subsample of 200 valid actions per step.}
 \label{tab:si-trueenv}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 Quantity & Ensemble MPC (run\_1) & True-env MPC & $\Delta$ (true $-$ ensemble) \\
@@ -366,6 +369,7 @@ Stage-1 coverage & all valid actions (batched) & 200-action random subset & --- 
 Stage-2 continuation & greedy & random & --- \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
 Per-step trajectory matching between layer~(iii) and the deployed pipeline is byte-identical at every monitored step (10, 20, \ldots, 100) of episode 0; this is the most stringent reproducibility check the verification stack supports and is therefore the canonical evidence that the deployed ensemble's planning is deterministic given a fixed prepared dataset and config.
@@ -404,6 +408,7 @@ $>25^{\circ}$ (banned, GB/T 21010-2017) & $252$ & $180$ & $-72$ & $0.5\% \to 0.4
 \small
 \caption{Per-township breakdown across the $13$ Bishan core townships. Slope means are area-weighted on farmland parcels; slope-change pct is computed against each township's own initial slope. Farm$\to$forest and forest$\to$farm are counts of \texttt{CHG\_FLAG}~$=$~$1$ and \texttt{CHG\_FLAG}~$=$~$2$ parcels respectively. Source: \texttt{scripts/policy\_translation\_bishan.py}. The 8 flying-territory townships in the Tool~1 registry contribute zero swaps (\texttt{CHG\_FLAG} $=$ $0$ everywhere) and are omitted; their parcels carry through the optimisation unchanged.}
 \label{tab:si-policy-township}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc}
 \toprule
 Town & Parcels & Init slope ($^\circ$) & Opt slope ($^\circ$) & $\Delta$ slope (\%) & Farm$\to$For & For$\to$Farm \\
@@ -425,6 +430,7 @@ Town & Parcels & Init slope ($^\circ$) & Opt slope ($^\circ$) & $\Delta$ slope (
 \textbf{Range / spread} & --- & $[6.36, 11.33]$ & --- & $\mathbf{[-4.08, -0.57]}$, Gini $\mathbf{0.28}$ & --- & --- \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
 \paragraph{Area trade-off and cultivated-land constraint status.} The Bishan package-side output is an unconstrained candidate scenario. It is useful because it exposes a high-slope-retirement frontier, but it is not a policy-compliant constrained plan under a cultivated-area-preservation requirement. Two trade-offs are reported: (i)~total qualifying \textit{baimu fang} area decreases by $-473$\,ha, equivalent to $1.01\%$ of the initial $46{,}844$\,ha qualifying stock, while the qualifying count rises by $+8$; (ii)~the paired farm$\leftrightarrow$forest swap conserves parcel \emph{counts} but not parcel \emph{areas}, leading to a net cultivated-area decrease of $-505$\,ha ($1.05\%$ of the $48{,}283$\,ha initial farmland stock). The two numbers are distinct: the qualifying-area loss is computed inside the $\geq 6.67$\,ha contiguous-farmland definition, whereas the cultivated-land loss is computed across all farmland parcels. The cultivated-land constraint is therefore failed in this candidate.
@@ -520,6 +526,7 @@ A note on the offset between $-1.7531\%$ here and the $-2.001\%$ on-disk verific
 \small
 \caption{Bishan reward versus wall-clock budget across simulated annealing, random-restart, and contrastive MPC. Both OR baselines plateau at an order of magnitude below the contrastive-MPC comparison value under the tested budgets; the additional $1{,}620$\,s of SA wall time buys only $+0.50$ reward units. Source: \texttt{runs/bishan/farmland\_baselines\_1800s.json} and \texttt{tests/farmland\_baselines.py}.}
 \label{tab:si-1800s-baselines}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 Method & Wall budget (s) & Reward & Iterations / episodes & Notes \\
@@ -534,6 +541,7 @@ Random-restart & $1{,}800$ & $37.70$ & $1{,}105$ ep & this section ($+22\%$) \\
 Contrastive MPC & $\sim 180$ & $\mathbf{86.74}$ & $1$ ep, $H{=}5$, $K{=}50$ & main-text Section~4 \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
 \paragraph{Reward-weight and execution-constraint frontiers.} The Bishan sweep reported in Table~\ref{tab:si-bishan-constraint-frontier} is the policy-relevant multi-profile execution frontier added for this revision. We do not present it as a full retrained reward-weight Pareto sweep: such a sweep would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The Bishan execution-constraint frontier instead answers the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
