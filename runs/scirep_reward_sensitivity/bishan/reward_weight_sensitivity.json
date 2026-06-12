@@ -1,0 +1,120 @@
+{
+  "experiment": "retrained_reward_weight_sensitivity",
+  "region": "bishan",
+  "prepared_template": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_extra\\prepared_bishan",
+  "scope": "Single retrained 3-member ensemble per reward profile unless --n-members is changed. All profile runs use the no-net-loss cultivated-area execution floor.",
+  "mpc_config": {
+    "horizon": 5,
+    "top_k": 50,
+    "gamma": 0.99,
+    "mpc_batch_size": 256,
+    "continuation": "greedy",
+    "scoring": "reward",
+    "cultivated_area_floor_delta_ha": 0.0,
+    "max_steps": null
+  },
+  "tool2_config": {
+    "n_transition_episodes": 60,
+    "n_pairwise_states": 1000,
+    "n_pairwise_actions": 50,
+    "seed": 0
+  },
+  "tool3_config": {
+    "n_members": 3,
+    "epochs": 30,
+    "patience": 8,
+    "lambda_rank": 5.0,
+    "margin": 0.1,
+    "batch_size": 256,
+    "train_seed_base": 0
+  },
+  "profiles": [
+    {
+      "profile": "default",
+      "label": "Default reward",
+      "description": "Paper default reward weights.",
+      "weights": {
+        "slope_weight": 4000.0,
+        "cont_weight": 500.0,
+        "baimu_weight": 1500.0,
+        "baimu_bonus": 5.0,
+        "baimu_area_penalty": 2000.0
+      },
+      "prepared_dir": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\default\\prepared",
+      "tool2_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\default\\prepared\\tool2\\sample_transitions_summary.json",
+      "tool3_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\default\\prepared\\tool3\\train_summary.json",
+      "plan_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\default\\plan_no_net_loss\\mpc_summary.json",
+      "sample_reward_std_median": 0.6855443120002747,
+      "sample_reward_mean": 0.08381188660860062,
+      "final_ranking_acc_mean": 0.9033000000000001,
+      "slope_change_pct": -0.7247469749064851,
+      "cont_change": 0.027004348157753988,
+      "baimu_count_change": 1,
+      "baimu_area_change_ha": 27.489991896748542,
+      "cultivated_area_change_ha": 0.4425628145217895,
+      "cultivated_area_change_pct": 0.0009182271177999158,
+      "total_reward": 52.005540244310005,
+      "swaps_completed": 423,
+      "steps_run": 100,
+      "total_time_s": 2823.4110748767853
+    },
+    {
+      "profile": "baimu_low",
+      "label": "Baimu low",
+      "description": "Half-weighted baimu-fang area and loss penalty.",
+      "weights": {
+        "slope_weight": 4000.0,
+        "cont_weight": 500.0,
+        "baimu_weight": 750.0,
+        "baimu_bonus": 2.5,
+        "baimu_area_penalty": 1000.0
+      },
+      "prepared_dir": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_low\\prepared",
+      "tool2_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_low\\prepared\\tool2\\sample_transitions_summary.json",
+      "tool3_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_low\\prepared\\tool3\\train_summary.json",
+      "plan_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_low\\plan_no_net_loss\\mpc_summary.json",
+      "sample_reward_std_median": 0.592787504196167,
+      "sample_reward_mean": -0.006218400318175554,
+      "final_ranking_acc_mean": 0.9272666666666667,
+      "slope_change_pct": -0.6521876511631696,
+      "cont_change": 0.020901670607979206,
+      "baimu_count_change": 0,
+      "baimu_area_change_ha": 17.337231681662796,
+      "cultivated_area_change_ha": 0.18252732296586036,
+      "cultivated_area_change_pct": 0.00037870677830847103,
+      "total_reward": 38.18718815468771,
+      "swaps_completed": 407,
+      "steps_run": 100,
+      "total_time_s": 2899.056169986725
+    },
+    {
+      "profile": "baimu_high",
+      "label": "Baimu high",
+      "description": "Double-weighted baimu-fang area and loss penalty.",
+      "weights": {
+        "slope_weight": 4000.0,
+        "cont_weight": 500.0,
+        "baimu_weight": 3000.0,
+        "baimu_bonus": 10.0,
+        "baimu_area_penalty": 4000.0
+      },
+      "prepared_dir": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_high\\prepared",
+      "tool2_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_high\\prepared\\tool2\\sample_transitions_summary.json",
+      "tool3_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_high\\prepared\\tool3\\train_summary.json",
+      "plan_summary": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_reward_sensitivity\\bishan\\baimu_high\\plan_no_net_loss\\mpc_summary.json",
+      "sample_reward_std_median": 0.6843478083610535,
+      "sample_reward_mean": 0.2638724744319916,
+      "final_ranking_acc_mean": 0.8732666666666667,
+      "slope_change_pct": -0.8378871745434812,
+      "cont_change": 0.034327561217483815,
+      "baimu_count_change": 1,
+      "baimu_area_change_ha": 56.208525409322974,
+      "cultivated_area_change_ha": 0.6372122544288635,
+      "cultivated_area_change_pct": 0.0013220848038108144,
+      "total_reward": 53.9979092903505,
+      "swaps_completed": 442,
+      "steps_run": 100,
+      "total_time_s": 2144.9875676631927
+    }
+  ]
+}

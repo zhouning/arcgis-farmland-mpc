@@ -37,6 +37,8 @@ class EnsembleOrtRunner:
             for p in paths
         ]
         self._paths = paths
+        outputs = self._sessions[0].get_outputs()
+        self._reward_output_name = outputs[2].name if len(outputs) >= 3 else "reward"
 
         # Read the n_blocks dimension from member 0's block_features input.
         # Shape is (batch, n_blocks, K_BLOCK); n_blocks is statically baked in.
@@ -89,20 +91,63 @@ class EnsembleOrtRunner:
         gf = np.ascontiguousarray(global_features, dtype=np.float32)
         a  = np.ascontiguousarray(actions, dtype=np.int64)
 
-        all_nbf, all_ngf, all_r = [], [], []
         feeds = {"block_features": bf, "global_features": gf, "action": a}
+        nbf_sum = None
+        ngf_sum = None
+        r_sum = None
+        r_sq_sum = None
         for sess in self._sessions:
             nbf, ngf, r = sess.run(None, feeds)
-            all_nbf.append(nbf)
-            all_ngf.append(ngf)
-            all_r.append(r.squeeze(-1))
+            r = r.squeeze(-1)
+            if nbf_sum is None:
+                nbf_sum = np.array(nbf, dtype=np.float32, copy=True)
+                ngf_sum = np.array(ngf, dtype=np.float32, copy=True)
+                r_sum = np.array(r, dtype=np.float64, copy=True)
+                r_sq_sum = r_sum * r_sum
+            else:
+                nbf_sum += nbf
+                ngf_sum += ngf
+                r_sum += r
+                r_sq_sum += r * r
 
-        nbf_stack = np.stack(all_nbf)
-        ngf_stack = np.stack(all_ngf)
-        r_stack   = np.stack(all_r)
+        n = np.float32(len(self._sessions))
+        n_reward = float(len(self._sessions))
+        r_mean = r_sum / n
+        r_var = np.maximum(r_sq_sum / n_reward - r_mean * r_mean, 0.0)
+        np.divide(nbf_sum, n, out=nbf_sum)
+        np.divide(ngf_sum, n, out=ngf_sum)
         return (
-            nbf_stack.mean(0),
-            ngf_stack.mean(0),
-            r_stack.mean(0),
-            r_stack.std(0),
+            nbf_sum,
+            ngf_sum,
+            r_mean,
+            np.sqrt(r_var).astype(np.float32, copy=False),
         )
+
+    def batch_predict_rewards(
+        self,
+        block_features: np.ndarray,
+        global_features: np.ndarray,
+        actions: np.ndarray,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """Return only ensemble reward mean/std without materialising next states."""
+        bf = np.ascontiguousarray(block_features, dtype=np.float32)
+        gf = np.ascontiguousarray(global_features, dtype=np.float32)
+        a = np.ascontiguousarray(actions, dtype=np.int64)
+
+        feeds = {"block_features": bf, "global_features": gf, "action": a}
+        r_sum = None
+        r_sq_sum = None
+        for sess in self._sessions:
+            (r,) = sess.run([self._reward_output_name], feeds)
+            r = r.squeeze(-1)
+            if r_sum is None:
+                r_sum = np.array(r, dtype=np.float64, copy=True)
+                r_sq_sum = r_sum * r_sum
+            else:
+                r_sum += r
+                r_sq_sum += r * r
+
+        n = float(len(self._sessions))
+        r_mean = r_sum / n
+        r_var = np.maximum(r_sq_sum / n - r_mean * r_mean, 0.0)
+        return r_mean, np.sqrt(r_var).astype(np.float32, copy=False)

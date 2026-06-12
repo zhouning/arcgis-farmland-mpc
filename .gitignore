@@ -60,6 +60,9 @@ scratch/
 logs/
 *.log
 issues_drafts/
+tmp_pytest*/
+runs/scirep_extra*/
+runs/scirep_reward_sensitivity*/
 
 # OS / envs
 *.bak

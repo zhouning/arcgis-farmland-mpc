@@ -25,6 +25,8 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_MPC_BATCH_SIZE = 1024
+
 
 # ---------------------------------------------------------------------------
 # MPC core: lifted from mpc_planner.py, torch dependency removed.
@@ -35,7 +37,10 @@ def _compute_slope_signal(cur_gf, next_gf):
     return next_gf[:, 4] - cur_gf[:, 4]
 
 
-def _greedy_1step_actions(ensemble, cur_bf, cur_gf, valid_actions, n_sample, rng):
+def _greedy_1step_actions(
+    ensemble, cur_bf, cur_gf, valid_actions, n_sample, rng,
+    batch_size=DEFAULT_MPC_BATCH_SIZE,
+):
     k = cur_bf.shape[0]
     if len(valid_actions) <= n_sample:
         sample_actions = valid_actions
@@ -43,39 +48,76 @@ def _greedy_1step_actions(ensemble, cur_bf, cur_gf, valid_actions, n_sample, rng
         sample_actions = rng.choice(valid_actions, n_sample, replace=False)
     n_s = len(sample_actions)
 
-    bf_exp = np.repeat(cur_bf, n_s, axis=0)
-    gf_exp = np.repeat(cur_gf, n_s, axis=0)
-    a_exp = np.tile(sample_actions, k)
-    _, _, r_exp, _ = ensemble.batch_predict(bf_exp, gf_exp, a_exp)
-    r_matrix = r_exp.reshape(k, n_s)
-    best_local = r_matrix.argmax(axis=1)
-    return sample_actions[best_local]
+    best_score = np.full(k, -np.inf, dtype=np.float64)
+    best_action = np.full(k, int(sample_actions[0]), dtype=np.int64)
+    total = k * n_s
+    for start in range(0, total, batch_size):
+        end = min(start + batch_size, total)
+        flat_idx = np.arange(start, end)
+        traj_idx = flat_idx // n_s
+        action_idx = flat_idx % n_s
+        bf = cur_bf[traj_idx]
+        gf = cur_gf[traj_idx]
+        actions = sample_actions[action_idx]
+        if hasattr(ensemble, "batch_predict_rewards"):
+            r_exp, _ = ensemble.batch_predict_rewards(bf, gf, actions)
+        else:
+            _, _, r_exp, _ = ensemble.batch_predict(bf, gf, actions)
+        for local_i, traj in enumerate(traj_idx):
+            score = float(r_exp[local_i])
+            if score > best_score[traj]:
+                best_score[traj] = score
+                best_action[traj] = int(sample_actions[action_idx[local_i]])
+    return best_action
 
 
 def mpc_select_action(ensemble, block_features, global_features, action_mask,
                       horizon=5, top_k=50, gamma=0.99, n_rollouts=1,
                       continuation="random", greedy_sample=50,
-                      scoring="reward", rng=None):
+                      scoring="reward", rng=None,
+                      batch_size=DEFAULT_MPC_BATCH_SIZE):
     """Pick the next action by simulating top-K candidates H steps forward."""
     rng = rng or np.random.default_rng()
     valid_actions = np.where(action_mask)[0]
     if len(valid_actions) == 0:
         return 0, {}
 
-    # Stage 1: score every valid action 1-step
+    batch_size = max(1, int(batch_size or DEFAULT_MPC_BATCH_SIZE))
+
+    # Stage 1: score every valid action 1-step while retaining only per-chunk
+    # top-K next states. This is exact for the global top-K because an action
+    # outside its chunk's top-K cannot be in the global top-K.
     n_valid = len(valid_actions)
-    bf_batch = np.tile(block_features[np.newaxis], (n_valid, 1, 1))
-    gf_batch = np.tile(global_features[np.newaxis], (n_valid, 1))
-    next_bf, next_gf, r1, _ = ensemble.batch_predict(bf_batch, gf_batch, valid_actions)
-
-    score1 = _compute_slope_signal(gf_batch, next_gf) if scoring == "slope" else r1
-
     k = min(top_k, n_valid)
-    top_idx = np.argsort(score1)[-k:]
-    candidates = valid_actions[top_idx]
-    cand_cumrew = score1[top_idx].copy().astype(np.float64)
-    init_bf = next_bf[top_idx]
-    init_gf = next_gf[top_idx]
+    action_parts = []
+    score_parts = []
+    bf_parts = []
+    gf_parts = []
+    for start in range(0, n_valid, batch_size):
+        chunk_actions = valid_actions[start:start + batch_size]
+        n_chunk = len(chunk_actions)
+        bf_batch = np.repeat(block_features[np.newaxis], n_chunk, axis=0)
+        gf_batch = np.repeat(global_features[np.newaxis], n_chunk, axis=0)
+        next_bf, next_gf, r1, _ = ensemble.batch_predict(
+            bf_batch, gf_batch, chunk_actions)
+        score1 = (_compute_slope_signal(gf_batch, next_gf)
+                  if scoring == "slope" else r1)
+        local_k = min(k, n_chunk)
+        local_top = np.argsort(score1)[-local_k:]
+        action_parts.append(chunk_actions[local_top])
+        score_parts.append(score1[local_top])
+        bf_parts.append(next_bf[local_top])
+        gf_parts.append(next_gf[local_top])
+
+    chunk_candidates = np.concatenate(action_parts)
+    chunk_scores = np.concatenate(score_parts)
+    chunk_bf = np.concatenate(bf_parts, axis=0)
+    chunk_gf = np.concatenate(gf_parts, axis=0)
+    top_idx = np.argsort(chunk_scores)[-k:]
+    candidates = chunk_candidates[top_idx]
+    cand_cumrew = chunk_scores[top_idx].copy().astype(np.float64)
+    init_bf = chunk_bf[top_idx]
+    init_gf = chunk_gf[top_idx]
 
     # Stage 2: H-1 step rollout(s), mean over n_rollouts
     rollout_rewards = np.zeros(k, dtype=np.float64)
@@ -87,7 +129,8 @@ def mpc_select_action(ensemble, block_features, global_features, action_mask,
         for _step in range(1, horizon):
             if continuation == "greedy":
                 actions = _greedy_1step_actions(
-                    ensemble, cur_bf, cur_gf, valid_actions, greedy_sample, rng)
+                    ensemble, cur_bf, cur_gf, valid_actions, greedy_sample,
+                    rng, batch_size=batch_size)
             else:
                 actions = rng.choice(valid_actions, size=k)
             nb, ng, r_step, _ = ensemble.batch_predict(cur_bf, cur_gf, actions)
@@ -115,7 +158,8 @@ def mpc_select_action(ensemble, block_features, global_features, action_mask,
 # ---------------------------------------------------------------------------
 
 def _run_episode(env, ensemble, horizon, top_k, gamma, continuation,
-                 scoring, seed, progress_cb=None):
+                 scoring, seed, progress_cb=None,
+                 batch_size=DEFAULT_MPC_BATCH_SIZE):
     env.reset(seed=seed)
     rng = np.random.default_rng(seed)
     total_reward = 0.0
@@ -132,7 +176,7 @@ def _run_episode(env, ensemble, horizon, top_k, gamma, continuation,
             ensemble, bf, gf, mask,
             horizon=horizon, top_k=top_k, gamma=gamma,
             n_rollouts=1, continuation=continuation,
-            scoring=scoring, rng=rng,
+            scoring=scoring, rng=rng, batch_size=batch_size,
         )
         step_times.append(time.time() - t0)
 
@@ -159,6 +203,7 @@ def _run_episode(env, ensemble, horizon, top_k, gamma, continuation,
 
 def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
         threads=0, n_episodes=1, continuation="random", scoring="reward",
+        mpc_batch_size=DEFAULT_MPC_BATCH_SIZE,
         max_steps=None, seed_offset=0,
         prepared_dir=None, proj_crs=None,
         output_fc=None, input_dltb_fc=None,
@@ -253,7 +298,8 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
 
         _say(f"[MPC] horizon={horizon} top_k={top_k} gamma={gamma} "
              f"continuation={continuation} scoring={scoring} "
-             f"episodes={n_episodes} threads={threads}")
+             f"episodes={n_episodes} threads={threads} "
+             f"mpc_batch_size={mpc_batch_size}")
         _say(f"[MPC] ensemble_dir = {ensemble_dir}")
         _say(f"[MPC] prepared_dir = {prepared_dir}")
         if output_fc:
@@ -389,7 +435,8 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
             _say(f"\n[MPC] === Episode {ep + 1}/{n_episodes} (seed={seed}) ===")
             t0 = time.time()
             info = _run_episode(env, ensemble, horizon, top_k, gamma,
-                                continuation, scoring, seed, _progress)
+                                continuation, scoring, seed, _progress,
+                                batch_size=mpc_batch_size)
             ep_time = time.time() - t0
             record = {
                 "episode": ep, "seed": seed,
@@ -446,6 +493,7 @@ def run(ensemble_dir, out_dir, horizon=5, top_k=50, gamma=0.99,
             "config": {
                 "horizon": horizon, "top_k": top_k, "gamma": gamma,
                 "continuation": continuation, "scoring": scoring,
+                "mpc_batch_size": int(mpc_batch_size),
                 "n_episodes": n_episodes, "threads": threads,
                 "max_steps": env.max_steps, "n_blocks": int(env.n_blocks),
                 "n_parcels": int(env.n_parcels),
