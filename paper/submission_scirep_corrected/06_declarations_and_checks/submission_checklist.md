@@ -1,0 +1,18 @@
+# Scientific Reports Submission Checklist
+
+- [x] Correct source manuscript identified as `D:\test\_publish\arcgis-farmland-mpc\paper\submission_commsee\source_main_codex.tex`.
+- [x] Main manuscript source copied to `05_source_editable/manuscript_scirep.tex`.
+- [x] Supplementary source copied to `05_source_editable/supplementary_information_scirep.tex`.
+- [x] Cover letter source copied and rewritten as `05_source_editable/cover_letter_scirep.tex`.
+- [x] Figures copied to both `04_figures/` and `05_source_editable/figures/`.
+- [x] Bibliography copied to `05_source_editable/references_v6_codex.bib`.
+- [x] Title revised for Scientific Reports and kept below 20 words.
+- [x] Abstract revised as an unstructured technical-validity abstract below 200 words.
+- [x] Cultivated-area/no-net-loss constraint stated as a deployment boundary.
+- [x] Cross-domain restoration material framed as a boundary check, not as a transfer or regional-generalisation claim.
+- [x] Cover letter, README, and declarations aligned with the audit-bounded reproducibility statement.
+- [x] Previous CommsEE package preserved under `99_previous_commsee_reference/`.
+- [x] Compile main manuscript, supplementary information, and cover letter.
+- [x] Copy compiled PDFs into upload folders.
+- [x] Check LaTeX logs for undefined citations/references and missing files.
+- [x] Check corrected sources for wrong-topic residues from the invalid package, especially the old wrong title, AlphaEarth, and dream-based-policy-learning framing. DAgger/Dreamer terms that are already present in the correct source manuscript are not automatically errors.

@@ -2,6 +2,7 @@ import importlib.util
 import json
 import subprocess
 import sys
+from argparse import Namespace
 from pathlib import Path
 
 
@@ -63,3 +64,48 @@ def test_plan_runs_in_fresh_python_process(tmp_path):
 
     assert summary["results"][0]["slope_change_pct"] == -0.1
     assert len(calls) == 1
+
+
+def test_write_outputs_uses_region_label(tmp_path):
+    runner = _load_runner()
+    args = Namespace(
+        region_label="Neijiang",
+        prepared_template=tmp_path / "prepared_neijiang",
+        out_json=tmp_path / "reward_weight_sensitivity.json",
+        out_md=tmp_path / "reward_weight_sensitivity.md",
+        horizon=5,
+        top_k=50,
+        gamma=0.99,
+        mpc_batch_size=256,
+        max_steps=None,
+        n_transition_episodes=60,
+        n_pairwise_states=1000,
+        n_pairwise_actions=50,
+        seed=0,
+        n_members=3,
+        epochs=30,
+        patience=8,
+        lambda_rank=5.0,
+        margin=0.1,
+        batch_size=256,
+        train_seed_base=0,
+    )
+    rows = [
+        {
+            "label": "Default reward",
+            "slope_change_pct": -0.1,
+            "cont_change": 0.02,
+            "baimu_count_change": 1,
+            "baimu_area_change_ha": 2.5,
+            "cultivated_area_change_ha": 0.3,
+            "final_ranking_acc_mean": 0.9,
+            "sample_reward_std_median": 0.4,
+        }
+    ]
+
+    runner._write_outputs(args, rows)
+
+    report = json.loads(args.out_json.read_text(encoding="utf-8"))
+    md = args.out_md.read_text(encoding="utf-8")
+    assert report["region"] == "neijiang"
+    assert md.startswith("# Retrained Neijiang reward-weight sensitivity")

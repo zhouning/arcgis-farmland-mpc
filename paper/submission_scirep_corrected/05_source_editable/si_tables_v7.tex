@@ -1,0 +1,65 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Synthetic-benchmark contiguity change ($\Delta$Contiguity, absolute units). Mean $\pm$ standard deviation across $n{=}5$ seeds. Higher (more positive) is better; per-row best in bold.}
+\label{tab:si-bench-cont}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Preset ($n_{\text{blocks}}$) & Random & Greedy & GA & PPO & MPC \\
+\midrule
+\texttt{bishan\_clone} (2{,}600) & $0.0016{\pm}0.0007$ & $0.0009{\pm}0.0006$ & $\mathbf{0.0253{\pm}0.0023}$ & $0.0027{\pm}0.0005$ & $0.0032{\pm}0.0009$ \\
+\texttt{neijiang\_clone} (3{,}700) & $0.0014{\pm}0.0004$ & $0.0012{\pm}0.0001$ & $\mathbf{0.0159{\pm}0.0005}$ & $0.0015{\pm}0.0004$ & $0.0023{\pm}0.0005$ \\
+\texttt{plain\_small\_cons} (800) & $0.0057{\pm}0.0023$ & $0.0036{\pm}0.0010$ & $0.0018{\pm}0.0057$ & $\mathbf{0.0069{\pm}0.0014}$ & $0.0068{\pm}0.0015$ \\
+\texttt{plain\_large\_cons} (4{,}500) & $0.0010{\pm}0.0001$ & $0.0008{\pm}0.0002$ & $0.0010{\pm}0.0003$ & $\mathbf{0.0014{\pm}0.0002}$ & $0.0012{\pm}0.0003$ \\
+\texttt{plain\_medium\_frag} (2{,}600) & $0.0018{\pm}0.0004$ & $0.0018{\pm}0.0005$ & $0.0005{\pm}0.0006$ & $0.0022{\pm}0.0003$ & $\mathbf{0.0026{\pm}0.0004}$ \\
+\texttt{mixed\_medium\_frag} (2{,}600) & $0.0022{\pm}0.0006$ & $0.0018{\pm}0.0003$ & $\mathbf{0.0059{\pm}0.0016}$ & $0.0031{\pm}0.0007$ & $0.0032{\pm}0.0008$ \\
+\texttt{hilly\_small\_cons} (800) & $0.0058{\pm}0.0020$ & $0.0067{\pm}0.0017$ & $\mathbf{0.0734{\pm}0.0055}$ & $0.0092{\pm}0.0020$ & $0.0095{\pm}0.0013$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Synthetic-benchmark large-patch count change ($\Delta$\textit{baimu fang} count, $\geq 6.67$\,ha qualifying patches gained per episode). Mean $\pm$ standard deviation across $n{=}5$ seeds. Higher is better; per-row best in bold.}
+\label{tab:si-bench-baimuct}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Preset ($n_{\text{blocks}}$) & Random & Greedy & GA & PPO & MPC \\
+\midrule
+\texttt{bishan\_clone} (2{,}600) & $0.0{\pm}2.2$ & $-0.2{\pm}2.6$ & $-3.8{\pm}4.4$ & $\mathbf{9.4{\pm}2.6}$ & $9.2{\pm}2.3$ \\
+\texttt{neijiang\_clone} (3{,}700) & $0.6{\pm}0.9$ & $-1.4{\pm}1.5$ & $-4.4{\pm}3.2$ & $\mathbf{6.4{\pm}2.1}$ & $4.6{\pm}3.4$ \\
+\texttt{plain\_small\_cons} (800) & $0.0{\pm}0.0$ & $0.2{\pm}1.1$ & $\mathbf{0.8{\pm}2.0}$ & $-0.4{\pm}2.5$ & $0.4{\pm}2.1$ \\
+\texttt{plain\_large\_cons} (4{,}500) & $0.0{\pm}0.0$ & $0.0{\pm}0.0$ & $0.2{\pm}0.4$ & $\mathbf{0.8{\pm}0.8}$ & $0.0{\pm}0.7$ \\
+\texttt{plain\_medium\_frag} (2{,}600) & $0.6{\pm}0.9$ & $-0.6{\pm}1.3$ & $1.4{\pm}1.8$ & $\mathbf{1.6{\pm}1.1}$ & $0.4{\pm}1.3$ \\
+\texttt{mixed\_medium\_frag} (2{,}600) & $-0.2{\pm}1.3$ & $0.0{\pm}1.2$ & $\mathbf{1.2{\pm}2.2}$ & $-1.0{\pm}2.2$ & $-2.4{\pm}1.1$ \\
+\texttt{hilly\_small\_cons} (800) & $-1.0{\pm}0.7$ & $-0.4{\pm}0.9$ & $-3.2{\pm}2.2$ & $3.4{\pm}1.7$ & $\mathbf{9.8{\pm}1.5}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Synthetic-benchmark large-patch area change ($\Delta$\textit{baimu fang} area, ha). Mean $\pm$ standard deviation across $n{=}5$ seeds. The sign of this metric is morphology-dependent (see main-text Section~5 discussion of the Bishan vs.\ Neijiang reversal); per-row best (most positive) in bold for reference.}
+\label{tab:si-bench-baimuha}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Preset ($n_{\text{blocks}}$) & Random & Greedy & GA & PPO & MPC \\
+\midrule
+\texttt{bishan\_clone} (2{,}600) & $9.8{\pm}11.1$ & $11.9{\pm}15.0$ & $155.3{\pm}40.3$ & $134.7{\pm}26.1$ & $\mathbf{177.5{\pm}31.7}$ \\
+\texttt{neijiang\_clone} (3{,}700) & $15.2{\pm}9.2$ & $27.8{\pm}16.4$ & $\mathbf{190.8{\pm}33.2}$ & $122.4{\pm}44.8$ & $167.6{\pm}23.0$ \\
+\texttt{plain\_small\_cons} (800) & $20.2{\pm}8.9$ & $14.7{\pm}16.2$ & $11.5{\pm}19.5$ & $19.0{\pm}25.3$ & $\mathbf{30.5{\pm}17.5}$ \\
+\texttt{plain\_large\_cons} (4{,}500) & $9.2{\pm}8.9$ & $39.7{\pm}13.3$ & $12.8{\pm}13.4$ & $40.1{\pm}55.3$ & $\mathbf{40.3{\pm}15.3}$ \\
+\texttt{plain\_medium\_frag} (2{,}600) & $22.8{\pm}10.5$ & $38.5{\pm}22.8$ & $34.2{\pm}34.3$ & $\mathbf{54.0{\pm}40.1}$ & $52.8{\pm}26.8$ \\
+\texttt{mixed\_medium\_frag} (2{,}600) & $14.2{\pm}7.3$ & $28.4{\pm}13.6$ & $60.7{\pm}24.8$ & $\mathbf{106.8{\pm}24.2}$ & $102.1{\pm}13.1$ \\
+\texttt{hilly\_small\_cons} (800) & $21.6{\pm}14.2$ & $4.6{\pm}13.9$ & $\mathbf{167.7{\pm}41.2}$ & $100.3{\pm}30.3$ & $131.9{\pm}43.5$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

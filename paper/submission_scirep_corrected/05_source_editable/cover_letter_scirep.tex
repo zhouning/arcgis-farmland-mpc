@@ -1,0 +1,34 @@
+\documentclass[11pt]{letter}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{parskip}
+\usepackage{hyperref}
+
+\signature{Ning Zhou\\
+Public R\&D Center, SuperMap Software Co., Ltd.\\
+Beijing, China\\
+\href{mailto:zhouning1@supermap.com}{zhouning1@supermap.com}}
+
+\address{}
+
+\begin{document}
+
+\begin{letter}{The Editor \\ \textit{Scientific Reports}}
+
+\opening{Dear Editor,}
+
+We are pleased to submit our manuscript, ``Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes,'' for consideration as an Article in \textit{Scientific Reports}.
+
+The manuscript evaluates whether a learned transition model with model-predictive control can generate auditable cadastral scenarios faster than model-free reinforcement learning and classical operations-research baselines. It also exposes the constraints that determine whether a candidate can be deployed.
+
+We report evidence from two real Chinese counties, Bishan District (Chongqing, $52{,}515$ parcels) and Neijiang Dongxing District (Sichuan, $76{,}376$ parcels). The evaluation also includes a seven-preset synthetic benchmark and a public-data Buchanan County mine-restoration boundary check. On the matched Bishan cadastre, contrastive MPC achieves a $1.6\times$ larger slope reduction than in-house reinforcement-learning baselines. Independent GIS recomputation verifies that the canonical Bishan and Neijiang deployment deltas are properties of the optimised cadastral geometry.
+
+The transfer framing is deliberately technical rather than promotional. The unconstrained Bishan candidate reduces farmland slope by $-2.001\%$ and shifts $687$\,ha out of steep bands. It also loses $505$\,ha of cultivated area and is rejected as a final policy-compliant plan. A no-net-loss cultivated-area floor retains a $-0.675\%$ slope change, higher contiguity, and $29.8$\,ha more qualifying large-patch area. Neijiang shows the same repair pattern, with $330.4$\,ha less farmland in $\geq 15^\circ$ slope bands under the constrained canonical audit, without establishing regional generalisation. We therefore present an auditable scenario generator with explicit deployment boundaries, not a substitute for local plan approval.
+
+The work is suitable for \textit{Scientific Reports} because its main contribution is technical validity, reproducibility, and bounded empirical evaluation. The evidence spans real, synthetic, and public-data settings. The release includes trained ensembles, an ArcGIS Pro Python Toolbox, a command-line workflow, a smoke test, and open reproduction tracks. These tracks cover the synthetic benchmark, the Buchanan boundary check, and the training/planning diagnostics. Derived data products support verification of the real-county results without redistributing raw cadastral geometries. Code and reproduction instructions are available at \href{https://github.com/zhouning/arcgis-farmland-mpc}{github.com/zhouning/arcgis-farmland-mpc}.
+
+The manuscript is not under consideration elsewhere. The authors declare no competing interests and have had no prior discussions with \textit{Scientific Reports} about this submission.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

@@ -264,9 +264,11 @@ def _run_profile(args, profile: RewardProfile) -> dict:
 
 
 def _write_outputs(args, rows: list[dict]) -> None:
+    region_label = getattr(args, "region_label", "Bishan").strip() or "Bishan"
+    region_id = region_label.lower().replace(" ", "_")
     report = {
         "experiment": "retrained_reward_weight_sensitivity",
-        "region": "bishan",
+        "region": region_id,
         "prepared_template": str(args.prepared_template),
         "scope": (
             "Single retrained 3-member ensemble per reward profile unless "
@@ -304,7 +306,7 @@ def _write_outputs(args, rows: list[dict]) -> None:
     args.out_json.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
     lines = [
-        "# Retrained Bishan reward-weight sensitivity",
+        f"# Retrained {region_label} reward-weight sensitivity",
         "",
         "Each profile re-runs Tool 2 sampling and Tool 3 ensemble training before no-net-loss Tool 4 planning.",
         "",
@@ -327,6 +329,7 @@ def _write_outputs(args, rows: list[dict]) -> None:
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--region-label", default="Bishan")
     ap.add_argument(
         "--prepared-template",
         type=Path,
