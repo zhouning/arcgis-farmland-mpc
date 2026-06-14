@@ -2,6 +2,50 @@
 
 Saved at: 2026-06-12 20:44:50 +08:00
 
+## 2026-06-15 Neijiang frontier completion and submission sync
+
+Current package path:
+
+- `D:\test\_publish\arcgis-farmland-mpc\paper\submission_scirep_corrected`
+
+Completed stronger experiment:
+
+- Added and ran a Neijiang Dongxing seven-profile execution-constraint frontier using the current Scientific Reports prepared package and seed-0 ONNX ensemble.
+- Summary outputs:
+  - `paper/submission_scirep_corrected/neijiang_constraint_frontier.json`
+  - `paper/submission_scirep_corrected/neijiang_constraint_frontier.md`
+  - `paper/submission_scirep_corrected/04_figures/neijiang_constraint_frontier.pdf`
+  - `paper/submission_scirep_corrected/04_figures/neijiang_constraint_frontier.png`
+  - `paper/submission_scirep_corrected/05_source_editable/figures/neijiang_constraint_frontier.pdf`
+- Full local per-profile GIS outputs are under `runs/neijiang/pareto/`; they are about 4 GB and are ignored by Git as reproducible run artefacts.
+
+Manuscript/package integration:
+
+- SI now includes the Neijiang frontier paragraph, Table S18, and Figure S2.
+- Main manuscript adds one bounded sentence in the Neijiang deployment section and updates methods/code-availability references to both Bishan and Neijiang frontier drivers.
+- Cover letter notes that the revised SI includes seven-profile execution frontiers for both counties.
+- `\clearpage` guards keep the Bishan and Neijiang frontier floats in their own sequence before SI S12.
+- The Neijiang frontier plot labels were shortened/staggered for the three overlapping cultivated-floor points.
+
+Compilation and validation completed:
+
+- `pdflatex -interaction=nonstopmode -halt-on-error supplementary_information_scirep.tex` run twice; final SI is 18 pages.
+- `pdflatex -interaction=nonstopmode -halt-on-error manuscript_scirep.tex` run twice; final main manuscript is 27 pages.
+- `pdflatex -interaction=nonstopmode -halt-on-error cover_letter_scirep.tex` run once; final cover letter is 1 page.
+- Log screen found no undefined references/citations, missing files, overfull boxes, float-too-large warnings, or fatal LaTeX errors.
+- Rendered SI pages 13--16 were visually checked; the Neijiang table and figure are present and readable.
+- Synced upload PDFs:
+  - `01_main_document/01_main_manuscript_scirep.pdf`
+  - `02_cover_letter/00_cover_letter_scirep.pdf`
+  - `03_supplementary_information/02_supplementary_information_scirep.pdf`
+- Tests:
+  `python -m pytest farmland_mpc\tests\test_neijiang_constraint_frontier_runner.py -q -p no:cacheprovider --basetemp .\tmp_pytest_neijiang_frontier_final2`
+  Result: `7 passed`.
+- `git diff --check` passed.
+- No `python.exe` or `py.exe` process was running after checks.
+
+Do not auto-commit unless requested. Before committing, review whether to include `docs/superpowers/` planning files; the core submission evidence does not depend on them.
+
 ## 2026-06-14 reviewer-risk revision after strict Scientific Reports-style review
 
 Performed in response to a strict reviewer-style critique focused on technical validity, audit symmetry, policy realism, and readability.

@@ -16,6 +16,13 @@ It should be used instead of the earlier invalid folder `D:\test\ScientificRepor
 - `06_declarations_and_checks/`: declarations and submission checklist.
 - `99_previous_commsee_reference/`: read-only reference copies of the previous CommsEE PDFs and source files.
 
+## 2026-06-14 Added Robustness Evidence
+
+- Added a Neijiang Dongxing seven-profile Tool 4 execution-constraint frontier to mirror the Bishan execution-frontier evidence.
+- Summary outputs are saved as `neijiang_constraint_frontier.json` and `neijiang_constraint_frontier.md`.
+- The rendered frontier figure is saved under `04_figures/` and copied into `05_source_editable/figures/` for LaTeX compilation.
+- The full per-profile GIS outputs under `runs/neijiang/pareto/` are local, reproducible run artefacts and are not part of the upload set.
+
 ## Source Caveats
 
 - The empirical results, tables, figures, and references are inherited from the correct `arcgis-farmland-mpc` manuscript.

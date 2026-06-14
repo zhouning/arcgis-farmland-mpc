@@ -486,11 +486,46 @@ Connectivity conservative & $-0.608$ & $+0.0259$ & $-210.5$ & $+1$ & $+43.4$ & $
 \label{fig:si-bishan-constraint-frontier}
 \end{figure}
 
+\clearpage
+
+\paragraph{Neijiang execution-constraint frontier.} We repeated the same seven-profile execution-frontier design on the current Scientific Reports Neijiang prepared package and its seed-0 exported ONNX ensemble (Table~\ref{tab:si-neijiang-constraint-frontier}, Figure~\ref{fig:si-neijiang-constraint-frontier}). This check is separate from the older canonical Neijiang audit in Table~\ref{tab:si-constrained-policy}; its purpose is to test whether the cross-county policy-repair pattern survives a full Tool~4 frontier under the current packaged Neijiang artefacts. The cultivated-area floor rows at $-500$, $-250$ and $-100$\,ha converge to the same committed plan, indicating that those floors are effectively non-binding for this seed except at the final sub-hectare margin. All no-net-loss profiles keep cultivated area positive, with slope changes from $-0.440\%$ to $-0.457\%$, contiguity gains from $+0.0322$ to $+0.0404$, qualifying \textit{baimu fang} area gains from $+286.5$ to $+344.0$\,ha, and total cultivated-area gains from $+100.9$ to $+126.6$\,ha. The connectivity-conservative profile sacrifices a small amount of slope reduction relative to the no-net-loss profile but gives the largest contiguity and qualifying-area gains in the Neijiang frontier.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Neijiang Dongxing execution-constraint frontier on the Scientific Reports prepared package. Each row is one canonical Tool~4 planning episode followed by GIS-only validation and policy-band translation. The cultivated-area floor rows enforce a hard lower bound on cumulative total cultivated-area change; the ``No net cultivated + baimu area'' row additionally enforces a hard lower bound on qualifying \textit{baimu fang} area; the connectivity-conservative row keeps the cultivated-area no-net-loss floor and increases the local pair-selection connectivity weights. Source: \texttt{scripts/pareto\_sweep\_neijiang\_constraints.py}, output \texttt{paper/submission\_scirep\_corrected/neijiang\_constraint\_frontier.json}.}
+\label{tab:si-neijiang-constraint-frontier}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Mode & $\Delta$ slope (\%) & $\Delta$ cont. & Steep tail (ha) & $\Delta$Baimu \# & $\Delta$Baimu (ha) & $\Delta$cultivated (ha) & Reward & Swaps \\
+\midrule
+Unconstrained & $-0.500$ & $+0.0327$ & $-448.5$ & $-7$ & $+246.5$ & $+58.5$ & $+77.44$ & $463$ \\
+Cultivated floor $-500$\,ha & $-0.527$ & $+0.0318$ & $-448.5$ & $-6$ & $+183.7$ & $-0.8$ & $+80.66$ & $473$ \\
+Cultivated floor $-250$\,ha & $-0.527$ & $+0.0318$ & $-448.5$ & $-6$ & $+183.7$ & $-0.8$ & $+80.66$ & $473$ \\
+Cultivated floor $-100$\,ha & $-0.527$ & $+0.0318$ & $-448.5$ & $-6$ & $+183.7$ & $-0.8$ & $+81.05$ & $473$ \\
+No net cultivated loss & $-0.457$ & $+0.0322$ & $-344.8$ & $-8$ & $+287.5$ & $+101.9$ & $+82.31$ & $471$ \\
+No net cultivated + baimu area & $-0.454$ & $+0.0322$ & $-343.6$ & $-8$ & $+286.5$ & $+100.9$ & $+76.87$ & $471$ \\
+Connectivity conservative & $-0.440$ & $+0.0404$ & $-367.5$ & $-12$ & $+344.0$ & $+126.6$ & $+58.10$ & $475$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{neijiang_constraint_frontier.pdf}
+\caption{Neijiang Dongxing execution-constraint frontier. Points show independently recomputed farmland-slope change versus total cultivated-area change for the seven execution profiles in Table~\ref{tab:si-neijiang-constraint-frontier}; marker area scales with the absolute qualifying \textit{baimu fang} area change and colour distinguishes profiles that violate (red) or satisfy (green) cultivated-area no-net-loss. The dashed vertical line is the policy no-net-loss boundary.}
+\label{fig:si-neijiang-constraint-frontier}
+\end{figure}
+
+\clearpage
+
 % ============================================================================
 \section{Hyperparameter sensitivity and longer-budget OR baselines}\label{si:hyperparameter-sensitivity}
 % ============================================================================
 
-This section reports two robustness checks against reviewer concerns about hyperparameter dependence and the matched-wall-budget OR comparison: (i)~an $(H, K)$ sensitivity sweep on the package-side prepare and (ii)~a $10\times$-extended wall-budget comparison against simulated annealing and random-restart on Bishan. These checks address computational robustness only. The cultivated-area constraint issue is handled separately by the hard no-net-loss runs in Table~\ref{tab:si-constrained-policy} and by the Bishan execution-constraint frontier in Table~\ref{tab:si-bishan-constraint-frontier}.
+This section reports two robustness checks against reviewer concerns about hyperparameter dependence and the matched-wall-budget OR comparison: (i)~an $(H, K)$ sensitivity sweep on the package-side prepare and (ii)~a $10\times$-extended wall-budget comparison against simulated annealing and random-restart on Bishan. These checks address computational robustness only. The cultivated-area constraint issue is handled separately by the hard no-net-loss runs in Table~\ref{tab:si-constrained-policy} and by the Bishan and Neijiang execution-constraint frontiers in Tables~\ref{tab:si-bishan-constraint-frontier} and \ref{tab:si-neijiang-constraint-frontier}.
 
 \paragraph{$(H, K)$ sweep on the package-side prepare (Table~\ref{tab:si-hk-sweep}).} We swept the planning horizon $H \in \{3, 5, 10\}$ and the top-$K$ candidate width $K \in \{25, 50, 100\}$ on one released contrastive ensemble, holding $\lambda_{\text{rank}}=5.0$, margin~$=0.1$, $\gamma=0.99$, continuation~$=$~greedy, scoring~$=$~reward, and one canonical episode per cell. All nine cells produced bit-identical commit sequences yielding the same on-disk slope improvement of $-1.7531\%$, contiguity change of $+0.0125$, qualifying-count gain of $+5$, and qualifying-area loss of $-483.94$\,ha. Wall time scales from $122.7$\,s ($H{=}3$, $K{=}25$) to $1{,}139$\,s ($H{=}10$, $K{=}100$), a $9.3\times$ range. This invariance should be interpreted conservatively: for this trained ensemble and deterministic greedy-continuation setting, the 1-step ranking signal is strong enough that deeper rollouts and wider candidate menus do not change the top committed action. The result supports faster interactive auditing with $(H{=}3, K{=}25)$ on this ensemble, but it is not evidence that horizon never matters, nor that reward-weight or red-line-constrained variants would be invariant.
 
@@ -543,6 +578,6 @@ Contrastive MPC & $\sim 180$ & $\mathbf{86.74}$ & $1$ ep, $H{=}5$, $K{=}50$ & ma
 }
 \end{table}
 
-\paragraph{Reward-weight and execution-constraint frontiers.} The Bishan sweep reported in Table~\ref{tab:si-bishan-constraint-frontier} is the policy-relevant multi-profile execution frontier added for this revision. We do not present it as a full retrained reward-weight Pareto sweep: such a sweep would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The Bishan execution-constraint frontier instead answers the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
+\paragraph{Reward-weight and execution-constraint frontiers.} The Bishan and Neijiang sweeps reported in Tables~\ref{tab:si-bishan-constraint-frontier} and \ref{tab:si-neijiang-constraint-frontier} are the policy-relevant multi-profile execution frontiers added for this revision. We do not present them as full retrained reward-weight Pareto sweeps: such sweeps would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The two execution-constraint frontiers instead answer the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
 
 \end{document}

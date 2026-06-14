@@ -16,3 +16,6 @@
 - [x] Copy compiled PDFs into upload folders.
 - [x] Check LaTeX logs for undefined citations/references and missing files.
 - [x] Check corrected sources for wrong-topic residues from the invalid package, especially the old wrong title, AlphaEarth, and dream-based-policy-learning framing. DAgger/Dreamer terms that are already present in the correct source manuscript are not automatically errors.
+- [x] Run and summarize the Neijiang Dongxing seven-profile execution-constraint frontier.
+- [x] Add the Neijiang frontier table/figure to the Supplementary Information and keep the main-text claim bounded.
+- [x] Visually inspect the rendered Supplementary Information pages containing the new frontier table/figure.
