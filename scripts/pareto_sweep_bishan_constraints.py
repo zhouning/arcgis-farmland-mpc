@@ -10,9 +10,9 @@ actually change the committed on-disk cadastre without re-running Tools 2-3.
 Outputs:
   * per-cell Tool 4 summaries and optimized shapefiles under runs/bishan/pareto/
   * per-cell GIS-only policy audits
-  * paper/submission_commsee/pareto_sweep_bishan_constraints.json
-  * paper/submission_commsee/pareto_sweep_bishan_constraints.md
-  * paper/submission_commsee/figures/bishan_constraint_pareto.{pdf,png}
+  * paper/submission_scirep_corrected/bishan_constraint_frontier.json
+  * paper/submission_scirep_corrected/bishan_constraint_frontier.md
+  * paper/submission_scirep_corrected/04_figures/bishan_constraint_pareto.{pdf,png}
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ CONFIGS = [
         "pair_selection": {},
         "reuse_optimized": Path("runs/bishan/cultivated_area_constraint/no_net_loss/optimized.shp"),
         "reuse_summary": Path("runs/bishan/cultivated_area_constraint/no_net_loss/mpc_summary.json"),
-        "reuse_policy": Path("paper/submission_commsee/policy_translation_bishan_constrained.json"),
+        "reuse_policy": Path("paper/submission_scirep_corrected/policy_translation_bishan_constrained.json"),
     },
     {
         "id": "conservative_baimu_no_loss",
@@ -284,10 +284,10 @@ def main() -> int:
     ap.add_argument("--prepared-dir", type=Path, default=Path("/Users/zhouning/farmland_mpc_runs/bishan/prepared"))
     ap.add_argument("--ensemble-dir", type=Path, default=Path("/Users/zhouning/farmland_mpc_runs/bishan/prepared/ensemble_seed0"))
     ap.add_argument("--scratch-dir", type=Path, default=Path("runs/bishan/pareto/constraints"))
-    ap.add_argument("--out-json", type=Path, default=Path("paper/submission_commsee/pareto_sweep_bishan_constraints.json"))
-    ap.add_argument("--out-md", type=Path, default=Path("paper/submission_commsee/pareto_sweep_bishan_constraints.md"))
-    ap.add_argument("--out-fig-pdf", type=Path, default=Path("paper/submission_commsee/figures/bishan_constraint_pareto.pdf"))
-    ap.add_argument("--out-fig-png", type=Path, default=Path("paper/submission_commsee/figures/bishan_constraint_pareto.png"))
+    ap.add_argument("--out-json", type=Path, default=Path("paper/submission_scirep_corrected/bishan_constraint_frontier.json"))
+    ap.add_argument("--out-md", type=Path, default=Path("paper/submission_scirep_corrected/bishan_constraint_frontier.md"))
+    ap.add_argument("--out-fig-pdf", type=Path, default=Path("paper/submission_scirep_corrected/04_figures/bishan_constraint_pareto.pdf"))
+    ap.add_argument("--out-fig-png", type=Path, default=Path("paper/submission_scirep_corrected/04_figures/bishan_constraint_pareto.png"))
     ap.add_argument("--horizon", type=int, default=5)
     ap.add_argument("--top-k", type=int, default=50)
     ap.add_argument("--threads", type=int, default=0)

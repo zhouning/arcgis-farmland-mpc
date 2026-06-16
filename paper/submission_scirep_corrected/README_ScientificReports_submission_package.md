@@ -1,22 +1,22 @@
-# Scientific Reports Submission Package, Paper 9 Corrected
+# Scientific Reports Submission Package, Paper 9
 
-This corrected transfer package was rebuilt on 2026-06-11 from the intended Communications Earth & Environment source manuscript:
+This is the active Scientific Reports submission package for Paper 9:
 
-`D:\test\_publish\arcgis-farmland-mpc\paper\submission_commsee\source_main_codex.tex`
+**Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes**
 
-It should be used instead of the earlier invalid folder `D:\test\ScientificReports_submission_paper9`, which was based on the wrong Paper 9 candidate manuscript.
+Use this package for the journal upload and for DOI backfilling after the Zenodo release has been minted.
 
 ## Upload Folders
 
 - `01_main_document/01_main_manuscript_scirep.pdf`: main manuscript PDF.
 - `02_cover_letter/00_cover_letter_scirep.pdf`: cover letter PDF.
-- `03_supplementary_information/02_supplementary_information_scirep.pdf`: supplementary information PDF.
-- `04_figures/`: figure files copied from the correct CommsEE source package.
+- `03_supplementary_information/02_supplementary_information_scirep.pdf`: Supplementary Information PDF.
+- `04_figures/`: upload-ready figure files.
 - `05_source_editable/`: editable LaTeX sources, bibliography, generated `.bbl`, and local figure copies.
 - `06_declarations_and_checks/`: declarations and submission checklist.
-- `99_previous_commsee_reference/`: read-only reference copies of the previous CommsEE PDFs and source files.
+- `07_zenodo_release/`: GitHub-Zenodo release notes, metadata drafts, and DOI backfill instructions.
 
-## 2026-06-14 Added Robustness Evidence
+## 2026-06-14 Robustness Evidence
 
 - Added a Neijiang Dongxing seven-profile Tool 4 execution-constraint frontier to mirror the Bishan execution-frontier evidence.
 - Summary outputs are saved as `neijiang_constraint_frontier.json` and `neijiang_constraint_frontier.md`.
@@ -25,8 +25,6 @@ It should be used instead of the earlier invalid folder `D:\test\ScientificRepor
 
 ## Source Caveats
 
-- The empirical results, tables, figures, and references are inherited from the correct `arcgis-farmland-mpc` manuscript.
-- The Scientific Reports revision changes journal metadata, citation style, title/abstract framing, cover letter framing, cross-domain boundary-check wording, and the policy-deployment boundary wording.
+- The Scientific Reports package keeps the claims bounded to technical validity, reproducibility, and auditability.
 - The raw Bishan and Neijiang cadastral records remain restricted. The open reproduction tracks cover the synthetic benchmark, the Buchanan boundary check, and training/planning diagnostics; derived cadastral products support real-county verification without redistributing raw parcel geometries.
-- `99_previous_commsee_reference/` is retained only for traceability. It contains the earlier CommsEE wording and is not part of the Scientific Reports upload set.
 - For LaTeX upload, include both `references_v6_codex.bib` and the generated `.bbl` files if the submission system requests source files.

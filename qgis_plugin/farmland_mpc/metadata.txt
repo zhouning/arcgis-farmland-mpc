@@ -1,7 +1,7 @@
 [general]
 name=Farmland MPC
 description=Reproducible AI-driven planning for county-scale farmland consolidation. Wraps the four-stage farmland-mpc CLI (prepare → sample → train → plan) as native QGIS Processing algorithms.
-about=Companion QGIS plugin for the Communications Earth & Environment manuscript "Reproducible model-based AI planning for county-scale farmland consolidation in fragmented mountain landscapes" (Zhou & Jing 2026). Exposes the four farmland-mpc CLI subcommands as a Processing Provider so users can run the full pipeline from the QGIS GUI without touching a terminal. Calls the farmland-mpc executable as a subprocess; you must install farmland-mpc in a separate conda environment first (see https://github.com/zhouning/arcgis-farmland-mpc/blob/main/docs/REPRODUCE.md).
+about=Companion QGIS plugin for the Scientific Reports submission "Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes" (Zhou & Jing 2026). Exposes the four farmland-mpc CLI subcommands as a Processing Provider so users can run the full pipeline from the QGIS GUI without touching a terminal. Calls the farmland-mpc executable as a subprocess; you must install farmland-mpc in a separate conda environment first (see https://github.com/zhouning/arcgis-farmland-mpc/blob/main/docs/REPRODUCE.md).
 category=Analysis
 version=0.1.0
 qgisMinimumVersion=3.34

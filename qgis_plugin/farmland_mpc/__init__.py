@@ -1,7 +1,7 @@
 """Farmland MPC QGIS plugin entry point.
 
-Companion to the Communications Earth & Environment manuscript
-"Reproducible model-based AI planning for county-scale farmland
+Companion to the Scientific Reports submission
+"Reproducible model-based planning for county-scale farmland
 consolidation in fragmented mountain landscapes" (Zhou & Jing 2026).
 Wraps the four farmland-mpc CLI subcommands (prepare / sample / train /
 plan) as native QGIS Processing algorithms.

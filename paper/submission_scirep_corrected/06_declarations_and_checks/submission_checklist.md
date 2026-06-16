@@ -1,6 +1,6 @@
 # Scientific Reports Submission Checklist
 
-- [x] Correct source manuscript identified as `D:\test\_publish\arcgis-farmland-mpc\paper\submission_commsee\source_main_codex.tex`.
+- [x] Active Scientific Reports source manuscript maintained at `05_source_editable/manuscript_scirep.tex`.
 - [x] Main manuscript source copied to `05_source_editable/manuscript_scirep.tex`.
 - [x] Supplementary source copied to `05_source_editable/supplementary_information_scirep.tex`.
 - [x] Cover letter source copied and rewritten as `05_source_editable/cover_letter_scirep.tex`.
@@ -14,7 +14,7 @@
 - [x] Generative AI use disclosure added to the main manuscript declarations and declarations checklist.
 - [x] Zenodo/GitHub release metadata, `CITATION.cff`, and DOI backfill template prepared for the software archive.
 - [ ] Zenodo software DOI minted and inserted into the manuscript Data Availability, Code Availability, README, and `CITATION.cff` before final journal submission.
-- [x] Previous CommsEE package preserved under `99_previous_commsee_reference/`.
+- [x] Public repository entry points cleaned to point only to the Scientific Reports package.
 - [x] Compile main manuscript, supplementary information, and cover letter.
 - [x] Copy compiled PDFs into upload folders.
 - [x] Check LaTeX logs for undefined citations/references and missing files.

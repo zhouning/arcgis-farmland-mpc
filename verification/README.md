@@ -1,8 +1,9 @@
 # Verification scripts
 
-These scripts back the four-layer verification stack disclosed in
-the Paper 9 manuscript (`paper9_v7_draft.tex` Methods sections
-`sec:methods-validate`, `sec:methods-mae`, `sec:methods-trueenv`).
+These scripts back the verification stack disclosed in the Scientific
+Reports manuscript (`paper/submission_scirep_corrected/05_source_editable/
+manuscript_scirep.tex`, Methods sections `sec:methods-validate`,
+`sec:methods-mae`, and `sec:methods-trueenv`).
 
 Each script takes a `prepared_dir` produced by Tool 1 (and, where
 applicable, an ensemble produced by Tool 3) and runs an independent

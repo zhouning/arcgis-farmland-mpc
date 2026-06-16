@@ -1,6 +1,6 @@
 ﻿% ============================================================================
-% paper9_v7_supplementary_scirep.tex --- Supplementary Material for the
-%   Scientific Reports transfer variant (paper9_v7_draft_scirep.tex)
+% supplementary_information_scirep.tex --- Supplementary Material for the
+%   Scientific Reports submission package
 % ============================================================================
 % Transferred from source_supplementary_codex.tex on 2026-06-11. Content is
 % unchanged except for visible journal-transfer metadata and citation style.
@@ -460,7 +460,7 @@ Neijiang Dongxing & Hard no-net-loss floor & $-0.492$ & $+0.0373$ & $-330.4$ & $
 \begin{table}[htbp]
 \centering
 \small
-\caption{Bishan execution-constraint frontier on the package-side prepare. Each row is one canonical Tool~4 planning episode followed by GIS-only validation and policy-band translation. The cultivated-area floor rows enforce a hard lower bound on cumulative total cultivated-area change; the ``No net cultivated + baimu area'' row additionally enforces a hard lower bound on qualifying \textit{baimu fang} area; the connectivity-conservative row keeps the cultivated-area no-net-loss floor and increases the local pair-selection connectivity weights. Source: \texttt{scripts/pareto\_sweep\_bishan\_constraints.py}, output \texttt{paper/submission\_commsee/pareto\_sweep\_bishan\_constraints.json}.}
+\caption{Bishan execution-constraint frontier on the package-side prepare. Each row is one canonical Tool~4 planning episode followed by GIS-only validation and policy-band translation. The cultivated-area floor rows enforce a hard lower bound on cumulative total cultivated-area change; the ``No net cultivated + baimu area'' row additionally enforces a hard lower bound on qualifying \textit{baimu fang} area; the connectivity-conservative row keeps the cultivated-area no-net-loss floor and increases the local pair-selection connectivity weights. Source: \texttt{scripts/pareto\_sweep\_bishan\_constraints.py}, output \texttt{paper/submission\_scirep\_corrected/bishan\_constraint\_frontier.json}.}
 \label{tab:si-bishan-constraint-frontier}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrrrrrr}
@@ -532,7 +532,7 @@ This section reports two robustness checks against reviewer concerns about hyper
 \begin{table}[htbp]
 \centering
 \small
-\caption{$(H, K)$ sensitivity on Bishan, package-side prepare, shipped contrastive ensemble (1 canonical episode per cell). All nine cells produce identical commit sequences; wall-clock cost is the only meaningful dimension on which they differ. Source: \texttt{scripts/sensitivity\_sweep\_bishan.py}, output \texttt{paper/submission\_commsee/sensitivity\_sweep\_bishan.json}.}
+\caption{$(H, K)$ sensitivity on Bishan, package-side prepare, shipped contrastive ensemble (1 canonical episode per cell). All nine cells produce identical commit sequences; wall-clock cost is the only meaningful dimension on which they differ. Source: \texttt{scripts/sensitivity\_sweep\_bishan.py}, output \texttt{paper/submission\_scirep\_corrected/sensitivity\_sweep\_bishan.json}.}
 \label{tab:si-hk-sweep}
 \begin{tabular}{cccccccc}
 \toprule

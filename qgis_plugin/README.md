@@ -1,6 +1,6 @@
 # Farmland MPC — QGIS Processing plugin
 
-QGIS GUI for the Communications Earth & Environment manuscript "Reproducible model-based AI planning for county-scale farmland consolidation in fragmented mountain landscapes" (Zhou & Jing 2026).
+QGIS GUI for the Scientific Reports submission "Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes" (Zhou & Jing 2026).
 
 Wraps the four `farmland-mpc` CLI subcommands as native QGIS Processing algorithms so you can run the full pipeline without touching a terminal. Equivalent in scope to `LandUseOptimization_P9.pyt` (the ArcGIS Pro Python Toolbox shipped with the same project).
 
@@ -114,7 +114,7 @@ Drag `optimized.shp` back into the QGIS map canvas to inspect the swap pattern: 
 
 If you use this plugin or the underlying pipeline in published work, please cite:
 
-> Zhou N. & Jing X. (2026). *Reproducible model-based AI planning for county-scale farmland consolidation in fragmented mountain landscapes.* Communications Earth & Environment (under review). https://github.com/zhouning/arcgis-farmland-mpc
+> Zhou N. & Jing X. (2026). *Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes.* Scientific Reports (under submission). https://github.com/zhouning/arcgis-farmland-mpc
 
 ## Licence
 

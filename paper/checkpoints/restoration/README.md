@@ -1,45 +1,36 @@
-# Restoration ensembles (cross-domain verification, paper §6.5 / NCS variant)
+# Restoration ensembles
 
-The contrastive 3-member ensembles backing the cross-domain verification
-result of `paper9_v7_draft_ncs.tex` §6.5 (`sec:cross-domain`). Two non-farmland
-geospatial planning cases:
+These contrastive three-member ensembles support the cross-domain boundary-check experiments in the Scientific Reports manuscript. Two non-farmland geospatial planning cases are included:
 
-```
+```text
 restoration/
-├── buchanan_va/                                   real public-data case
-│   ├── ensemble_seed{0..4}/                       λ=5.0 contrastive ensembles
-│   │   ├── ensemble_member{0..2}.{pt,onnx,onnx.data}
-│   │   └── train_summary.json
-│   └── ensemble_lam0/                             λ=0 (MSE-only) baseline ensemble
-│       └── ensemble_member{0..2}.{pt,onnx,onnx.data} + train_summary.json
-└── synthetic/                                     deterministic synthetic case
-    └── (same layout, n_units=420 instead of 562)
+|-- buchanan_va/                 real public-data case
+|   |-- ensemble_seed{0..4}/      lambda=5.0 contrastive ensembles
+|   |-- ensemble_lam0/            lambda=0.0 MSE-only baseline ensemble
+|-- synthetic/                    deterministic synthetic case
+    |-- ensemble_seed{0..4}/      lambda=5.0 contrastive ensembles
+    |-- ensemble_lam0/            lambda=0.0 MSE-only baseline ensemble
 ```
 
 ## What each set produces
 
 | Directory | Result reproduced |
 |---|---|
-| `buchanan_va/ensemble_seed{0..4}/` | Buchanan VA 5-seed contrastive MPC: cumulative reward $+229.4 \pm 0.0$, $+158\%$ over random baseline (Figure §6.5). |
-| `buchanan_va/ensemble_lam0/` | MSE-only ensemble on Buchanan: cumulative reward $+229.3$ — within noise of contrastive, demonstrating that the MSE-vs-contrastive gap of farmland §3 is not present in the restoration regime. |
-| `synthetic/ensemble_seed{0..4}/` | Synthetic mine 5-seed contrastive MPC: cumulative reward $+8{,}128 \pm 63$, $+32\%$ over random. |
-| `synthetic/ensemble_lam0/` | MSE-only baseline on synthetic: $+8{,}245$ — also within noise of contrastive. |
+| `buchanan_va/ensemble_seed{0..4}/` | Buchanan VA five-seed contrastive MPC: cumulative reward +229.4 +/- 0.0, +158% over random baseline. |
+| `buchanan_va/ensemble_lam0/` | MSE-only ensemble on Buchanan: cumulative reward +229.3, within noise of contrastive, showing that the farmland MSE-vs-contrastive gap is not present in this restoration regime. |
+| `synthetic/ensemble_seed{0..4}/` | Synthetic mine five-seed contrastive MPC: cumulative reward +8,128 +/- 63, +32% over random. |
+| `synthetic/ensemble_lam0/` | MSE-only baseline on synthetic: +8,245, also within noise of contrastive. |
 
 ## Architecture
 
-Same `farmland_mpc.transition_model.TransitionModel` as the farmland
-ensembles in `paper/checkpoints/{bishan,neijiang}/`, just instantiated with
-the case's $n_{\text{units}}$:
+The restoration cases use the same `farmland_mpc.transition_model.TransitionModel` as the farmland ensembles in `paper/checkpoints/{bishan,neijiang}/`, instantiated with the case-specific number of planning units.
 
-| Case | $n_{\text{units}}$ | `action_emb.weight` | total params |
-|---|---|---|---|
+| Case | `n_units` | `action_emb.weight` | total params |
+|---|---:|---|---:|
 | Buchanan | 562 | `[562, 32]` | 165,486 |
 | Synthetic | 420 | `[420, 32]` | 158,366 |
 
-State features are 17-dim (zero-padded if fewer numeric attributes are
-available) and global state is 12-dim, matching the farmland network
-exactly so the same `mpc_select_action` code path applies without
-modification.
+State features are 17-dimensional and global state is 12-dimensional, matching the farmland network so the same MPC code path applies.
 
 ## Loading
 
@@ -47,51 +38,38 @@ modification.
 import torch
 from farmland_mpc.transition_model import TransitionModel
 
-# Buchanan VA, contrastive seed 0, member 0
-sd = torch.load("paper/checkpoints/restoration/buchanan_va/"
-                "ensemble_seed0/ensemble_member0.pt",
-                map_location="cpu", weights_only=True)
+sd = torch.load(
+    "paper/checkpoints/restoration/buchanan_va/ensemble_seed0/ensemble_member0.pt",
+    map_location="cpu",
+    weights_only=True,
+)
 model = TransitionModel(n_blocks=562, k_global=12)
 model.load_state_dict(sd)
 model.eval()
 ```
 
-The `.onnx` exports are baked-in `n_blocks` and consumed directly by the
-`farmland_mpc.ensemble_runner.EnsembleOrtRunner` (and by the package's
-`mpc_plan` pipeline when `--env restoration` is selected on the CLI).
+The `.onnx` exports are baked in to the relevant `n_blocks` and are consumed by `farmland_mpc.ensemble_runner.EnsembleOrtRunner` and by `farmland_mpc.mpc_plan`.
 
 ## Provenance
 
 | Set | Trained on | Date |
 |---|---|---|
-| Buchanan VA contrastive 5-seed | macOS `farmland_mpc.train_ensemble`, 14-core CPU, 3 ensembles in parallel | 2026-05-30 |
-| Buchanan VA λ=0 baseline | same script with `--lambda-rank 0.0`; 1 ensemble, 3 members | 2026-05-30 |
-| Synthetic contrastive 5-seed | same as above on the synthetic case | 2026-05-30 |
-| Synthetic λ=0 baseline | same | 2026-05-30 |
+| Buchanan VA contrastive five-seed | `farmland_mpc.train_ensemble`, 14-core CPU, three ensembles in parallel | 2026-05-30 |
+| Buchanan VA lambda=0 baseline | same script with `--lambda-rank 0.0`; one ensemble, three members | 2026-05-30 |
+| Synthetic contrastive five-seed | same as above on the synthetic case | 2026-05-30 |
+| Synthetic lambda=0 baseline | same | 2026-05-30 |
 
-All trained with `lambda_rank=5.0` (contrastive) or `0.0` (baseline),
-margin $0.1$, batch size 256, 30 epochs, Adam optimiser (lr $10^{-3}$,
-weight decay $10^{-5}$), 80/20 train/val split on the case's pairwise
-dataset. Pairwise data was generated by `farmland-mpc sample --env
-restoration` against the case's `RestorationEnv` (1{,}000 states, 50
-actions per state).
+All contrastive sets use `lambda_rank=5.0`, margin 0.1, batch size 256, 30 epochs, Adam optimizer with learning rate 1e-3 and weight decay 1e-5, and an 80/20 train/validation split on the case pairwise dataset.
 
 ## Reproducing
 
-The full restoration verification (prepare + sample + 6 ensembles per
-case + plan + random baseline + figure) is in `docs/REPRODUCE.md`
-under "Cross-domain verification (restoration)". Wall-clock on a 14-core
-M-series Mac is approximately 30 minutes per case, dominated by the
-12 ensemble trains (3 in parallel, ~3 min each).
+The full restoration verification workflow is described in `docs/REPRODUCE.md` under "Cross-domain verification (restoration)". On a 14-core Apple Silicon Mac, wall time is approximately 30 minutes per case, dominated by the ensemble training jobs.
 
-## Relation to data redistribution
+## Data Redistribution
 
 These checkpoints are model weights fitted to:
 
-- **Buchanan**: aggregated 2-km planning-unit features derived from public
-  US datasets (e-AMLIS abandoned-mine inventory, USGS NHD flowlines, USGS
-  3DEP elevation, Census TIGER county boundaries). All inputs are public.
-- **Synthetic**: deterministic seed-controlled synthetic data released
-  under CC-BY 4.0 alongside the seven-preset farmland synthetic benchmark.
+- Buchanan: aggregated 2-km planning-unit features derived from public US datasets, including e-AMLIS abandoned-mine inventory, USGS NHD flowlines, USGS 3DEP elevation, and Census TIGER county boundaries.
+- Synthetic: deterministic seed-controlled synthetic data released under CC-BY 4.0.
 
-Neither set encodes any restricted data; both are safe to redistribute.
+Neither set encodes restricted Bishan or Neijiang cadastral data; both are safe to redistribute.

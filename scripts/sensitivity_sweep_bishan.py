@@ -21,16 +21,16 @@ Scope of the sweep
    includes lambda=1.0 which the package-side does not. The lab-pipeline
    sweep on lambda is reported alongside the package-side single point.
 
-The script writes a JSON report to paper/submission_commsee/ for the
-new SI section S7 ("Hyperparameter sensitivity"). The JSON is the audit
-artefact; the corresponding LaTeX table is generated from it.
+The script writes a JSON report to paper/submission_scirep_corrected/ for
+the Scientific Reports SI section S7 ("Hyperparameter sensitivity"). The
+JSON is the audit artefact; the corresponding LaTeX table is generated from it.
 
 Usage
 -----
     python scripts/sensitivity_sweep_bishan.py \
         --prepared-dir /Users/zhouning/farmland_mpc_runs/bishan/prepared \
         --shipped-onnx-dir /Users/zhouning/farmland_mpc_runs/bishan/prepared/ensemble_seed0 \
-        --out paper/submission_commsee/sensitivity_sweep_bishan.json
+        --out paper/submission_scirep_corrected/sensitivity_sweep_bishan.json
 """
 
 from __future__ import annotations

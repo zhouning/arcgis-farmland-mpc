@@ -59,7 +59,7 @@ Files edited:
 Substantive manuscript changes:
 
 - Added the already-existing Neijiang canonical no-net-loss GIS audit evidence into the main manuscript.
-  - Source evidence: `D:\test\_publish\arcgis-farmland-mpc\paper\submission_commsee\neijiang_cultivated_area_constraint.json`
+  - Source evidence: `D:\test\_publish\arcgis-farmland-mpc\paper\submission_scirep_corrected\neijiang_constraint_frontier.json`
   - GIS audit pass: `overall_pass=true`
   - Neijiang constrained recomputation:
     - slope `-0.4918266%` vs planner `-0.4918312%`
@@ -113,10 +113,8 @@ No new training or planning experiment was run in this revision. The Neijiang GI
 
 ## Critical paths
 
-- Correct original CEE manuscript:
-  `D:\test\_publish\arcgis-farmland-mpc\paper\submission_commsee\source_main_codex.tex`
-- Correct Scientific Reports package:
-  `D:\test\ScientificReports_submission_paper9_corrected`
+- Active Scientific Reports package:
+  `D:\test\_publish\arcgis-farmland-mpc\paper\submission_scirep_corrected`
 - Current manuscript source:
   `D:\test\ScientificReports_submission_paper9_corrected\05_source_editable\manuscript_scirep.tex`
 - Current compiled main PDF:

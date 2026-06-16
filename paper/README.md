@@ -1,34 +1,35 @@
-# Paper 9 — v7 manuscript bundle
+# Paper 9 Scientific Reports Bundle
 
-Latest submission-ready bundle for the Nature Sustainability candidate paper:
-**"Model-based AI planning enables county-scale farmland consolidation in fragmented mountain landscapes."**
+This directory contains the manuscript-side materials for:
 
-## Files
+**Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes**
 
-| File | What it is |
-|---|---|
-| `paper9_v7_draft.tex` / `.pdf` | Main manuscript (v7, 24 pages) |
-| `paper9_v7_supplementary.tex` / `.pdf` | Supplementary information (6 pages) |
-| `paper9_v7_cover_letter.tex` / `.pdf` | Editor cover letter (2 pages) |
-| `references_v6.bib` | Shared BibTeX database |
-| `si_tables_v7.tex` | SI tables included by the supplementary |
+The active submission package is:
 
-PDFs in this folder are the most recent local builds (Windows, TeX Live).
-On macOS the build command is the same:
-
-```bash
-cd paper
-pdflatex paper9_v7_draft && bibtex paper9_v7_draft && pdflatex paper9_v7_draft && pdflatex paper9_v7_draft
-pdflatex paper9_v7_supplementary && bibtex paper9_v7_supplementary && pdflatex paper9_v7_supplementary && pdflatex paper9_v7_supplementary
-pdflatex paper9_v7_cover_letter
+```text
+submission_scirep_corrected/
 ```
 
-## Validation status (as of this commit)
+## Active Package
 
-- 5-layer verification stack (under `../verification/`) all green on Windows
-- macOS Apple Silicon end-to-end run validated for Bishan 53k:
-  slope **−2.0392 %** (Windows: −2.0006 %, within contrastive σ)
-- Member-subset variance (3 subsets of 2-of-3 ensemble): slope −1.998 ± 0.026 %, baimu −474.5 ± 31.1 ha
-- True-env MPC ablation: matched H/K/γ slope −1.819 % (ensemble wins by structure, not tuning)
+| Path | Contents |
+|---|---|
+| `submission_scirep_corrected/01_main_document/` | Main manuscript PDF. |
+| `submission_scirep_corrected/02_cover_letter/` | Scientific Reports cover letter PDF. |
+| `submission_scirep_corrected/03_supplementary_information/` | Supplementary Information PDF. |
+| `submission_scirep_corrected/04_figures/` | Upload-ready figures. |
+| `submission_scirep_corrected/05_source_editable/` | Editable LaTeX source, bibliography, generated `.bbl`, and local figure copies. |
+| `submission_scirep_corrected/06_declarations_and_checks/` | Declarations and submission checklist. |
+| `submission_scirep_corrected/07_zenodo_release/` | Zenodo/GitHub release metadata and DOI backfill instructions. |
 
-See the relevant `§sec:methods-*` sections in the draft for the source of each number.
+## Supporting Materials
+
+| Path | Contents |
+|---|---|
+| `checkpoints/` | Trained ensembles and ablation checkpoints used by the manuscript. |
+| `figures_v2/` | Source figure exports used to build the submission figures. |
+| `repro_artifacts/` | Reproduction summaries and cross-platform run records. |
+| `references_v6.bib`, `references_v6_codex.bib` | BibTeX databases. |
+| `si_tables_v7.tex` | Supplementary table source included by the SI. |
+
+The Scientific Reports package is self-contained for journal upload. The raw Bishan and Neijiang cadastral records are not redistributed; public and derived reproduction artefacts are described in the manuscript Data Availability statement.

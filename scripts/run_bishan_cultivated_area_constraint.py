@@ -41,7 +41,7 @@ def main() -> int:
     ap.add_argument(
         "--report-out",
         type=Path,
-        default=Path("paper/submission_commsee/bishan_cultivated_area_constraint.json"),
+        default=Path("paper/submission_scirep_corrected/bishan_cultivated_area_constraint.json"),
     )
     ap.add_argument("--floor-delta-ha", type=float, default=0.0)
     ap.add_argument("--horizon", type=int, default=5)

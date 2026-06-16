@@ -1,5 +1,5 @@
 """
-Bishan headline figure for CommsEE submission.
+Bishan headline figure for the Scientific Reports submission.
 
 Two panels:
   (a) per-step trajectories of slope reduction across 5 contrastive-MPC episodes,

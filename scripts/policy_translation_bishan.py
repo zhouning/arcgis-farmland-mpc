@@ -30,7 +30,7 @@ Usage
     python scripts/policy_translation_bishan.py \
         --optimized /Users/zhouning/farmland_mpc_runs/bishan/mpc_output/optimized.shp \
         --townships /Users/zhouning/farmland_mpc_runs/bishan/prepared/townships.json \
-        --out paper/submission_commsee/policy_translation_bishan.json
+        --out paper/submission_scirep_corrected/policy_translation_bishan.json
 
 Output is a JSON document with three sections:
     slope_bands, township_fairness, qualifying_area_trade_off.

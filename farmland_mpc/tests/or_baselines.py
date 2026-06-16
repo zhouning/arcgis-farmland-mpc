@@ -2,8 +2,8 @@
 """Operations-research baselines for the restoration cases.
 
 Implements four classical baselines that are standard for spatial
-prioritisation problems and that NCS reviewers will expect to see compared
-against the learned-surrogate + MPC pipeline:
+prioritisation problems and that provide non-learned comparators against
+the learned-surrogate + MPC pipeline:
 
   greedy        : sort candidates by priority_score, take top-K under budget
   sa            : simulated annealing on the full episode reward
