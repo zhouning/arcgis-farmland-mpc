@@ -1,4 +1,4 @@
-# Paper 9 Scientific Reports submission release
+# Paper 9 Scientific Reports cleaned submission release
 
 This release archives the code, trained ensembles, benchmark generators, verification scripts and Scientific Reports submission package for:
 
@@ -25,4 +25,6 @@ Open reproduction tracks are available through the synthetic benchmark, the publ
 
 ## Suggested citation
 
-Use the Zenodo DOI minted for this release. After Zenodo assigns the DOI, update `CITATION.cff` and the manuscript Code Availability section.
+Use this cleaned release DOI for reproducible Scientific Reports review:
+
+https://doi.org/10.5281/zenodo.20713695

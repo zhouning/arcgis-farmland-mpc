@@ -22,6 +22,10 @@ Code, trained ensembles, benchmark generators, the ArcGIS Pro toolbox, the comma
 
 https://github.com/zhouning/arcgis-farmland-mpc
 
+The cleaned submission release is archived on Zenodo as version `v1.0.1-scirep`:
+
+https://doi.org/10.5281/zenodo.20713695
+
 ## Generative AI Use
 
 During manuscript preparation, the authors used large-language-model assistance, including OpenAI Codex, for manuscript language editing, LaTeX-formatting checks, software troubleshooting, and checklist-style consistency review. These tools were not used to generate empirical data, fabricate references, make autonomous scientific interpretations, or alter the reported results. The authors reviewed all AI-assisted outputs against the source data, code, logs, and cited literature and take full responsibility for the content of the manuscript.

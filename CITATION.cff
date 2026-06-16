@@ -1,9 +1,10 @@
 cff-version: 1.2.0
-message: "If you use this software or reproduction package, please cite the archived Zenodo release once a DOI has been minted."
+message: "If you use this software or reproduction package, please cite the archived Zenodo release."
 type: software
 title: "ArcGIS Farmland MPC: reproducible model-based planning for county-scale farmland consolidation"
-version: "v1.0-scirep"
+version: "v1.0.1-scirep"
 date-released: 2026-06-16
+doi: "10.5281/zenodo.20713695"
 authors:
   - family-names: "Zhou"
     given-names: "Ning"

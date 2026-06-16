@@ -13,7 +13,7 @@
 - [x] Cover letter, README, and declarations aligned with the audit-bounded reproducibility statement.
 - [x] Generative AI use disclosure added to the main manuscript declarations and declarations checklist.
 - [x] Zenodo/GitHub release metadata, `CITATION.cff`, and DOI backfill template prepared for the software archive.
-- [ ] Zenodo software DOI minted and inserted into the manuscript Data Availability, Code Availability, README, and `CITATION.cff` before final journal submission.
+- [x] Zenodo software DOI minted and inserted into the manuscript Data Availability, Code Availability, README, and `CITATION.cff` before final journal submission.
 - [x] Public repository entry points cleaned to point only to the Scientific Reports package.
 - [x] Compile main manuscript, supplementary information, and cover letter.
 - [x] Copy compiled PDFs into upload folders.

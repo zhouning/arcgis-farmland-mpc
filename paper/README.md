@@ -32,4 +32,4 @@ submission_scirep_corrected/
 | `references_v6.bib`, `references_v6_codex.bib` | BibTeX databases. |
 | `si_tables_v7.tex` | Supplementary table source included by the SI. |
 
-The Scientific Reports package is self-contained for journal upload. The raw Bishan and Neijiang cadastral records are not redistributed; public and derived reproduction artefacts are described in the manuscript Data Availability statement.
+The Scientific Reports package is self-contained for journal upload. The cleaned GitHub-Zenodo submission release is archived as version `v1.0.1-scirep` at https://doi.org/10.5281/zenodo.20713695. The raw Bishan and Neijiang cadastral records are not redistributed; public and derived reproduction artefacts are described in the manuscript Data Availability statement.

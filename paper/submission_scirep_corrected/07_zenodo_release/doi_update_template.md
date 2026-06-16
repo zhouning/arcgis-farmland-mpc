@@ -1,39 +1,39 @@
-# DOI Update Template
+# DOI Update Record
 
-After Zenodo mints the DOI, update these locations before final submission.
+Zenodo minted the cleaned release DOI `10.5281/zenodo.20713695` for `v1.0.1-scirep`. These locations were updated before final submission.
 
 ## 1. `CITATION.cff`
 
 Add the software DOI near the release metadata:
 
 ```yaml
-doi: "10.5281/zenodo.XXXXXXX"
+doi: "10.5281/zenodo.20713695"
 ```
 
 If a separate dataset DOI is created, do not put the dataset DOI as the software DOI. Mention it in the Data Availability statement instead.
 
 ## 2. Main manuscript: Code availability
 
-Replace the current GitHub-only Code Availability sentence with:
+The current Code Availability sentence should cite:
 
 ```text
-All code for the contrastive training, MPC planner, synthetic generators, ArcGIS Pro toolchain, the non-commercial CLI workflow, the operations-research baselines, the planner-relevant ranking metrics, the restoration Pareto-sweep driver, and the Bishan and Neijiang execution-constraint frontier drivers is archived on Zenodo at [SOFTWARE_DOI] and maintained at https://github.com/zhouning/arcgis-farmland-mpc, under an MIT licence, with step-by-step reproduction instructions in docs/REPRODUCE.md and a smoke test that completes a full Tool 1-4 cycle in approximately 70 seconds on a small subset.
+All code for the contrastive training, MPC planner, synthetic generators, ArcGIS Pro toolchain, the non-commercial CLI workflow, the operations-research baselines, the planner-relevant ranking metrics, the restoration Pareto-sweep driver, and the Bishan and Neijiang execution-constraint frontier drivers is archived on Zenodo at https://doi.org/10.5281/zenodo.20713695 and maintained at https://github.com/zhouning/arcgis-farmland-mpc, under an MIT licence, with step-by-step reproduction instructions in docs/REPRODUCE.md and a smoke test that completes a full Tool 1-4 cycle in approximately 70 seconds on a small subset.
 ```
 
 Keep the LaTeX-specific math and section references when applying this sentence inside `manuscript_scirep.tex`.
 
 ## 3. Main manuscript: Data availability
 
-If only the GitHub-Zenodo software DOI exists, revise the end of the first Data Availability paragraph to mention the archived release:
+Because only the GitHub-Zenodo software DOI exists, the Data Availability paragraph should mention the archived release:
 
 ```text
-... all derived data products required to reproduce the reported experiments are publicly available now (not gated on publication) in the archived project release [SOFTWARE_DOI] and maintained at the project repository (Code Availability) under the stated licences:
+... all derived data products required to reproduce the reported experiments are publicly available now (not gated on publication) in the archived project release https://doi.org/10.5281/zenodo.20713695 and maintained at the project repository (Code Availability) under the stated licences:
 ```
 
 If a separate dataset DOI exists, use:
 
 ```text
-... all derived data products required to reproduce the reported experiments are publicly available now (not gated on publication) in the Zenodo dataset record [DATA_DOI] and the archived project release [SOFTWARE_DOI] under the stated licences:
+... all derived data products required to reproduce the reported experiments are publicly available now (not gated on publication) in the separate Zenodo dataset record DOI and the archived project release https://doi.org/10.5281/zenodo.20713695 under the stated licences:
 ```
 
 ## 4. Declarations file

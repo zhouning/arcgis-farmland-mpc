@@ -6,7 +6,8 @@ Use this metadata for the GitHub-Zenodo software archive.
 
 - Upload type: Software
 - Title: ArcGIS Farmland MPC: reproducible model-based planning for county-scale farmland consolidation
-- Version: v1.0-scirep
+- Version: v1.0.1-scirep
+- DOI: 10.5281/zenodo.20713695
 - Creators:
   - Ning Zhou, ORCID: 0009-0002-5647-7388
   - Xiang Jing
@@ -34,6 +35,7 @@ The release includes open synthetic benchmark data, public-data restoration boun
 ## Related identifiers
 
 - GitHub repository: https://github.com/zhouning/arcgis-farmland-mpc
+- Archived release DOI: https://doi.org/10.5281/zenodo.20713695
 - Manuscript: add the Scientific Reports article DOI after acceptance
 - Optional data record: add the dataset DOI if a separate dataset deposit is created
 

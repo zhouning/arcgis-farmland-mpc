@@ -10,7 +10,7 @@ Use this only if you decide to create a separate Dataset DOI in addition to the 
   - Ning Zhou, ORCID: 0009-0002-5647-7388
   - Xiang Jing
 - Access right: Open access
-- Version: v1.0-scirep
+- Version: v1.0.1-scirep
 - License: CC-BY 4.0 for generated open benchmark and derived artefacts where rights permit. Third-party public inputs retain their original licences. Code remains MIT licensed in the software release.
 
 ## Description
@@ -33,4 +33,4 @@ Before publishing a separate dataset record, include a README or manifest with:
 
 ## Suggested Data Availability wording after a dataset DOI exists
 
-Open reproduction data and derived artefacts that can be publicly redistributed are archived on Zenodo at `[DATA_DOI]`. The record contains the synthetic farmland benchmark, public-data Buchanan restoration case, trained-ensemble metadata, de-identified logs, random seeds, hyperparameters and figure source summaries. Raw Bishan and Neijiang cadastral records are not redistributed because of Third National Land Survey data-governance restrictions.
+Open reproduction data and derived artefacts that can be publicly redistributed would be archived on Zenodo if a separate dataset record is created. The current cleaned software/reproduction release is archived at https://doi.org/10.5281/zenodo.20713695. The optional dataset record would contain the synthetic farmland benchmark, public-data Buchanan restoration case, trained-ensemble metadata, de-identified logs, random seeds, hyperparameters and figure source summaries. Raw Bishan and Neijiang cadastral records are not redistributed because of Third National Land Survey data-governance restrictions.

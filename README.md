@@ -120,7 +120,7 @@ Key subfolders:
 
 ## Citation
 
-The associated manuscript is under submission to Scientific Reports. Zenodo release preparation files are in `paper/submission_scirep_corrected/07_zenodo_release/`; citation details will be updated after the Zenodo software DOI and article DOI are available.
+The associated manuscript is under submission to Scientific Reports. The cleaned submission release is archived on Zenodo as version `v1.0.1-scirep`: https://doi.org/10.5281/zenodo.20713695. Cite this version DOI for reproducible manuscript review; the article DOI can be added after acceptance.
 
 ## License
 
