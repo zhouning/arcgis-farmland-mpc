@@ -490,6 +490,9 @@ As a final ablation we re-ran the same MPC procedure (H=5, K=50, $\gamma$=0.99, 
 
 The resulting trajectory finishes at slope $-1.819\%$, contiguity $+0.0087$, and \textit{baimu fang} area change $-565$\,ha, all three worse than the package-side ensemble pipeline's $-2.001\%$, $+0.0128$, $-473$\,ha. Per-step inspection shows true-env MPC starting behind (the $200$-action stage~1 misses the strongest moves the ensemble identifies via full-action coverage), narrowing the gap as the trajectory matures, and finishing $0.18$\,pp short of the ensemble's slope. The operational difference is structural: ensemble \texttt{batch\_predict} grants the planner depth and breadth that incremental simulation cannot afford within the same compute budget. Putting matched effort into true-env MPC, with full enumeration in stage~1 and greedy continuation in stage~2, would cost approximately five days of wall time per episode under the measured step cost. The reported $-2.00\%$ candidate is therefore on the optimistic side of the planner's accessible frontier under matched compute, and the ensemble's contribution is to make that frontier auditable within desktop planning time.
 
+\subsection*{Generative AI use}
+During manuscript preparation, the authors used large-language-model assistance, including OpenAI Codex, for manuscript language editing, LaTeX-formatting checks, software troubleshooting and checklist-style consistency review. These tools were not used to generate empirical data, fabricate references, make autonomous scientific interpretations or alter the reported results. The authors reviewed all AI-assisted outputs against the source data, code, logs and cited literature and take full responsibility for the content of the manuscript.
+
 \section*{Data availability}
 The raw farmland cadastral records for Bishan District (Chongqing) and Neijiang Dongxing District (Sichuan) are derived from the Third National Land Survey of China and cannot be publicly redistributed under existing data-governance restrictions. Researchers requiring access to the raw cadastral records should approach the Chongqing and Sichuan provincial natural-resources departments under the same procedure used for any access to Third Land Survey data; we have no role in granting access. To support reproducibility and verification independent of restricted access, all derived data products required to reproduce the reported experiments are publicly available now (not gated on publication) in the archived project release at \href{https://doi.org/10.5281/zenodo.20713695}{doi:10.5281/zenodo.20713695} \citep{zhou2026arcgisfarmlandmpc} and maintained at the project repository (\S Code Availability) under the stated licences:
 
@@ -512,9 +515,6 @@ The authors declare no competing interests.
 
 \section*{Acknowledgements}
 This work was completed during N.Z.'s graduate study at the School of Software and Microelectronics, Peking University, and the deployment toolchain (Section~\ref{sec:deploy}) was developed at the Public R\&D Center, SuperMap Software Co., Ltd.
-
-\section*{Generative AI use}
-During manuscript preparation, the authors used large-language-model assistance, including OpenAI Codex, for manuscript language editing, LaTeX-formatting checks, software troubleshooting and checklist-style consistency review. These tools were not used to generate empirical data, fabricate references, make autonomous scientific interpretations or alter the reported results. The authors reviewed all AI-assisted outputs against the source data, code, logs and cited literature and take full responsibility for the content of the manuscript.
 
 \section*{Funding}
 This research received no external funding.
