@@ -11,6 +11,9 @@
 - [x] Cultivated-area/no-net-loss constraint stated as a deployment boundary.
 - [x] Cross-domain restoration material framed as a boundary check, not as a transfer or regional-generalisation claim.
 - [x] Cover letter, README, and declarations aligned with the audit-bounded reproducibility statement.
+- [x] Generative AI use disclosure added to the main manuscript declarations and declarations checklist.
+- [x] Zenodo/GitHub release metadata, `CITATION.cff`, and DOI backfill template prepared for the software archive.
+- [ ] Zenodo software DOI minted and inserted into the manuscript Data Availability, Code Availability, README, and `CITATION.cff` before final journal submission.
 - [x] Previous CommsEE package preserved under `99_previous_commsee_reference/`.
 - [x] Compile main manuscript, supplementary information, and cover letter.
 - [x] Copy compiled PDFs into upload folders.

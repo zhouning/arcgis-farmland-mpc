@@ -22,6 +22,10 @@ Code, trained ensembles, benchmark generators, the ArcGIS Pro toolbox, the comma
 
 https://github.com/zhouning/arcgis-farmland-mpc
 
+## Generative AI Use
+
+During manuscript preparation, the authors used large-language-model assistance, including OpenAI Codex, for manuscript language editing, LaTeX-formatting checks, software troubleshooting, and checklist-style consistency review. These tools were not used to generate empirical data, fabricate references, make autonomous scientific interpretations, or alter the reported results. The authors reviewed all AI-assisted outputs against the source data, code, logs, and cited literature and take full responsibility for the content of the manuscript.
+
 ## Ethics Statement
 
 The study uses cadastral and public geospatial datasets for computational modelling and does not involve human participants, human biological material, or animal subjects.

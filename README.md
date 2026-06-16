@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/zhouning/arcgis-farmland-mpc/blob/main/notebooks/farmland_mpc_colab_demo.ipynb)
-[![Paper draft](https://img.shields.io/badge/paper-CommsEE%20submission-brightgreen)](paper/submission_commsee/01_main_manuscript.pdf)
+[![Paper draft](https://img.shields.io/badge/paper-Scientific%20Reports%20submission-brightgreen)](paper/submission_scirep_corrected/01_main_document/01_main_manuscript_scirep.pdf)
 
 End-to-end pipeline for **county-scale farmland-consolidation planning**, runnable on a desktop CPU. The repository contains the trained ensembles, the deterministic synthetic benchmark, the public-data cross-domain test, the ArcGIS Pro toolbox, and the non-commercial Python CLI used to generate the headline results in the accompanying paper.
 
@@ -16,7 +16,8 @@ End-to-end pipeline for **county-scale farmland-consolidation planning**, runnab
 | `farmland_mpc/` | Python algorithm core: env, ensemble runner, MPC planner, contrastive trainer, sampler |
 | `farmland_mpc/tests/` | OR baselines (greedy, SA, NSGA-II, CBC-MILP), simulator-cost sweep, ranking metrics, Pareto sweep |
 | `paper/` | Manuscript drafts (NCS variant, **CommsEE submission variant**), supplementary, cover letter, all figures |
-| `paper/submission_commsee/` | Submission package for *Communications Earth & Environment* |
+| `paper/submission_scirep_corrected/` | Corrected submission package for *Scientific Reports* |
+| `paper/submission_commsee/` | Previous *Communications Earth & Environment* submission reference |
 | `paper/checkpoints/` | Trained contrastive ensembles for Bishan, Neijiang, restoration cases (~250 MB) |
 | `runs/` | Reproduction artefacts: pairwise datasets, plan results, OR baselines, sim-cost sweeps, ranking metrics |
 | `benchmark/` | Open synthetic farmland benchmark (7 deterministic landscape presets, CC-BY 4.0) |
@@ -149,7 +150,7 @@ arcgis-farmland-mpc/
 
 ## Citation
 
-A peer-reviewed publication is currently under submission to *Communications Earth & Environment*. The current preprint is at `paper/submission_commsee/01_main_manuscript.pdf`. Citation details will be updated upon acceptance.
+A peer-reviewed publication is currently under submission to *Scientific Reports*. The current submission package is at `paper/submission_scirep_corrected/`. Zenodo release preparation files are in `paper/submission_scirep_corrected/07_zenodo_release/`; citation details will be updated after the release DOI and article DOI are available.
 
 ## License
 

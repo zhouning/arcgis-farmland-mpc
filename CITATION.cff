@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software or reproduction package, please cite the archived Zenodo release once a DOI has been minted."
+type: software
+title: "ArcGIS Farmland MPC: reproducible model-based planning for county-scale farmland consolidation"
+version: "v1.0-scirep"
+date-released: 2026-06-16
+authors:
+  - family-names: "Zhou"
+    given-names: "Ning"
+    orcid: "https://orcid.org/0009-0002-5647-7388"
+  - family-names: "Jing"
+    given-names: "Xiang"
+repository-code: "https://github.com/zhouning/arcgis-farmland-mpc"
+url: "https://github.com/zhouning/arcgis-farmland-mpc"
+license: "MIT"
+keywords:
+  - "farmland consolidation"
+  - "model predictive control"
+  - "learned surrogate model"
+  - "GIS"
+  - "ArcGIS Pro"
+  - "Scientific Reports"
+abstract: "Software, trained ensembles, benchmark generators, verification scripts and submission artefacts supporting a Scientific Reports manuscript on reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes."
