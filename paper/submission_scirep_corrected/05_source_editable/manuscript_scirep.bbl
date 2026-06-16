@@ -1,0 +1,252 @@
+\begin{thebibliography}{34}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Xuan et~al.(2019)Xuan, El~Solh, and Siddique]{romeo2020fao}
+Li~Xuan, Mahmoud El~Solh, and Kadambot H.~M. Siddique, editors.
+\newblock \emph{Mountain agriculture: Opportunities for harnessing Zero Hunger
+  in {Asia}}.
+\newblock Food and Agriculture Organization of the United Nations, 2019.
+\newblock ISBN 9789251316801.
+\newblock \doi{10.4060/ca5561en}.
+
+\bibitem[Hao et~al.(2023)Hao, Hu, Wang, Zhang, Shi, and
+  Zhou]{liu2023fragmentation}
+Wang Hao, Xiangdong Hu, Jiamei Wang, Zhenxing Zhang, Zizhong Shi, and Hui Zhou.
+\newblock The impact of farmland fragmentation in {China} on agricultural
+  productivity.
+\newblock \emph{Journal of Cleaner Production}, 425:\penalty0 138962, 2023.
+\newblock \doi{10.1016/j.jclepro.2023.138962}.
+
+\bibitem[Niu et~al.(2023)Niu, Xu, and de~Vries]{niu2023fragmentation}
+Lu~Niu, Mengyao Xu, and Walter~Timo de~Vries.
+\newblock Investigation and comparison of spatial--temporal characteristics of
+  farmland fragmentation in the {Beijing--Tianjin--Hebei} region, {China}, and
+  {Bavaria}, {Germany}.
+\newblock \emph{Land}, 12\penalty0 (7):\penalty0 1410, 2023.
+\newblock \doi{10.3390/land12071410}.
+
+\bibitem[Foley et~al.(2011)Foley, Ramankutty, Brauman, Cassidy, Gerber,
+  et~al.]{foley2011solutions}
+Jonathan~A. Foley, Navin Ramankutty, Kate~A. Brauman, Emily~S. Cassidy,
+  James~S. Gerber, et~al.
+\newblock Solutions for a cultivated planet.
+\newblock \emph{Nature}, 478\penalty0 (7369):\penalty0 337--342, 2011.
+
+\bibitem[Springmann et~al.(2018)Springmann, Clark, Mason-D'Croz, Wiebe,
+  Bodirsky, et~al.]{springmann2018options}
+Marco Springmann, Michael Clark, Daniel Mason-D'Croz, Keith Wiebe,
+  Benjamin~Leon Bodirsky, et~al.
+\newblock Options for keeping the food system within environmental limits.
+\newblock \emph{Nature}, 562\penalty0 (7728):\penalty0 519--525, 2018.
+
+\bibitem[Liu et~al.(2014)Liu, Fang, and Li]{liu2014land}
+Yansui Liu, Fang Fang, and Yuheng Li.
+\newblock Land consolidation projects in rural china: Origins, progress, and
+  outcomes.
+\newblock \emph{Land Use Policy}, 40:\penalty0 3--14, 2014.
+
+\bibitem[Long(2014)]{long2014rural}
+Hualou Long.
+\newblock Land use policy in china: Introduction.
+\newblock \emph{Land Use Policy}, 40:\penalty0 1--2, 2014.
+
+\bibitem[Rounsevell et~al.(2012)Rounsevell, Pedroli, Erb, Gramberger, Busck,
+  et~al.]{rounsevell2014challenges}
+Mark D.~A. Rounsevell, Bas Pedroli, Karl-Heinz Erb, Marc Gramberger,
+  Anne~Gravsholt Busck, et~al.
+\newblock Challenges for land system science.
+\newblock \emph{Land Use Policy}, 29\penalty0 (4):\penalty0 899--910, 2012.
+
+\bibitem[Cao et~al.(2012)Cao, Huang, Wang, and Lin]{cao2012boundary}
+Kai Cao, Bo~Huang, Shaowen Wang, and Hui Lin.
+\newblock A boundary-based generic genetic algorithm for sustainable land-use
+  planning.
+\newblock \emph{Computers, Environment and Urban Systems}, 36\penalty0
+  (3):\penalty0 257--269, 2012.
+\newblock \doi{10.1016/j.compenvurbsys.2011.08.001}.
+
+\bibitem[Deb et~al.(2002)Deb, Pratap, Agarwal, and Meyarivan]{deb2002fast}
+Kalyanmoy Deb, Amrit Pratap, Sameer Agarwal, and T.~A. M.~T. Meyarivan.
+\newblock A fast and elitist multiobjective genetic algorithm: {NSGA-II}.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 6\penalty0
+  (2):\penalty0 182--197, 2002.
+
+\bibitem[Stewart et~al.(2004)Stewart, Janssen, and van
+  Herwijnen]{stewart2004multi}
+Theodor~J. Stewart, Ron Janssen, and Marjan van Herwijnen.
+\newblock A multiobjective genetic programming approach to land use planning.
+\newblock \emph{Computers \& Operations Research}, 31\penalty0 (14):\penalty0
+  2293--2313, 2004.
+
+\bibitem[Aerts and Heuvelink(2002)]{aerts2002using}
+Jeroen C. J.~H. Aerts and Gerard B.~M. Heuvelink.
+\newblock Using simulated annealing for resource allocation.
+\newblock \emph{International Journal of Geographical Information Science},
+  16\penalty0 (6):\penalty0 571--587, 2002.
+
+\bibitem[Zheng et~al.(2023)Zheng, Lin, Zhao, et~al.]{zheng2023urban}
+Y.~Zheng, Y.~Lin, L.~Zhao, et~al.
+\newblock Reinforcement learning for community spatial planning.
+\newblock \emph{Nature Computational Science}, 2023.
+
+\bibitem[Equihua et~al.(2024)]{equihua2024connectivity}
+Julian Equihua et~al.
+\newblock Connectivity conservation planning through deep reinforcement
+  learning.
+\newblock \emph{Methods in Ecology and Evolution}, 2024.
+
+\bibitem[Janowicz et~al.(2020)Janowicz, Gao, McKenzie, Hu, and
+  Bhaduri]{janowicz2020geoai}
+Krzysztof Janowicz, Song Gao, Grant McKenzie, Yingjie Hu, and Budhendra
+  Bhaduri.
+\newblock {GeoAI}: Spatially explicit artificial intelligence techniques for
+  geographic knowledge discovery and beyond.
+\newblock \emph{International Journal of Geographical Information Science},
+  34\penalty0 (4):\penalty0 625--636, 2020.
+\newblock \doi{10.1080/13658816.2019.1684500}.
+
+\bibitem[Chua et~al.(2018)Chua, Calandra, McAllister, and Levine]{chua2018deep}
+Kurtland Chua, Roberto Calandra, Rowan McAllister, and Sergey Levine.
+\newblock Deep reinforcement learning in a handful of trials using
+  probabilistic dynamics models.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~31, 2018.
+\newblock URL
+  \url{https://papers.nips.cc/paper/2018/hash/3de568f8597b94bda53149c7d7f5958c-Abstract.html}.
+
+\bibitem[Janner et~al.(2019)Janner, Fu, Zhang, and Levine]{janner2019trust}
+Michael Janner, Justin Fu, Marvin Zhang, and Sergey Levine.
+\newblock When to trust your model: Model-based policy optimization.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~32, 2019.
+\newblock URL
+  \url{https://papers.nips.cc/paper/2019/hash/5faf461eff3099671ad63c6f3f094f7f-Abstract.html}.
+
+\bibitem[Herbrich et~al.(2000)Herbrich, Graepel, and
+  Obermayer]{herbrich2000large}
+Ralf Herbrich, Thore Graepel, and Klaus Obermayer.
+\newblock Large margin rank boundaries for ordinal regression.
+\newblock In \emph{Advances in Large Margin Classifiers}, pages 115--132. MIT
+  Press, 2000.
+
+\bibitem[Joachims(2002)]{joachims2002optimizing}
+Thorsten Joachims.
+\newblock Optimizing search engines using clickthrough data.
+\newblock In \emph{Proceedings of the 8th ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pages 133--142, 2002.
+\newblock \doi{10.1145/775047.775067}.
+
+\bibitem[Burges et~al.(2005)Burges, Shaked, Renshaw, Lazier, Deeds, Hamilton,
+  and Hullender]{burges2005learning}
+Christopher Burges, Tal Shaked, Erin Renshaw, Ari Lazier, Matt Deeds, Nicole
+  Hamilton, and Greg Hullender.
+\newblock Learning to rank using gradient descent.
+\newblock In \emph{Proceedings of the 22nd International Conference on Machine
+  Learning (ICML)}, pages 89--96, 2005.
+\newblock \doi{10.1145/1102351.1102363}.
+\newblock URL
+  \url{https://www.microsoft.com/en-us/research/publication/learning-to-rank-using-gradient-descent/}.
+
+\bibitem[Burges(2010)]{burges2010ranknet}
+Christopher J.~C. Burges.
+\newblock From {RankNet} to {LambdaRank} to {LambdaMART}: An overview.
+\newblock Technical report, Microsoft Research Technical Report MSR-TR-2010-82,
+  2010.
+
+\bibitem[{European Space Agency}(2021)]{copernicus2021dem}
+{European Space Agency}.
+\newblock Copernicus {DEM} – global and {E}uropean digital elevation model
+  {(COP-DEM)}, 2021.
+\newblock Product handbook GLO-30, version 1.1; available via
+  \url{https://copernicus-dem-30m.s3.amazonaws.com/}.
+
+\bibitem[Ross et~al.(2011)Ross, Gordon, and Bagnell]{ross2011reduction}
+St{\'e}phane Ross, Geoffrey Gordon, and Drew Bagnell.
+\newblock A reduction of imitation learning and structured prediction to
+  no-regret online learning.
+\newblock In \emph{Proceedings of the Fourteenth International Conference on
+  Artificial Intelligence and Statistics (AISTATS)}, volume~15, pages 627--635.
+  PMLR, 2011.
+\newblock URL \url{https://proceedings.mlr.press/v15/ross11a.html}.
+
+\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
+  Klimov]{schulman2017proximal}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock \emph{arXiv preprint arXiv:1707.06347}, 2017.
+
+\bibitem[Huang and Onta{\~n}{\'o}n(2022)]{huang2022maskable}
+Shengyi Huang and Santiago Onta{\~n}{\'o}n.
+\newblock A closer look at invalid action masking in policy gradient
+  algorithms.
+\newblock In \emph{The International FLAIRS Conference Proceedings}, 2022.
+
+\bibitem[Lakshminarayanan et~al.(2017)Lakshminarayanan, Pritzel, and
+  Blundell]{lakshminarayanan2017simple}
+Balaji Lakshminarayanan, Alexander Pritzel, and Charles Blundell.
+\newblock Simple and scalable predictive uncertainty estimation using deep
+  ensembles.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~30, 2017.
+\newblock URL
+  \url{https://papers.nips.cc/paper/2017/hash/9ef2ed4b7fd2c810847ffa5fa85bce38-Abstract.html}.
+
+\bibitem[Garc{\'\i}a et~al.(1989)Garc{\'\i}a, Prett, and
+  Morari]{garcia1989model}
+Carlos~E. Garc{\'\i}a, David~M. Prett, and Manfred Morari.
+\newblock Model predictive control: Theory and practice---a survey.
+\newblock \emph{Automatica}, 25\penalty0 (3):\penalty0 335--348, 1989.
+
+\bibitem[Williams et~al.(2017)Williams, Drews, Goldfain, Rehg, and
+  Theodorou]{williams2017model}
+Grady Williams, Paul Drews, Brian Goldfain, James~M. Rehg, and Evangelos~A.
+  Theodorou.
+\newblock Model predictive path integral control: From theory to parallel
+  computation.
+\newblock \emph{Journal of Guidance, Control, and Dynamics}, 40\penalty0
+  (2):\penalty0 344--357, 2017.
+
+\bibitem[Rubinstein(1999)]{rubinstein1999cross}
+Reuven~Y. Rubinstein.
+\newblock The cross-entropy method for combinatorial and continuous
+  optimization.
+\newblock \emph{Methodology and Computing in Applied Probability}, 1\penalty0
+  (2):\penalty0 127--190, 1999.
+
+\bibitem[{Office of Surface Mining Reclamation and
+  Enforcement}(2019)]{osmre2019eamlis}
+{Office of Surface Mining Reclamation and Enforcement}.
+\newblock Abandoned mine land inventory system ({e-AMLIS}), 2019.
+\newblock Public ArcGIS REST service; inventory snapshot September 2019;
+  \url{https://amlis.osmre.gov/}.
+
+\bibitem[{U.S. Geological Survey}(2024{\natexlab{a}})]{usgs2024nhd}
+{U.S. Geological Survey}.
+\newblock National hydrography dataset ({NHD}), 2024{\natexlab{a}}.
+\newblock Hydrography MapServer;
+  \url{https://hydro.nationalmap.gov/arcgis/rest/services/nhd/}.
+
+\bibitem[{U.S. Geological Survey}(2024{\natexlab{b}})]{usgs2024_3dep}
+{U.S. Geological Survey}.
+\newblock 3d elevation program ({3DEP}), 2024{\natexlab{b}}.
+\newblock Elevation imagery and derived slope rasters;
+  \url{https://www.usgs.gov/3d-elevation-program}.
+
+\bibitem[{U.S. Census Bureau}(2023)]{census2023tiger}
+{U.S. Census Bureau}.
+\newblock {TIGER}/line cartographic boundary files, 2023.
+\newblock 500K-resolution county boundaries;
+  \url{https://www.census.gov/geographies/mapping-files/}.
+
+\bibitem[Zhou and Jing(2026)]{zhou2026arcgisfarmlandmpc}
+Ning Zhou and Xiang Jing.
+\newblock {ArcGIS Farmland MPC}: Reproducible model-based planning for
+  county-scale farmland consolidation, 2026.
+\newblock URL \url{https://doi.org/10.5281/zenodo.20713695}.
+\newblock Version v1.0.1-scirep.
+
+\end{thebibliography}
