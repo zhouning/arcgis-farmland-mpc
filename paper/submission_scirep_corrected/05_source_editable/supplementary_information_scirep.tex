@@ -593,8 +593,9 @@ Contrastive MPC & $\sim 180$ & $\mathbf{86.74}$ & $1$ ep, $H{=}5$, $K{=}50$ & ma
 }
 \end{table}
 
-\paragraph{Reward-weight and execution-constraint frontiers.} The Bishan sweep reported in Table~\ref{tab:si-bishan-constraint-frontier} is the policy-relevant multi-profile execution frontier added for this revision. We do not present it as a full retrained reward-weight Pareto sweep: such a sweep would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The Bishan execution-constraint frontier instead answers the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
+\paragraph{Reward-weight and execution-constraint frontiers.} The Bishan sweep reported in Table~\ref{tab:si-bishan-constraint-frontier} is the policy-relevant multi-profile execution frontier added for this revision. We do not present it as a full retrained reward-weight Pareto sweep: such a sweep would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Results, Section~4; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The Bishan execution-constraint frontier instead answers the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
 
 \end{document}
+
 
 
