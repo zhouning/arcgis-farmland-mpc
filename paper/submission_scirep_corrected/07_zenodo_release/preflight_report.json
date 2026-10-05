@@ -44,5 +44,5 @@
   "doi_in_response": true,
   "doi_in_citation": true,
   "pipeline_figure": true,
-  "local_inset": false
+  "local_inset": true
 }
