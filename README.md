@@ -120,9 +120,11 @@ Key subfolders:
 
 ## Citation
 
-The associated manuscript is under submission to Scientific Reports. The previous cleaned submission release is archived on Zenodo as version `v1.0.1-scirep` (DOI: https://doi.org/10.5281/zenodo.20713695). This revision is prepared as `v1.0.2-scirep-revision`; its Zenodo DOI will be added after the GitHub release is created.
+The associated manuscript is under submission to Scientific Reports. The revised submission release `v1.0.2-scirep-revision` is archived on Zenodo (DOI: https://doi.org/10.5281/zenodo.23163184).
 
 ## License
 
 MIT for code. CC-BY 4.0 for the synthetic benchmark. See [LICENSE](LICENSE).
+
+
 

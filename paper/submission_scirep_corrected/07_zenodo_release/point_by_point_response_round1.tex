@@ -10,14 +10,14 @@
 \maketitle
 \sloppy
 
-We thank the editor and reviewers for their detailed assessment. We reorganised the manuscript, clarified the learned and rule-based parts of the workflow, corrected the Supplementary Information cross-references, and rewrote the data-partition and terrain-processing descriptions. The responses below distinguish changes already made in this round from validation items that must be completed before upload. No result is described as completed unless an auditable result file is available.
+We thank the editor and reviewers for their detailed assessment. We reorganised the manuscript, clarified the learned and rule-based parts of the workflow, corrected the Supplementary Information cross-references, and rewrote the data-partition and terrain-processing descriptions. The responses below distinguish changes already made in this round from validation items; all validation items reported here have an auditable result file. No result is described as completed unless an auditable result file is available.
 
 \section*{Editor}
 \subsection*{E1. Methodological concerns, overstated conclusions, formatting and language}
 We reorganised the manuscript into Introduction, Related Work, Methods, Results, Discussion and Conclusion. The Methods are grouped into data and preprocessing; problem, reward and constraints; model and training; and planning, evaluation and verification. We shortened jargon-heavy sentences, clarified the scope of the learned agent, and added explicit limitations on terrain resolution, site-specific preparation, policy constraints and generalisation. The revised manuscript is a clean version without tracked changes.
 
 \subsection*{E2. Code and DOI-assigned repository}
-\textbf{AUTHOR\_INPUT\_NEEDED.} The final response must include the DOI of the recognised repository deposit for the custom toolbox, training code, planner, verification scripts and released checkpoints. The manuscript Code Availability section will be updated with the DOI URL before submission. The current GitHub URL alone does not satisfy the editor's stated requirement.
+We deposited the custom toolbox, training code, planner, verification scripts and released checkpoints in the recognised DOI-assigning repository Zenodo. The archived release is available at https://doi.org/10.5281/zenodo.23163184. The revised manuscript Code Availability and Data Availability sections now cite this DOI alongside the maintained GitHub repository.
 
 \section*{Reviewer 1}
 \subsection*{R1.1. Reorganise the article and add a Conclusion}
@@ -90,9 +90,11 @@ Implemented in the revised Discussion. We now state that reward weights are not 
 Implemented with a bounded claim. The revised evidence now combines two independent real-county replications (Bishan and Neijiang), five-seed constrained deployments in each county, matched rule baselines in both counties, retrained reward-weight sensitivity in both counties, and the released seven-landscape synthetic morphology benchmark. We state explicitly that the current feed-forward model is county-specific: its action embedding and exported graph dimensions depend on the prepared block inventory, so we do not claim zero-shot Bishan-to-Neijiang transfer. Site-specific preparation, retraining and policy review remain necessary. The two counties and synthetic stress tests therefore support reproducibility across tested regimes, not regional generalisation beyond the evaluated settings.
 
 \section*{Submission gate}
-Before upload, complete the DOI-assigned code deposit and insert its real DOI URL in the Code Availability section and in this response. The local-inset figure, pipeline figure, Figure~1/2/4 layout check, clean manuscript/SI recompilation and cross-reference check are complete. The paired projected-CRS audit is complete using the two Neijiang Copernicus tiles (N29-E104 and N29-E105): all 134,369 parcels were compared after bilinear reprojection to EPSG:32648. The projected-CRS mean slope was 9.630 degrees versus 10.498 degrees for the geographic-CRS workflow; the mean paired difference was -0.868 degrees, median -0.813 degrees, MAE 3.133 degrees, RMSE 4.315 degrees, Pearson r=0.598 and Spearman rho=0.589. These values are now reported as a sensitivity limitation rather than treating the two workflows as interchangeable. The constrained and unconstrained Tool~4 $p_A$ sweep, Neijiang margin sweep, matched county-scale rule baseline and state-level split audit are complete.
+The DOI-assigned code deposit is complete, and its DOI is cited in the Code Availability section and in this response. The local-inset figure, pipeline figure, Figure~1/2/4 layout check, clean manuscript/SI recompilation and cross-reference check are complete. The paired projected-CRS audit is complete using the two Neijiang Copernicus tiles (N29-E104 and N29-E105): all 134,369 parcels were compared after bilinear reprojection to EPSG:32648. The projected-CRS mean slope was 9.630 degrees versus 10.498 degrees for the geographic-CRS workflow; the mean paired difference was -0.868 degrees, median -0.813 degrees, MAE 3.133 degrees, RMSE 4.315 degrees, Pearson r=0.598 and Spearman rho=0.589. These values are now reported as a sensitivity limitation rather than treating the two workflows as interchangeable. The constrained and unconstrained Tool~4 $p_A$ sweep, Neijiang margin sweep, matched county-scale rule baseline and state-level split audit are complete.
 
 \end{document}
+
+
 
 
 

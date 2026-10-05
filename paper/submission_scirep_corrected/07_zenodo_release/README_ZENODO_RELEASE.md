@@ -1,4 +1,4 @@
-# Zenodo Release Record for Paper 9
+﻿# Zenodo Release Record for Paper 9
 
 This folder documents the GitHub-Zenodo release supporting the Scientific Reports submission:
 
@@ -10,21 +10,21 @@ Use the GitHub-Zenodo integration to archive a public GitHub release. This is th
 
 Current cleaned submission release tag:
 
-`v1.0.1-scirep`
+`v1.0.2-scirep-revision`
 
 Current GitHub release title:
 
-`Paper 9 Scientific Reports cleaned submission release`
+`Scientific Reports revision package v1.0.2`
 
 Release notes file:
 
-`github_release_notes_v1.0.1-scirep.md`
+`github_release_notes_v1.0.2-scirep-revision.md`
 
 Zenodo version DOI for this cleaned submission release:
 
-https://doi.org/10.5281/zenodo.20713695
+https://doi.org/10.5281/zenodo.23163184
 
-The earlier `v1.0-scirep` release exists as a historical pre-cleanup archive. Use `v1.0.1-scirep` and `10.5281/zenodo.20713695` for reproducible Scientific Reports review.
+The earlier `v1.0.1-scirep` DOI (`10.5281/zenodo.20713695`) is a historical archive. Cite the revision release DOI `10.5281/zenodo.23163184` for this submission.
 
 ## What the Zenodo software DOI covers
 
@@ -60,9 +60,9 @@ The public release should disclose that real-county raw cadastral records are re
 ## Completed actions
 
 1. GitHub-Zenodo integration was enabled for `zhouning/arcgis-farmland-mpc`.
-2. A cleaned GitHub release was published from `main` with tag `v1.0.1-scirep`.
-3. Zenodo archived the release and minted version DOI `10.5281/zenodo.20713695`.
-4. The manuscript, README files, declarations checklist and `CITATION.cff` were updated to cite the cleaned release DOI.
+2. A cleaned GitHub release was published from `main` with tag `v1.0.2-scirep-revision`.
+3. Zenodo archived the release and minted version DOI `10.5281/zenodo.23163184`.
+4. The manuscript, response letter, README files, declarations and `CITATION.cff` cite the revision DOI.
 
 ## Official help pages
 
@@ -73,3 +73,5 @@ The public release should disclose that real-county raw cadastral records are re
 ## Optional dataset DOI
 
 A separate Zenodo Dataset record is optional. Use it only if you want a DOI that separates "data artefacts" from "software release". The current GitHub release DOI already captures the tracked reproduction artefacts. If a separate Dataset record is created, use `zenodo_metadata_dataset_optional.md` as the metadata draft and do not include restricted raw cadastral records.
+
+

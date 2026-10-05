@@ -1,4 +1,4 @@
-# Scientific Reports Declarations
+﻿# Scientific Reports Declarations
 
 ## Competing Interests
 
@@ -22,9 +22,9 @@ Code, trained ensembles, benchmark generators, the ArcGIS Pro toolbox, the comma
 
 https://github.com/zhouning/arcgis-farmland-mpc
 
-The cleaned submission release is archived on Zenodo as version `v1.0.1-scirep`:
+The cleaned submission release is archived on Zenodo as version `v1.0.2-scirep-revision`:
 
-https://doi.org/10.5281/zenodo.20713695
+https://doi.org/10.5281/zenodo.23163184
 
 ## Generative AI Use
 
@@ -33,3 +33,4 @@ During manuscript preparation, the authors used large-language-model assistance,
 ## Ethics Statement
 
 The study uses cadastral and public geospatial datasets for computational modelling and does not involve human participants, human biological material, or animal subjects.
+

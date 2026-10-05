@@ -1,10 +1,10 @@
-# Scientific Reports Submission Package, Paper 9
+﻿# Scientific Reports Submission Package, Paper 9
 
 This is the active Scientific Reports submission package for Paper 9:
 
 **Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes**
 
-Use this package for the journal upload. The cleaned GitHub-Zenodo submission release for this package is version `v1.0.1-scirep`, archived at https://doi.org/10.5281/zenodo.20713695.
+Use this package for the journal upload. The cleaned GitHub-Zenodo submission release for this package is version `v1.0.2-scirep-revision`, archived at https://doi.org/10.5281/zenodo.23163184.
 
 ## Upload Folders
 
@@ -27,5 +27,6 @@ Use this package for the journal upload. The cleaned GitHub-Zenodo submission re
 
 - The Scientific Reports package keeps the claims bounded to technical validity, reproducibility, and auditability.
 - The raw Bishan and Neijiang cadastral records remain restricted. The open reproduction tracks cover the synthetic benchmark, the Buchanan boundary check, and training/planning diagnostics; derived cadastral products support real-county verification without redistributing raw parcel geometries.
-- Cite the Zenodo version DOI https://doi.org/10.5281/zenodo.20713695 for reproducible manuscript review.
+- Cite the Zenodo version DOI https://doi.org/10.5281/zenodo.23163184 for reproducible manuscript review.
 - For LaTeX upload, include both `references_v6_codex.bib` and the generated `.bbl` files if the submission system requests source files.
+
