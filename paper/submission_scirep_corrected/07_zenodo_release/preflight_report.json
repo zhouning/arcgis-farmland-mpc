@@ -1,0 +1,48 @@
+{
+  "main_pdf": {
+    "exists": true,
+    "bytes": 940055
+  },
+  "anonymous_pdf": {
+    "exists": true,
+    "bytes": 919154
+  },
+  "supplement_pdf": {
+    "exists": true,
+    "bytes": 334040
+  },
+  "response_pdf": {
+    "exists": true,
+    "bytes": 124920
+  },
+  "main_source": {
+    "exists": true,
+    "bytes": 103384
+  },
+  "anonymous_source": {
+    "exists": true,
+    "bytes": 102934
+  },
+  "response_source": {
+    "exists": true,
+    "bytes": 14770
+  },
+  "main_log": {
+    "exists": true,
+    "undefined_refs": false
+  },
+  "supplement_log": {
+    "exists": true,
+    "undefined_refs": false
+  },
+  "response_log": {
+    "exists": true,
+    "undefined_refs": false
+  },
+  "response_author_input_needed": false,
+  "doi_in_manuscript": true,
+  "doi_in_response": true,
+  "doi_in_citation": true,
+  "pipeline_figure": true,
+  "local_inset": false
+}
