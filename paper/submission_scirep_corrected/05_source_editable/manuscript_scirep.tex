@@ -73,6 +73,8 @@ $^\ast$Corresponding author: \texttt{zhouning@alumni.pku.edu.cn}}
 Farmland consolidation can reduce slope exposure and improve field contiguity in mountainous counties, but scenario search is difficult because tens of thousands of parcels interact through slope, adjacency, large-patch and cultivated-area constraints. We evaluate a learned transition-model and model-predictive-control workflow for auditable cadastral scenario generation on desktop hardware. In Bishan District, China, an unconstrained candidate trains in $25$\,min and plans in ${\sim}5$\,min. Independent GIS recomputation gives a $-2.001\%$ farmland-slope change and shifts $687$\,ha out of steep ($\geq$15$^\circ$) bands, but loses $505$\,ha of cultivated area. With a no-net-loss execution floor, five independently trained constrained ensembles keep cultivated area non-negative in Bishan ($-0.634 \pm 0.044\%$ slope; $+5.39 \pm 5.17$\,ha cultivated area) and Neijiang Dongxing ($-0.479 \pm 0.042\%$; $+107.9 \pm 46.2$\,ha). GIS-only recomputation of the canonical constrained Neijiang run matches planner-reported slope, contiguity and large-patch area deltas. On the matched lab cadastre, contrastive MPC achieves a $1.6\times$ larger slope reduction than in-house reinforcement-learning baselines. The release provides benchmark, training and GIS-audit tracks for reproducible candidate-scenario generation.
 \end{abstract}
 
+\noindent\textbf{Keywords:} farmland consolidation; model predictive control; learned transition model; GIS; spatial planning; reproducibility
+
 % ============================================================================
 \section{Introduction}\label{sec:intro}
 % ============================================================================
@@ -488,6 +490,8 @@ N.Z.\ conceived the study, designed and implemented the methods, conducted all e
 \section*{Competing interests}
 The authors declare no competing interests.
 
+\bibliography{references_v6_codex}
+
 \section*{Acknowledgements}
 This work was completed during N.Z.'s graduate study at Peking University and during a previous appointment in the geospatial-software sector. The deployment toolchain (Section~\ref{sec:deploy}) was developed during that previous appointment; SuperMap is acknowledged as the historical development context, not as a current author affiliation.
 
@@ -502,9 +506,9 @@ Ning Zhou \href{https://orcid.org/0009-0002-5647-7388}{0009-0002-5647-7388}
 
 
 
-\bibliography{references_v6_codex}
-
 \end{document}
+
+
 
 
 
