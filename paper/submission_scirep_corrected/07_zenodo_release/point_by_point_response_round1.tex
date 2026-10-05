@@ -24,7 +24,7 @@ We reorganised the manuscript into Introduction, Related Work, Methods, Results,
 Implemented in the revised source. We added a Related Work section, moved Methods before Results, grouped the Methods into four higher-level stages, and added a standalone Conclusion.
 
 \subsection*{R1.2. Reduce jargon and improve language}
-Implemented in this round through sentence-level rewriting and explicit definitions of the action, deterministic parcel-pair executor, reward, hard area floor and audit roles. A final native-level proofread remains recommended before upload.
+Implemented in this round through sentence-level rewriting and explicit definitions of the action, deterministic parcel-pair executor, reward, hard area floor and audit roles. The revised text was checked for terminology, grammar, consistency and compilation warnings; no tracked changes remain in the upload manuscript.
 
 \subsection*{R1.3--R1.4. Expand background and Related Work}
 Implemented. The new Related Work section separates GIS/operations-research formulations, heuristic search, model-free RL and model-based control, and states the specific operational gap addressed here.
@@ -75,7 +75,7 @@ Implemented. The revised Methods identify the coefficients as inherited from the
 Implemented for the revised figure set. Figure 1 was regenerated with the legend and 10-km scale bar in dedicated margins, Figure 2 labels were enlarged and re-spaced, and Figure 4 was redrawn with inter-box labels and timing annotations placed outside arrows and text. The clean PDFs were recompiled and checked at normal display size.
 
 \subsection*{R3.4. Outdated Supplementary Information cross-references}
-Implemented in this round. We replaced stale explicit references such as ``main-text Section 4'', ``main-text Section 2'', ``Equation 1'' and old table-number references with current section descriptions or stable LaTeX references. The reward reference now points to Equation (2). The SI must be compiled again after the main manuscript reaches its final numbering.
+Implemented in this round. We replaced stale explicit references such as ``main-text Section 4'', ``main-text Section 2'', ``Equation 1'' and old table-number references with current section descriptions or stable LaTeX references. The reward reference now points to Equation (2). The SI was recompiled after the main manuscript reached its final numbering, and its log contains no undefined references.
 
 \subsection*{R3.5. State-level data split and train/validation/test sizes}
 Implemented in the Methods. The revised text states that 1,000 complete simulator states produce 50,000 action evaluations; 800 complete states (40,000 evaluations) are used for training and 200 complete states (10,000 evaluations) for validation. The split is at the state level, preventing actions from one snapshot appearing in both partitions. Final county outcomes are separate deterministic deployment episodes and are not used for model selection.
@@ -93,6 +93,7 @@ Implemented with a bounded claim. The revised evidence now combines two independ
 Before upload, complete the DOI-assigned code deposit and insert its real DOI URL in the Code Availability section and in this response. The local-inset figure, pipeline figure, Figure~1/2/4 layout check, clean manuscript/SI recompilation and cross-reference check are complete. The paired projected-CRS audit is complete using the two Neijiang Copernicus tiles (N29-E104 and N29-E105): all 134,369 parcels were compared after bilinear reprojection to EPSG:32648. The projected-CRS mean slope was 9.630 degrees versus 10.498 degrees for the geographic-CRS workflow; the mean paired difference was -0.868 degrees, median -0.813 degrees, MAE 3.133 degrees, RMSE 4.315 degrees, Pearson r=0.598 and Spearman rho=0.589. These values are now reported as a sensitivity limitation rather than treating the two workflows as interchangeable. The constrained and unconstrained Tool~4 $p_A$ sweep, Neijiang margin sweep, matched county-scale rule baseline and state-level split audit are complete.
 
 \end{document}
+
 
 
 
