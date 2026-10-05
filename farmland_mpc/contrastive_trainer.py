@@ -72,10 +72,18 @@ class ContrastiveTransitionTrainer:
         return to_tensors(train_idx), to_tensors(val_idx)
 
     def _prepare_pairwise(self, pairwise_data: dict):
+        """Split pairwise examples by state, avoiding action-level leakage.
+
+        Every row in ``pairwise.npz`` contains one state and its action menu.
+        Validation rows therefore must be whole states rather than individual
+        action pairs.  The returned tensors retain the same shape as before.
+        """
         n = len(pairwise_data["states_bf"])
-        idx = np.random.permutation(n)
-        split = max(1, int(n * self.val_split))
-        val_idx, train_idx = idx[:split], idx[split:]
+        if n < 2:
+            raise ValueError("pairwise dataset must contain at least two states")
+        perm = np.random.permutation(n)
+        n_val = min(n - 1, max(1, int(round(n * self.val_split))))
+        val_idx, train_idx = perm[:n_val], perm[n_val:]
 
         def to_tensors(indices):
             return {
@@ -84,6 +92,17 @@ class ContrastiveTransitionTrainer:
                 "actions": torch.tensor(pairwise_data["actions"][indices], device=self.device),
                 "rewards": torch.tensor(pairwise_data["rewards"][indices], device=self.device),
             }
+        # Expose counts for the reproducibility summary without changing the
+        # training API used by existing callers.
+        self.history["pairwise_split"] = {
+            "unit": "state",
+            "n_states_total": int(n),
+            "n_states_train": int(len(train_idx)),
+            "n_states_validation": int(len(val_idx)),
+            "n_action_pairs_total": int(n * pairwise_data["actions"].shape[1]),
+            "n_action_pairs_train": int(len(train_idx) * pairwise_data["actions"].shape[1]),
+            "n_action_pairs_validation": int(len(val_idx) * pairwise_data["actions"].shape[1]),
+        }
         return to_tensors(train_idx), to_tensors(val_idx)
 
     def _mse_loss(self, bf, gf, a, r, nbf, ngf):

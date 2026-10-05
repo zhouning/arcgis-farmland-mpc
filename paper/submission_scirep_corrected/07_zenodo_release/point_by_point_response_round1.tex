@@ -1,0 +1,100 @@
+﻿\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\begin{document}
+\title{Point-by-point response to the editor and reviewers}
+\author{\parbox{0.82\textwidth}{\centering Reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes}}
+\date{}
+\maketitle
+\sloppy
+
+We thank the editor and reviewers for their detailed assessment. We reorganised the manuscript, clarified the learned and rule-based parts of the workflow, corrected the Supplementary Information cross-references, and rewrote the data-partition and terrain-processing descriptions. The responses below distinguish changes already made in this round from validation items that must be completed before upload. No result is described as completed unless an auditable result file is available.
+
+\section*{Editor}
+\subsection*{E1. Methodological concerns, overstated conclusions, formatting and language}
+We reorganised the manuscript into Introduction, Related Work, Methods, Results, Discussion and Conclusion. The Methods are grouped into data and preprocessing; problem, reward and constraints; model and training; and planning, evaluation and verification. We shortened jargon-heavy sentences, clarified the scope of the learned agent, and added explicit limitations on terrain resolution, site-specific preparation, policy constraints and generalisation. The revised manuscript is a clean version without tracked changes.
+
+\subsection*{E2. Code and DOI-assigned repository}
+\textbf{AUTHOR\_INPUT\_NEEDED.} The final response must include the DOI of the recognised repository deposit for the custom toolbox, training code, planner, verification scripts and released checkpoints. The manuscript Code Availability section will be updated with the DOI URL before submission. The current GitHub URL alone does not satisfy the editor's stated requirement.
+
+\section*{Reviewer 1}
+\subsection*{R1.1. Reorganise the article and add a Conclusion}
+Implemented in the revised source. We added a Related Work section, moved Methods before Results, grouped the Methods into four higher-level stages, and added a standalone Conclusion.
+
+\subsection*{R1.2. Reduce jargon and improve language}
+Implemented in this round through sentence-level rewriting and explicit definitions of the action, deterministic parcel-pair executor, reward, hard area floor and audit roles. A final native-level proofread remains recommended before upload.
+
+\subsection*{R1.3--R1.4. Expand background and Related Work}
+Implemented. The new Related Work section separates GIS/operations-research formulations, heuristic search, model-free RL and model-based control, and states the specific operational gap addressed here.
+
+\subsection*{R1.5. Merge the many Methods subsections}
+Implemented. The revised Methods use the headings Data and preprocessing, Problem/reward/constraints, Model and training, and Planning/evaluation/verification; detailed items are paragraphs rather than approximately twenty peer-level subsections.
+
+\subsection*{R1.6. Add a model/pipeline figure}
+Implemented. We added a Python-rendered workflow figure showing county-specific preparation, pairwise sampling, ensemble training, MPC block selection, deterministic parcel execution, the cultivated-area floor and the independent GIS audit. The figure distinguishes solid data-flow arrows from dashed constraint/audit paths and labels the final product as a decision-support candidate requiring local review.
+
+\subsection*{R1.7. Add examples of the actual data}
+Implemented. We added a privacy-preserving local Bishan inset in the revised manuscript showing original and optimised parcel geometries around a changed parcel. The figure is a derived crop with identifiers removed and does not redistribute the full cadastral layer.
+
+\subsection*{R1.8. Correct GIS/ML terminology}
+Implemented where the current code and evidence permit. In particular, the revised Methods state that the agent selects a block while deterministic rules select parcel pairs; the model is described as a feed-forward learned transition model, not a recurrent latent world model; and the no-net-loss floor is described as an execution constraint. The DEM and projection terminology is addressed in R2.1--R2.2.
+
+\section*{Reviewer 2}
+\subsection*{R2.1. DEM resolution and sub-grid parcel aggregation}
+The reviewer is correct that a 30-m DEM cannot resolve all sub-grid parcel structure. We corrected the description to match the implementation: parcels without a valid intersecting DEM cell centre are sampled at a representative point with bilinear interpolation of the slope raster. The revised Methods report the approximate fallback fractions (2\% Bishan, 3\% Neijiang) and state this as a limitation.
+
+We retain the Copernicus GLO-30 source because it is the highest-resolution openly redistributable DEM with complete coverage for both Chinese study areas used in this workflow. Public alternatives such as NASADEM, SRTM and ALOS AW3D30 are also approximately 30~m; FABDEM is a 30~m bare-earth derivative, not an independent 5--10~m observation. Higher-resolution commercial or locally licensed products are not redistributable and would not improve reproducibility. The revised Methods now state this limitation explicitly and avoid claiming sub-grid terrain resolution. A projected-CRS sensitivity audit is reported in R2.2.
+
+\subsection*{R2.2. Slope calculation against a standard projected-CRS protocol}
+The revised Methods clarify that the native-grid central differences use geodetic metres-per-pixel from `pyproj.Geod`; longitude and latitude are not treated as equal Cartesian units. We removed the unsupported wording that projection necessarily causes systematic under-estimation.
+
+The revised package includes a numerical paired projected-CRS audit. The same two Copernicus tiles (N29-E104 and N29-E105) were reprojected to EPSG:32648 with bilinear resampling and 30-m cells; central-difference gradients were then computed in metres and compared parcel by parcel with the released geographic-CRS preparation. All 134,369 Neijiang parcels were compared. The projected-CRS mean slope was 9.630 degrees versus 10.498 degrees for the geographic-CRS workflow; the mean paired difference was -0.868 degrees, median -0.813 degrees, MAE 3.133 degrees, RMSE 4.315 degrees, Pearson r=0.598 and Spearman rho=0.589. We therefore do not claim that the two CRS workflows are numerically interchangeable. The geographic-CRS workflow is retained for continuity with the reported experiments, and the CRS choice and its sensitivity are now stated as a limitation and reproducibility consideration.
+
+\subsection*{R2.3. 505-ha cultivated-area loss in the unconstrained model}
+The manuscript already treats the unconstrained scenario as rejected rather than deployable. We now explain that parcel counts are conserved but parcel areas are not, so the reward can favour high-slope farmland exit unless cultivated area is constrained. Existing reward-weight sensitivity and execution-constraint-frontier results are retained as evidence that changing the \textit{baimu fang} coefficient alone does not replace a hard cultivated-area floor.
+
+Implemented. We completed the Neijiang Tool~2/Tool~3 recalibration sweep with $p_A\in\{1000,2000,4000,8000\}$ and ran both constrained and unconstrained Tool~4 episodes. With the cultivated-area floor set to zero, slope changes were $-0.455\%$, $-0.458\%$, $-0.483\%$ and $-0.491\%$, while cultivated-area changes were $+0.14$, $+4.10$, $+22.56$ and $+13.31$\,ha; all four runs passed the floor. Without the floor, cultivated-area losses were $-380.43$, $-381.16$, $-244.47$ and $-164.57$\,ha, with slope changes of $-0.649\%$, $-0.664\%$, $-0.616\%$ and $-0.599\%$, respectively. Ranking accuracies were 88.15\%, 87.40\%, 87.43\% and 87.16\%. Increasing $p_A$ reduced but did not remove the loss, so the hard no-net-loss floor remains necessary. These results are reported in Supplementary Table~S6.
+
+\subsection*{R2.4. Margin parameter $m=0.1$ across counties}
+The revised Methods distinguish the existing Bishan local sweep ($m\in\{0.05,0.1,0.2\}$) from a cross-county claim. We no longer imply that the Bishan result establishes topographic invariance.
+
+Implemented. The Neijiang state-level sweep is complete and the matched Tool~4 no-net-loss episodes were run. Mean ranking accuracies for $m=0.05,0.10,0.20$ were 86.71\%, 87.40\% and 87.81\%; mean best validation losses were 0.265, 0.340 and 0.501; slope changes were $-0.501\%$, $-0.458\%$ and $-0.438\%$, respectively. Cultivated-area changes were $+21.83$, $+4.10$ and $+14.30$\,ha, and all runs passed the no-net-loss floor. We retain $m=0.1$ as the pre-specified compromise because $m=0.2$ gives only a small accuracy increase and weaker planning slope change, while its validation loss is higher.
+
+\subsection*{R2.5. Figure 1b and local parcel geometry}
+Implemented. The revised manuscript adds a high-resolution before/after local crop with changed parcels highlighted and an explicit privacy statement. The crop is derived from the restricted layer, contains no parcel identifiers, and is not a substitute for releasing the full cadastral data.
+
+\subsection*{R2.6. Reward-weight justification}
+The revised Discussion states that the weights are transparent objective coefficients, not calibrated welfare or statutory preference weights. Existing sensitivity results are reported as bounded evidence rather than a full Pareto analysis.
+
+Implemented. The revised Methods identify the coefficients as inherited from the in-house DRL baseline configuration. Their calibration target was the shared operational reward used for matched algorithm comparison; they are not presented as welfare, cost-benefit or statutory preference weights. The same coefficients were retained for the primary method comparisons so that method-wise differences are not confounded by reward engineering. The direct $p_A$ recalibration and unconstrained/constrained planning comparison are now reported under R2.3 and Supplementary Table~S6.
+
+\section*{Reviewer 3}
+\subsection*{R3.1--R3.3. Figure 1, Figure 2 and Figure 4 layout}
+Implemented for the revised figure set. Figure 1 was regenerated with the legend and 10-km scale bar in dedicated margins, Figure 2 labels were enlarged and re-spaced, and Figure 4 was redrawn with inter-box labels and timing annotations placed outside arrows and text. The clean PDFs were recompiled and checked at normal display size.
+
+\subsection*{R3.4. Outdated Supplementary Information cross-references}
+Implemented in this round. We replaced stale explicit references such as ``main-text Section 4'', ``main-text Section 2'', ``Equation 1'' and old table-number references with current section descriptions or stable LaTeX references. The reward reference now points to Equation (2). The SI must be compiled again after the main manuscript reaches its final numbering.
+
+\subsection*{R3.5. State-level data split and train/validation/test sizes}
+Implemented in the Methods. The revised text states that 1,000 complete simulator states produce 50,000 action evaluations; 800 complete states (40,000 evaluations) are used for training and 200 complete states (10,000 evaluations) for validation. The split is at the state level, preventing actions from one snapshot appearing in both partitions. Final county outcomes are separate deterministic deployment episodes and are not used for model selection.
+
+\subsection*{R3.6. Simpler rule-based comparisons}
+Implemented. We added matched county-scale Random-Block and Greedy-Sequential baselines for both Bishan and Neijiang, using the same 500-swap budget, action mask, deterministic parcel executor and cultivated-area floor as the constrained MPC runs, with five runs per method and county. In Bishan, slope changes were $+0.2962\pm0.2077\%$ (Random-Block) and $-0.1729\%$ (Greedy-Sequential); in Neijiang they were $-0.0975\pm0.0117\%$ and $-0.1166\%$, respectively. All 20 baseline runs passed the cultivated-area floor. The results are reported in main-text Results and Supplementary Table~S5. The comparison shows that deterministic parcel operations contribute measurable gains, while the learned selector supplies the larger slope reduction in the constrained county deployments.
+
+\subsection*{R3.7. Practical meaning of the reward}
+Implemented in the revised Discussion. We now state that reward weights are not welfare weights and that a high reward does not by itself establish a practicable plan. Cultivated-area floors, independent GIS recomputation and local review are required before policy use.
+
+\subsection*{R3.8. Generalisability}
+Implemented with a bounded claim. The revised evidence now combines two independent real-county replications (Bishan and Neijiang), five-seed constrained deployments in each county, matched rule baselines in both counties, retrained reward-weight sensitivity in both counties, and the released seven-landscape synthetic morphology benchmark. We state explicitly that the current feed-forward model is county-specific: its action embedding and exported graph dimensions depend on the prepared block inventory, so we do not claim zero-shot Bishan-to-Neijiang transfer. Site-specific preparation, retraining and policy review remain necessary. The two counties and synthetic stress tests therefore support reproducibility across tested regimes, not regional generalisation beyond the evaluated settings.
+
+\section*{Submission gate}
+Before upload, complete the DOI-assigned code deposit and insert its real DOI URL in the Code Availability section and in this response. The local-inset figure, pipeline figure, Figure~1/2/4 layout check, clean manuscript/SI recompilation and cross-reference check are complete. The paired projected-CRS audit is complete using the two Neijiang Copernicus tiles (N29-E104 and N29-E105): all 134,369 parcels were compared after bilinear reprojection to EPSG:32648. The projected-CRS mean slope was 9.630 degrees versus 10.498 degrees for the geographic-CRS workflow; the mean paired difference was -0.868 degrees, median -0.813 degrees, MAE 3.133 degrees, RMSE 4.315 degrees, Pearson r=0.598 and Spearman rho=0.589. These values are now reported as a sensitivity limitation rather than treating the two workflows as interchangeable. The constrained and unconstrained Tool~4 $p_A$ sweep, Neijiang margin sweep, matched county-scale rule baseline and state-level split audit are complete.
+
+\end{document}
+
+
+
+
+

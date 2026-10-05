@@ -136,6 +136,7 @@ def run(prepared_dir: str,
         val_split: float = 0.1,
         seed_base: int = 0,
         torch_threads: int = 0,
+        device: str = "cpu",
         out_subdir: str = "tool3",
         messages=None):
     """Train ensemble + export ONNX. See module docstring for output layout.
@@ -260,8 +261,13 @@ def run(prepared_dir: str,
                 n_pairs_per_state=n_pairs_per_state,
                 pw_subsample=pw_subsample,
                 lr=lr, weight_decay=weight_decay, val_split=val_split,
-                seed=seed, device="cpu", say=_say,
+                seed=seed, device=device, say=_say,
             )
+
+            # ONNX export and parity checks use CPU tensors. Move the trained
+            # module back to CPU after GPU training so Colab CUDA runs remain
+            # compatible with the existing exporter and inference runtime.
+            model = model.cpu()
 
             # Save .pt (intermediate; not shipped to users)
             pt_path = out_dir / f"ensemble_member{i}.pt"

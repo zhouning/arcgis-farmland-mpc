@@ -1,10 +1,9 @@
-cff-version: 1.2.0
+﻿cff-version: 1.2.0
 message: "If you use this software or reproduction package, please cite the archived Zenodo release."
 type: software
 title: "ArcGIS Farmland MPC: reproducible model-based planning for county-scale farmland consolidation"
-version: "v1.0.1-scirep"
-date-released: 2026-06-16
-doi: "10.5281/zenodo.20713695"
+version: "v1.0.2-scirep-revision"
+date-released: 2026-10-05
 authors:
   - family-names: "Zhou"
     given-names: "Ning"
@@ -22,3 +21,4 @@ keywords:
   - "ArcGIS Pro"
   - "Scientific Reports"
 abstract: "Software, trained ensembles, benchmark generators, verification scripts and submission artefacts supporting a Scientific Reports manuscript on reproducible model-based planning for county-scale farmland consolidation in fragmented mountain landscapes."
+

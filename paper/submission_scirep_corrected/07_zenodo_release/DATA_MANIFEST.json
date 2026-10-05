@@ -1,0 +1,16 @@
+{
+  "restricted_inputs": [
+    {
+      "region": "bishan",
+      "prepared_dir_source": "D:/test/_publish/arcgis-farmland-mpc/runs/scirep_extra/prepared_bishan",
+      "required": ["townships.json", "dem_slope_analysis/output/DLTB_with_slope.gpkg", "results_real/blocks"]
+    },
+    {
+      "region": "neijiang",
+      "prepared_dir_source": "D:/test/_publish/arcgis-farmland-mpc/runs/scirep_extra/prepared_neijiang",
+      "required": ["townships.json", "dem_slope_analysis/output/DLTB_with_slope.gpkg", "results_real/blocks"]
+    }
+  ],
+  "public_code": "D:/test/_publish/arcgis-farmland-mpc",
+  "upload_note": "Upload prepared directories through a private Google Drive folder; do not publish raw cadastral layers."
+}

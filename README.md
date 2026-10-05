@@ -1,4 +1,4 @@
-# ArcGIS Farmland MPC
+﻿# ArcGIS Farmland MPC
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -120,8 +120,9 @@ Key subfolders:
 
 ## Citation
 
-The associated manuscript is under submission to Scientific Reports. The cleaned submission release is archived on Zenodo as version `v1.0.1-scirep`: https://doi.org/10.5281/zenodo.20713695. Cite this version DOI for reproducible manuscript review; the article DOI can be added after acceptance.
+The associated manuscript is under submission to Scientific Reports. The previous cleaned submission release is archived on Zenodo as version `v1.0.1-scirep` (DOI: https://doi.org/10.5281/zenodo.20713695). This revision is prepared as `v1.0.2-scirep-revision`; its Zenodo DOI will be added after the GitHub release is created.
 
 ## License
 
 MIT for code. CC-BY 4.0 for the synthetic benchmark. See [LICENSE](LICENSE).
+

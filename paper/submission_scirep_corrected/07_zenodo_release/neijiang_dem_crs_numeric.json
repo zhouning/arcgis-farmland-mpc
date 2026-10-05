@@ -1,0 +1,32 @@
+{
+  "source_gpkg": "D:\\test\\_publish\\arcgis-farmland-mpc\\runs\\scirep_extra\\prepared_neijiang\\dem_slope_analysis\\output\\DLTB_with_slope.gpkg",
+  "dem_tiles": [
+    "D:\\test\\dem_slope_analysis\\intermediate\\Copernicus_DSM_COG_10_N29_00_E104_00_DEM.tif",
+    "D:\\test\\dem_slope_analysis\\intermediate\\Copernicus_DSM_COG_10_N29_00_E105_00_DEM.tif"
+  ],
+  "projected_crs": "EPSG:32648",
+  "n_parcels": 134369,
+  "n_compared": 134369,
+  "n_geographic_fallback_or_missing": 0,
+  "n_projected_fallback": 14562,
+  "geographic_mean_deg": 10.498479234785034,
+  "projected_mean_deg": 9.630143784213377,
+  "mean_delta_projected_minus_geographic_deg": -0.8683354505716556,
+  "median_delta_deg": -0.8128347267975684,
+  "mae_deg": 3.1325970313322493,
+  "rmse_deg": 4.315261864628722,
+  "pearson_r": 0.5979206789895837,
+  "spearman_rho": 0.5885782302645978,
+  "delta_q05_q95_deg": [
+    -7.97263994216919,
+    6.12194156646728
+  ],
+  "projected_raster_shape": [
+    3707,
+    6493
+  ],
+  "projected_pixel_size_m": [
+    30.0,
+    30.0
+  ]
+}

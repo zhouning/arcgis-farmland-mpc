@@ -1,6 +1,6 @@
 ﻿% ============================================================================
-% supplementary_information_scirep.tex --- Supplementary Material for the
-%   Scientific Reports submission package
+% paper9_v7_supplementary_scirep.tex --- Supplementary Material for the
+%   Scientific Reports transfer variant (paper9_v7_draft_scirep.tex)
 % ============================================================================
 % Transferred from source_supplementary_codex.tex on 2026-06-11. Content is
 % unchanged except for visible journal-transfer metadata and citation style.
@@ -44,11 +44,11 @@
 \section{In-house model-free DRL baseline configuration}\label{si:s1-drl}
 % ============================================================================
 
-The Centralised PPO and Multi-Agent Reinforcement Learning (MARL) baselines reported in main-text Section~4 (and used as the fairness anchor for the contrastive-MPC results) were trained in-house under the following protocol.
+The Centralised PPO and Multi-Agent Reinforcement Learning (MARL) baselines reported in main-text Results, real-county deployment (and used as the fairness anchor for the contrastive-MPC results) were trained in-house under the following protocol.
 
 \paragraph{Environment.} Both baselines act on the same Bishan County county-level environment (\texttt{CountyLevelEnv}) used by the contrastive MPC pipeline: 13 townships, $2{,}600$ spatial blocks aggregating $52{,}515$ cadastral parcels. The observation is the concatenation of $2{,}600$ blocks $\times$ 17 block-level features plus 12 global features. The action space is a categorical choice over the $2{,}600$ blocks, with the same MaskablePPO-style action mask described in main-text Methods.
 
-\paragraph{Reward.} Identical to the main-text reward (Equation~1): $w_S = 4{,}000$, $w_C = 500$, $w_A = 1{,}500$, $b_B = 5$, $p_A = 2{,}000$. No method-specific re-tuning was performed, so cross-method comparisons reflect the learning procedure rather than reward engineering.
+\paragraph{Reward.} Identical to the main-text reward (Equation~(2)): $w_S = 4{,}000$, $w_C = 500$, $w_A = 1{,}500$, $b_B = 5$, $p_A = 2{,}000$. No method-specific re-tuning was performed, so cross-method comparisons reflect the learning procedure rather than reward engineering.
 
 \paragraph{Centralised PPO.} A single MaskablePPO agent with our \texttt{ParcelScoringPolicy} architecture (block-wise scoring MLP $[64, 32] \to 1$, global-feature value network). Training: 5 random seeds, $1.5 \times 10^6$ environment steps each, $\gamma = 0.995$, $\lambda = 0.95$, learning rate $1\times 10^{-3}$ linear-decayed, entropy coefficient $0.01$, clip range $0.2$, batch size $4{,}096$, mini-batch size $256$, 10 epochs per update. Wall-time: 8--12 GPU-hours per seed on a single A100. Cross-seed slope improvement: $-0.79\% \pm 0.36\%$, with $2/5$ seeds collapsing into degenerate trajectories.
 
@@ -60,7 +60,7 @@ The Centralised PPO and Multi-Agent Reinforcement Learning (MARL) baselines repo
 \section{Real-county initial state}\label{si:counties}
 % ============================================================================
 
-The two real-county datasets anchoring the cadastral evaluation in main-text Section 2 are summarised in Table~\ref{tab:si-counties}. All values are extracted from the Third National Land Survey records and aggregated to spatial blocks (the planning units used by the model); initial-state metrics are computed from the cadastral data before optimisation.
+The two real-county datasets anchoring the cadastral evaluation in main-text Methods, data and preprocessing are summarised in Table~\ref{tab:si-counties}. All values are extracted from the Third National Land Survey records and aggregated to spatial blocks (the planning units used by the model); initial-state metrics are computed from the cadastral data before optimisation.
 
 \begin{table}[htbp]
 \centering
@@ -153,7 +153,7 @@ The Buchanan paired $t$-test result ($p{=}0.060$, marginally outside the convent
 \section{MPC optimisation ablation on the MSE-only ensemble (Supplementary Table S4)}\label{si:s2-mpc-ablation}
 % ============================================================================
 
-Table~\ref{tab:si-mpc-ablation} below reports the full MPC optimisation ablation cited in main-text Section~3 (paragraph beginning ``Four independent operational failures''). All variants use the same MSE-only world-model ensemble (Bishan District, 5-episode evaluation) and modify a single dimension of the planner. None exceeds the random-sampling baseline; the catastrophic failure of greedy continuation under the MSE-only ensemble (slope $+0.029\%$, wrong direction) is the variant that contrastive training subsequently rescues into the strongest variant tested (main-text Table~1, the $\lambda{=}5.0$ rows).
+Table~\ref{tab:si-mpc-ablation} below reports the full MPC optimisation ablation cited in main-text Results, ranking diagnostics (paragraph beginning ``Four independent operational failures''). All variants use the same MSE-only world-model ensemble (Bishan District, 5-episode evaluation) and modify a single dimension of the planner. None exceeds the random-sampling baseline; the catastrophic failure of greedy continuation under the MSE-only ensemble (slope $+0.029\%$, wrong direction) is the variant that contrastive training subsequently rescues into the strongest variant tested (main-text ranking-diagnostic table, the $\lambda{=}5.0$ rows).
 
 \begin{table}[htbp]
 \centering
@@ -183,10 +183,60 @@ Dimension & Configuration & Slope \% & Reward & Diagnosis \\
 \end{table}
 
 % ============================================================================
+\section{Matched county-scale rule baselines}\label{si:matched-rule-baselines}
+To separate learned block selection from the deterministic parcel executor, we ran Random-Block and Greedy-Sequential on the prepared Bishan and Neijiang environments. Each run used the same 500-swap budget, 5 swaps per step, action mask and cultivated-area floor ($\Delta A_{\mathrm{farm}}\geq0$) as the constrained MPC deployment. Random-Block used five seeds; Greedy-Sequential is deterministic under the fixed prepared input and was repeated five times for a common reporting structure. All 20 runs passed the cultivated-area floor. The values below are extracted from \texttt{08\_revision\_experiments/bishan\_rule\_baselines\_matched.json} and \texttt{neijiang\_rule\_baselines\_matched.json}.
+
+\begin{table}[ht]
+\centering
+\caption{Matched rule baselines on the two real counties. Values are mean $\pm$ sample standard deviation over five runs; a zero standard deviation indicates deterministic Greedy-Sequential output.}
+\label{tab:si-matched-rule-baselines}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+County & Method & Slope change (\%) & $\Delta$ contiguity & $\Delta$ qualifying area (ha) & $\Delta$ cultivated area (ha) \\
+\midrule
+Bishan & Random-Block & $+0.2962\pm0.2077$ & $+0.0176\pm0.0022$ & $+275.72\pm156.45$ & $+227.07$ \\
+Bishan & Greedy-Sequential & $-0.1729\pm0.0000$ & $+0.0067\pm0.0000$ & $+58.94$ & $+39.27$ \\
+Neijiang Dongxing & Random-Block & $-0.0975\pm0.0117$ & $+0.0071\pm0.0030$ & $+52.45\pm34.68$ & $+4.10$ \\
+Neijiang Dongxing & Greedy-Sequential & $-0.1166\pm0.0000$ & $+0.0020\pm0.0000$ & $+32.70$ & $+3.43$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\section{Neijiang revision ablations}\label{si:neijiang-revision-ablations}
+The following ablations were completed on the Neijiang prepared input using the state-level split described in the main text. Each row used 1,000 complete pairwise states (800 training, 200 validation), 50 actions per state, three ensemble members, $\lambda_{\mathrm{rank}}=5$ and up to 30 epochs. The table reports the mean final ranking accuracy across members, the mean of the three member-specific best validation losses, and the single deterministic Tool~4 outcome under the cultivated-area floor. The unconstrained $p_A$ reruns are reported separately below.
+
+\begin{table}[ht]
+\centering
+\scriptsize
+\caption{Neijiang margin and area-penalty training ablations.}
+\label{tab:si-neijiang-revision-ablations}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Profile & Margin $m$ & $p_A$ & Ranking accuracy & Best val. loss & Slope change (\%) & $\Delta A_{\rm farm}$ (ha) \\
+\midrule
+Margin & 0.05 & 2{,}000 & 86.71\% & 0.265 & $-0.501$ & $+21.83$ \\
+Margin & 0.10 & 2{,}000 & 87.40\% & 0.340 & $-0.458$ & $+4.10$ \\
+Margin & 0.20 & 2{,}000 & 87.81\% & 0.501 & $-0.438$ & $+14.30$ \\
+$p_A$ & 0.10 & 1{,}000 & 88.15\% & 0.341 & $-0.455$ & $+0.14$ \\
+$p_A$ & 0.10 & 2{,}000 & 87.40\% & 0.340 & $-0.458$ & $+4.10$ \\
+$p_A$ & 0.10 & 4{,}000 & 87.43\% & 0.335 & $-0.483$ & $+22.56$ \\
+$p_A$ & 0.10 & 8{,}000 & 87.16\% & 0.346 & $-0.491$ & $+13.31$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+For the direct $p_A$ recalibration comparison without an execution floor, the four Tool~4 episodes produced cultivated-area losses of $-380.43$, $-381.16$, $-244.47$ and $-164.57$\,ha for $p_A=1000$, $2000$, $4000$ and $8000$, respectively. Their slope changes were $-0.649\%$, $-0.664\%$, $-0.616\%$ and $-0.599\%$, and qualifying-area changes were $-258.25$, $-260.52$, $-110.99$ and $-10.39$\,ha. Thus, increasing $p_A$ reduced but did not eliminate cultivated-area loss; the no-net-loss execution floor remains necessary. Each value is from one deterministic episode and is not a cross-seed uncertainty estimate.
+
 \section{Synthetic-benchmark secondary metrics (Supplementary Tables S5--S8)}\label{si:s3-bench-secondary}
 % ============================================================================
 
-Table~\ref{tab:si-bench-slope} reports the slope-improvement profile across the seven synthetic landscapes, summarised in main-text Section 5. The three secondary metrics referenced in main-text Section 5 ($\Delta$contiguity, $\Delta$\textit{baimu fang} count, and $\Delta$\textit{baimu fang} area, all under the same 50-pair swap budget and $n{=}5$ seeds per cell) are tabulated below the slope profile. Together these summarise the full $5 \times 7 \times 5 = 175$-cell sweep. Aggregation script: \texttt{scripts/si\_tables\_v7.py} in the released code repository.
+Table~\ref{tab:si-bench-slope} reports the slope-improvement profile across the seven synthetic landscapes, summarised in main-text Results, synthetic benchmark. The three secondary metrics referenced in main-text Results, synthetic benchmark ($\Delta$contiguity, $\Delta$\textit{baimu fang} count, and $\Delta$\textit{baimu fang} area, all under the same 50-pair swap budget and $n{=}5$ seeds per cell) are tabulated below the slope profile. Together these summarise the full $5 \times 7 \times 5 = 175$-cell sweep. Aggregation script: \texttt{scripts/si\_tables\_v7.py} in the released code repository.
 
 \begin{table}[htbp]
 \centering
@@ -243,7 +293,7 @@ Seed & Slope \% & $\Delta$Contiguity & $\Delta$Baimu \# & $\Delta$Baimu (ha) \\
 \section{Toolchain pre-flight checks}\label{si:s4-toolchain}
 % ============================================================================
 
-Tool 5 of the ArcGIS Pro toolchain (main-text Section~8) validates the user environment before any planning step is allowed to run. The complete list of checks is:
+Tool 5 of the ArcGIS Pro toolchain (main-text Methods, ArcGIS Pro toolchain) validates the user environment before any planning step is allowed to run. The complete list of checks is:
 
 \begin{enumerate}
 \item \textbf{Python interpreter}: ArcGIS Pro 3.6+ \texttt{arcgispro-py3} or compatible Python 3.10+ environment.
@@ -303,7 +353,7 @@ forest$\rightarrow$farm swaps & $428$ & $428$ & $0$ (exact) \\
 \begin{table}[htbp]
 \centering
 \small
-\caption{Per-replicate results for the member-subset ablation. The three replicates exhaust C(3,2)=3 distinct subsets. Full-ensemble values reproduced from main-text Table~4 / \texttt{mpc\_summary.json} for comparison; they fall inside the subset mean$\pm$sd on every metric.}
+\caption{Per-replicate results for the member-subset ablation. The three replicates exhaust C(3,2)=3 distinct subsets. Full-ensemble values reproduced from main-text real-county results table / \texttt{mpc\_summary.json} for comparison; they fall inside the subset mean$\pm$sd on every metric.}
 \label{tab:si-subset}
 \begin{tabular}{lcccc}
 \toprule
@@ -460,7 +510,7 @@ Neijiang Dongxing & Hard no-net-loss floor & $-0.492$ & $+0.0373$ & $-330.4$ & $
 \begin{table}[htbp]
 \centering
 \small
-\caption{Bishan execution-constraint frontier on the package-side prepare. Each row is one canonical Tool~4 planning episode followed by GIS-only validation and policy-band translation. The cultivated-area floor rows enforce a hard lower bound on cumulative total cultivated-area change; the ``No net cultivated + baimu area'' row additionally enforces a hard lower bound on qualifying \textit{baimu fang} area; the connectivity-conservative row keeps the cultivated-area no-net-loss floor and increases the local pair-selection connectivity weights. Source: \texttt{scripts/pareto\_sweep\_bishan\_constraints.py}, output \texttt{paper/submission\_scirep\_corrected/bishan\_constraint\_frontier.json}.}
+\caption{Bishan execution-constraint frontier on the package-side prepare. Each row is one canonical Tool~4 planning episode followed by GIS-only validation and policy-band translation. The cultivated-area floor rows enforce a hard lower bound on cumulative total cultivated-area change; the ``No net cultivated + baimu area'' row additionally enforces a hard lower bound on qualifying \textit{baimu fang} area; the connectivity-conservative row keeps the cultivated-area no-net-loss floor and increases the local pair-selection connectivity weights. Source: \texttt{scripts/pareto\_sweep\_bishan\_constraints.py}, output \texttt{paper/submission\_commsee/pareto\_sweep\_bishan\_constraints.json}.}
 \label{tab:si-bishan-constraint-frontier}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrrrrrr}
@@ -486,53 +536,18 @@ Connectivity conservative & $-0.608$ & $+0.0259$ & $-210.5$ & $+1$ & $+43.4$ & $
 \label{fig:si-bishan-constraint-frontier}
 \end{figure}
 
-\clearpage
-
-\paragraph{Neijiang execution-constraint frontier.} We repeated the same seven-profile execution-frontier design on the current Scientific Reports Neijiang prepared package and its seed-0 exported ONNX ensemble (Table~\ref{tab:si-neijiang-constraint-frontier}, Figure~\ref{fig:si-neijiang-constraint-frontier}). This check is separate from the older canonical Neijiang audit in Table~\ref{tab:si-constrained-policy}; its purpose is to test whether the cross-county policy-repair pattern survives a full Tool~4 frontier under the current packaged Neijiang artefacts. The cultivated-area floor rows at $-500$, $-250$ and $-100$\,ha converge to the same committed plan, indicating that those floors are effectively non-binding for this seed except at the final sub-hectare margin. All no-net-loss profiles keep cultivated area positive, with slope changes from $-0.440\%$ to $-0.457\%$, contiguity gains from $+0.0322$ to $+0.0404$, qualifying \textit{baimu fang} area gains from $+286.5$ to $+344.0$\,ha, and total cultivated-area gains from $+100.9$ to $+126.6$\,ha. The connectivity-conservative profile sacrifices a small amount of slope reduction relative to the no-net-loss profile but gives the largest contiguity and qualifying-area gains in the Neijiang frontier.
-
-\begin{table}[htbp]
-\centering
-\small
-\caption{Neijiang Dongxing execution-constraint frontier on the Scientific Reports prepared package. Each row is one canonical Tool~4 planning episode followed by GIS-only validation and policy-band translation. The cultivated-area floor rows enforce a hard lower bound on cumulative total cultivated-area change; the ``No net cultivated + baimu area'' row additionally enforces a hard lower bound on qualifying \textit{baimu fang} area; the connectivity-conservative row keeps the cultivated-area no-net-loss floor and increases the local pair-selection connectivity weights. Source: \texttt{scripts/pareto\_sweep\_neijiang\_constraints.py}, output \texttt{paper/submission\_scirep\_corrected/neijiang\_constraint\_frontier.json}.}
-\label{tab:si-neijiang-constraint-frontier}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrrrrrr}
-\toprule
-Mode & $\Delta$ slope (\%) & $\Delta$ cont. & Steep tail (ha) & $\Delta$Baimu \# & $\Delta$Baimu (ha) & $\Delta$cultivated (ha) & Reward & Swaps \\
-\midrule
-Unconstrained & $-0.500$ & $+0.0327$ & $-448.5$ & $-7$ & $+246.5$ & $+58.5$ & $+77.44$ & $463$ \\
-Cultivated floor $-500$\,ha & $-0.527$ & $+0.0318$ & $-448.5$ & $-6$ & $+183.7$ & $-0.8$ & $+80.66$ & $473$ \\
-Cultivated floor $-250$\,ha & $-0.527$ & $+0.0318$ & $-448.5$ & $-6$ & $+183.7$ & $-0.8$ & $+80.66$ & $473$ \\
-Cultivated floor $-100$\,ha & $-0.527$ & $+0.0318$ & $-448.5$ & $-6$ & $+183.7$ & $-0.8$ & $+81.05$ & $473$ \\
-No net cultivated loss & $-0.457$ & $+0.0322$ & $-344.8$ & $-8$ & $+287.5$ & $+101.9$ & $+82.31$ & $471$ \\
-No net cultivated + baimu area & $-0.454$ & $+0.0322$ & $-343.6$ & $-8$ & $+286.5$ & $+100.9$ & $+76.87$ & $471$ \\
-Connectivity conservative & $-0.440$ & $+0.0404$ & $-367.5$ & $-12$ & $+344.0$ & $+126.6$ & $+58.10$ & $475$ \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.85\textwidth]{neijiang_constraint_frontier.pdf}
-\caption{Neijiang Dongxing execution-constraint frontier. Points show independently recomputed farmland-slope change versus total cultivated-area change for the seven execution profiles in Table~\ref{tab:si-neijiang-constraint-frontier}; marker area scales with the absolute qualifying \textit{baimu fang} area change and colour distinguishes profiles that violate (red) or satisfy (green) cultivated-area no-net-loss. The dashed vertical line is the policy no-net-loss boundary.}
-\label{fig:si-neijiang-constraint-frontier}
-\end{figure}
-
-\clearpage
-
 % ============================================================================
 \section{Hyperparameter sensitivity and longer-budget OR baselines}\label{si:hyperparameter-sensitivity}
 % ============================================================================
 
-This section reports two robustness checks against reviewer concerns about hyperparameter dependence and the matched-wall-budget OR comparison: (i)~an $(H, K)$ sensitivity sweep on the package-side prepare and (ii)~a $10\times$-extended wall-budget comparison against simulated annealing and random-restart on Bishan. These checks address computational robustness only. The cultivated-area constraint issue is handled separately by the hard no-net-loss runs in Table~\ref{tab:si-constrained-policy} and by the Bishan and Neijiang execution-constraint frontiers in Tables~\ref{tab:si-bishan-constraint-frontier} and \ref{tab:si-neijiang-constraint-frontier}.
+This section reports two robustness checks against reviewer concerns about hyperparameter dependence and the matched-wall-budget OR comparison: (i)~an $(H, K)$ sensitivity sweep on the package-side prepare and (ii)~a $10\times$-extended wall-budget comparison against simulated annealing and random-restart on Bishan. These checks address computational robustness only. The cultivated-area constraint issue is handled separately by the hard no-net-loss runs in Table~\ref{tab:si-constrained-policy} and by the Bishan execution-constraint frontier in Table~\ref{tab:si-bishan-constraint-frontier}.
 
 \paragraph{$(H, K)$ sweep on the package-side prepare (Table~\ref{tab:si-hk-sweep}).} We swept the planning horizon $H \in \{3, 5, 10\}$ and the top-$K$ candidate width $K \in \{25, 50, 100\}$ on one released contrastive ensemble, holding $\lambda_{\text{rank}}=5.0$, margin~$=0.1$, $\gamma=0.99$, continuation~$=$~greedy, scoring~$=$~reward, and one canonical episode per cell. All nine cells produced bit-identical commit sequences yielding the same on-disk slope improvement of $-1.7531\%$, contiguity change of $+0.0125$, qualifying-count gain of $+5$, and qualifying-area loss of $-483.94$\,ha. Wall time scales from $122.7$\,s ($H{=}3$, $K{=}25$) to $1{,}139$\,s ($H{=}10$, $K{=}100$), a $9.3\times$ range. This invariance should be interpreted conservatively: for this trained ensemble and deterministic greedy-continuation setting, the 1-step ranking signal is strong enough that deeper rollouts and wider candidate menus do not change the top committed action. The result supports faster interactive auditing with $(H{=}3, K{=}25)$ on this ensemble, but it is not evidence that horizon never matters, nor that reward-weight or red-line-constrained variants would be invariant.
 
 \begin{table}[htbp]
 \centering
 \small
-\caption{$(H, K)$ sensitivity on Bishan, package-side prepare, shipped contrastive ensemble (1 canonical episode per cell). All nine cells produce identical commit sequences; wall-clock cost is the only meaningful dimension on which they differ. Source: \texttt{scripts/sensitivity\_sweep\_bishan.py}, output \texttt{paper/submission\_scirep\_corrected/sensitivity\_sweep\_bishan.json}.}
+\caption{$(H, K)$ sensitivity on Bishan, package-side prepare, shipped contrastive ensemble (1 canonical episode per cell). All nine cells produce identical commit sequences; wall-clock cost is the only meaningful dimension on which they differ. Source: \texttt{scripts/sensitivity\_sweep\_bishan.py}, output \texttt{paper/submission\_commsee/sensitivity\_sweep\_bishan.json}.}
 \label{tab:si-hk-sweep}
 \begin{tabular}{cccccccc}
 \toprule
@@ -551,9 +566,9 @@ $10$ & $100$ & $-1.7531$ & $+0.0125$ & $+5$ & $-483.94$ & $71.78$ & $1{,}139.4$ 
 \end{tabular}
 \end{table}
 
-A note on the offset between $-1.7531\%$ here and the $-2.001\%$ on-disk verification of main-text Section~4: the sweep uses the \texttt{ensemble\_seed0} member of the open per-seed checkpoint pack (released alongside the toolchain), while the reported ensemble in \texttt{mpc\_summary.json} is the merged shipped ensemble at \texttt{prepared\_legacy\_horn/tool3/}. The two ensembles share the same training pipeline but were trained against slightly different transition data sources before and after the prepare-step rebuild. The $(H, K)$-invariance result therefore characterises a single deterministic ensemble; we do not extrapolate it to ensembles trained from cold.
+A note on the offset between $-1.7531\%$ here and the $-2.001\%$ on-disk verification of main-text Results, real-county deployment: the sweep uses the \texttt{ensemble\_seed0} member of the open per-seed checkpoint pack (released alongside the toolchain), while the reported ensemble in \texttt{mpc\_summary.json} is the merged shipped ensemble at \texttt{prepared\_legacy\_horn/tool3/}. The two ensembles share the same training pipeline but were trained against slightly different transition data sources before and after the prepare-step rebuild. The $(H, K)$-invariance result therefore characterises a single deterministic ensemble; we do not extrapolate it to ensembles trained from cold.
 
-\paragraph{Extended wall-budget OR baselines (Table~\ref{tab:si-1800s-baselines}).} To address the concern that a longer-budget classical baseline might catch up to learned-MPC, we re-ran simulated annealing and random-restart at a $10\times$-longer $1{,}800$\,s wall budget on Bishan (the same Bishan CountyLevelEnv, same env step cost of $14.3$\,ms/step probed at run start). Both baselines run until the wall-clock budget expires; SA logs $1{,}187$ iterations and random-restart logs $1{,}105$ episodes. The reward gap to the contrastive-MPC pipeline persists by an order of magnitude, validating the simulator-cost crossover analysis of main-text Section~6.
+\paragraph{Extended wall-budget OR baselines (Table~\ref{tab:si-1800s-baselines}).} To address the concern that a longer-budget classical baseline might catch up to learned-MPC, we re-ran simulated annealing and random-restart at a $10\times$-longer $1{,}800$\,s wall budget on Bishan (the same Bishan CountyLevelEnv, same env step cost of $14.3$\,ms/step probed at run start). Both baselines run until the wall-clock budget expires; SA logs $1{,}187$ iterations and random-restart logs $1{,}105$ episodes. The reward gap to the contrastive-MPC pipeline persists by an order of magnitude, validating the simulator-cost crossover analysis of main-text Results, simulator-cost diagnostic.
 
 \begin{table}[htbp]
 \centering
@@ -567,17 +582,19 @@ Method & Wall budget (s) & Reward & Iterations / episodes & Notes \\
 \midrule
 Random-action 5-ep mean & --- & $11.55 \pm 10.31$ & $5$ episodes & no method \\
 \midrule
-Simulated annealing & $180$ & $9.04$ & $100$ iter & main-text Section~4 \\
+Simulated annealing & $180$ & $9.04$ & $100$ iter & main-text Results, real-county deployment \\
 Simulated annealing & $1{,}800$ & $9.54$ & $1{,}187$ iter & this section ($+5.5\%$) \\
-Random-restart & $180$ & $30.85$ & $98$ ep & main-text Section~4 \\
+Random-restart & $180$ & $30.85$ & $98$ ep & main-text Results, real-county deployment \\
 Random-restart & $1{,}800$ & $37.70$ & $1{,}105$ ep & this section ($+22\%$) \\
 \midrule
-Contrastive MPC & $\sim 180$ & $\mathbf{86.74}$ & $1$ ep, $H{=}5$, $K{=}50$ & main-text Section~4 \\
+Contrastive MPC & $\sim 180$ & $\mathbf{86.74}$ & $1$ ep, $H{=}5$, $K{=}50$ & main-text Results, real-county deployment \\
 \bottomrule
 \end{tabular}
 }
 \end{table}
 
-\paragraph{Reward-weight and execution-constraint frontiers.} The Bishan and Neijiang sweeps reported in Tables~\ref{tab:si-bishan-constraint-frontier} and \ref{tab:si-neijiang-constraint-frontier} are the policy-relevant multi-profile execution frontiers added for this revision. We do not present them as full retrained reward-weight Pareto sweeps: such sweeps would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The two execution-constraint frontiers instead answer the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
+\paragraph{Reward-weight and execution-constraint frontiers.} The Bishan sweep reported in Table~\ref{tab:si-bishan-constraint-frontier} is the policy-relevant multi-profile execution frontier added for this revision. We do not present it as a full retrained reward-weight Pareto sweep: such a sweep would require new Tool~2 transition sampling and Tool~3 ensemble training under each reward configuration, because the exported ONNX reward head is fixed after training. Existing restoration Pareto sweeps (main-text Section~5; released under \texttt{runs/restoration/}) demonstrate the multi-weight evaluation code path in a public-data domain. The Bishan execution-constraint frontier instead answers the immediate red-line question: hard constraints can be enforced during Tool~4 execution, and progressively stricter cultivated-area floors expose the slope--area trade-off without conflating that result with a retrained reward-policy study.
 
 \end{document}
+
+
